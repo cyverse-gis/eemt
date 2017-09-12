@@ -54,9 +54,11 @@ export PYTHONPATH=/opt/eemt/lib/python2.6/site-packages:/opt/eemt/lib64/python2.
 
 # 9/12/2017 - need to change the path to pull the container from shub://
 # download the container if we do not already have it
-if [ ! -e "$TOP_DIR/eemt-current.img" ]; then
-    wget -O $TOP_DIR/eemt-current.img \
-         http://xd-login.opensciencegrid.org/scratch/eemt/singularity/eemt-current.img
+#if [ ! -e "$TOP_DIR/eemt-current.img" ]; then
+#    wget -O $TOP_DIR/eemt-current.img \
+#         http://xd-login.opensciencegrid.org/scratch/eemt/singularity/eemt-current.img
+if [ ! -e "$TOP_DIR/eemt-singularity-dev.img" ]; then
+singularity pull shub://tyson-swetnam/eemt-singularity-dev:master
 fi
 
 # we need a temporary directory to run from
