@@ -1,0 +1,10 @@
+[osg]
+name=OSG Software for Enterprise Linux 6 - $basearch
+mirrorlist=http://repo.grid.iu.edu/mirror/osg/3.3/el6/release/$basearch
+failovermethod=priority
+priority=98
+enabled=1
+gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OSG
+consider_as_osg=yes
+
