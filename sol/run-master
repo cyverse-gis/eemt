@@ -62,7 +62,7 @@ singularity exec \
   --scratch /var/tmp \
   --scratch /tmp \
   --contain --ipc --pid \
-  $TOP_DIR/eemt-current.img \
+  $TOP_DIR/eemt-singularity-dev.img \
   /srv/run-workflow \
     --name EEMT-$PW_HASH \
     -O /srv/work \
