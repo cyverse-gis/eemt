@@ -57,13 +57,13 @@ cp ~/.eemt-makeflow-password ./
 
 # run the workflow
 singularity exec \
-  --home $PWD:/srv \
+  --home ${PWD}:/srv \
   --pwd /srv \
   --scratch /var/tmp \
   --scratch /tmp \
   --contain --ipc --pid \
-  $TOP_DIR/tyson-swetnam-eemt-singularity-dev.img \
-  /srv/run-workflow \
+  $TOP_DIR/tyson-swetnam-eemt-singularity-dev-master.img \
+  /srv/scripts/run-workflow \
     --name EEMT-$PW_HASH \
     -O /srv/work \
     /srv/$DEM_NAME
