@@ -37,7 +37,7 @@ export PYTHONPATH=/opt/eemt/lib/python2.6/site-packages:/opt/eemt/lib64/python2.
 #if [ ! -e "$TOP_DIR/eemt-current.img" ]; then
 #    wget -O $TOP_DIR/eemt-current.img \
 #         http://xd-login.opensciencegrid.org/scratch/eemt/singularity/eemt-current.img
-if [ ! -e "$TOP_DIR/tyson-swetnam-eemt-singularity-dev.img" ]; then
+if [ ! -e "$TOP_DIR/tyson-swetnam-eemt-singularity-dev-master.img" ]; then
 SINGULARITY_PULLFOLDER=$TOP_DIR
 singularity pull shub://tyson-swetnam/eemt-singularity-dev:master
 fi
