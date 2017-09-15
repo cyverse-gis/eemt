@@ -1,0 +1,48 @@
+#!/bin/bash
+# 4/1/2016 - Tyson modified the local install directory to fit sol-comet from eemt
+# This script starts up a local Sol instance, and uses SSH to
+# submit workers on SDSC Comet.
+
+set -e
+
+# settings
+LOCAL_WORK_DIR=`pwd`
+LOCAL_SOL_INSTALL=/srv/git/sol-ot-comet-dev
+
+export TCP_LOW_PORT=20000
+export TCP_HIGH_PORT=60000 
+
+# should be in the container
+export PYTHONPATH=/opt/eemt/lib/python2.6/site-packages:/opt/eemt/lib64/python2.6/site-packages
+
+# safety check
+if [ -e run-workflow ]; then
+    echo "Do not run from the Sol checkout!"
+    exit 1
+fi
+
+# arguments
+DEM=$1
+
+cp $LOCAL_SOL_INSTALL/* .
+
+# we also need the password file
+cp ~/.eemt-makeflow-password .
+
+# run the workflow
+singularity exec \
+  --home $PWD:/srv \
+  --pwd /srv \
+  --scratch /var/tmp \
+  --scratch /tmp \
+  --contain --ipc --pid \
+  /srv/containers/eemt-current.img \
+  /srv/run-workflow \
+    --name EEMT \
+    -O /srv/work \
+    /srv/$DEM
+
+echo
+echo "Output files in $LOCAL_WORK_DIR"
+echo
+
