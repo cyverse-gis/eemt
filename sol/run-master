@@ -18,7 +18,7 @@ DEM="$DEM_DIR/$DEM_NAME"
 
 # make sure we have a password, and create a hash for the project name
 if [ ! -r ~/.eemt-makeflow-password ]; then
-    echo "Please create ~/.eemt-makeflow-password , and populate it with your run-worker workqueue password"
+    echo "Please create ~/.eemt-makeflow-password , and populate it with your workqueue password"
     exit 1
 fi
 PW_HASH=`cat ~/.eemt-makeflow-password | sha256sum | cut -d ' ' -f 1`
@@ -29,17 +29,15 @@ export TCP_HIGH_PORT=60000
 module load singularity >/dev/null 2>&1 || true
 
 # should be in the container
-export PYTHONPATH=/opt/eemt/lib/python2.6/site-packages:/opt/eemt/lib64/python2.6/site-packages
+export PYTHONPATH=/opt/eemt/lib/python2.7/site-packages
 
-# 9/12/2017 - need to change the path to pull the container from shub://
-# instructions http://singularity.lbl.gov/docs-pull
+# refresh the container once a day
+find . -maxdepth 1 -name eemt-current.img -mmin +1400 -exec rm -f {} \;
+
 # download the container if we do not already have it
-#if [ ! -e "$TOP_DIR/eemt-current.img" ]; then
-#    wget -O $TOP_DIR/eemt-current.img \
-#         http://xd-login.opensciencegrid.org/scratch/eemt/singularity/eemt-current.img
-if [ ! -e "$TOP_DIR/tyson-swetnam-eemt-singularity-dev-master.img" ]; then
-SINGULARITY_PULLFOLDER=$TOP_DIR
-singularity pull shub://tyson-swetnam/eemt-singularity-dev:master
+if [ ! -e "$TOP_DIR/eemt-current.img" ]; then
+    wget -O $TOP_DIR/eemt-current.img \
+         http://xd-login.opensciencegrid.org/scratch/eemt/singularity/eemt-current.img
 fi
 
 # we need a temporary directory to run from
@@ -57,13 +55,13 @@ cp ~/.eemt-makeflow-password ./
 
 # run the workflow
 singularity exec \
-  --home ${PWD}:/srv \
+  --home $PWD:/srv \
   --pwd /srv \
   --scratch /var/tmp \
   --scratch /tmp \
   --contain --ipc --pid \
-  $TOP_DIR/tyson-swetnam-eemt-singularity-dev-master.img \
-  /srv/scripts/run-workflow \
+  $TOP_DIR/eemt-current.img \
+  /srv/run-workflow \
     --name EEMT-$PW_HASH \
     -O /srv/work \
     /srv/$DEM_NAME

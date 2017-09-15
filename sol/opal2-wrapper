@@ -3,8 +3,6 @@
 # This script starts up a local Sol instance, and uses SSH to
 # submit workers on SDSC Comet.
 
-# 9/12/2017 Need to change LOCAL_SOL_INSTALL path for the final installation 
-
 set -e
 
 # settings
