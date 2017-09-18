@@ -1,22 +1,19 @@
 #!/bin/bash
-# 4/1/2016 - Tyson modified the local install directory to fit sol-comet from eemt
-# This script starts up a local Sol instance, and uses SSH to
-# submit workers on SDSC Comet.
+
+# this is just a wrapper around run-master which sets up the workdir expected by
+# opal2
 
 set -e
 
-# settings
-LOCAL_WORK_DIR=`pwd`
-LOCAL_SOL_INSTALL=/srv/git/sol-ot-comet-dev
+# WORK_DIR is also used by run-master
+export WORK_DIR=`pwd`
 
-export TCP_LOW_PORT=20000
-export TCP_HIGH_PORT=60000 
-
-# should be in the container
-export PYTHONPATH=/opt/eemt/lib/python2.6/site-packages:/opt/eemt/lib64/python2.6/site-packages
+# figure out the full path for the sol directory
+SOL_INSTALL=`dirname $0`
+SOL_INSTALL=`cd $LOCAL_SOL_INSTALL && pwd`
 
 # safety check
-if [ -e run-workflow ]; then
+if [ -e run-master -o -e run-workflow ]; then
     echo "Do not run from the Sol checkout!"
     exit 1
 fi
@@ -24,25 +21,16 @@ fi
 # arguments
 DEM=$1
 
-cp $LOCAL_SOL_INSTALL/* .
+# tell run-master where to do the work
 
-# we also need the password file
-cp ~/.eemt-makeflow-password .
+set +e
+$SOL_INSTALL/run-master $DEM
+EXIT_CODE=$?
+set -e
 
-# run the workflow
-singularity exec \
-  --home $PWD:/srv \
-  --pwd /srv \
-  --scratch /var/tmp \
-  --scratch /tmp \
-  --contain --ipc --pid \
-  /srv/containers/eemt-current.img \
-  /srv/run-workflow \
-    --name EEMT \
-    -O /srv/work \
-    /srv/$DEM
+# clean up
+rm -f eemt-current.img
+rm -f .eemt-makeflow-password
 
-echo
-echo "Output files in $LOCAL_WORK_DIR"
-echo
+exit $EXIT_CODE
 

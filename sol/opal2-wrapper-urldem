@@ -17,25 +17,24 @@ function niceexit {
         fi
 }
 
-set -e
+# WORK_DIR is also used by run-master
+export WORK_DIR=`pwd`
 
-# setting a WORK_DIR singlas to run-master that it does not need to set up
-# a new one
-export WORK_DIR=`readlink -f .`
+# figure out the full path for the sol directory
+SOL_INSTALL=`dirname $0`
+SOL_INSTALL=`cd $SOL_INSTALL && pwd`
 
-# figure out what the base dir of this script is
-SOL_INSTALL_DIR=`dirname $0`
-SOL_INSTALL_DIR=`cd $SOL_INSTALL_DIR && pwd`
-
-# safty check
-if [ -e run-master ]; then
-    niceexit 1 "" "" "Error: Do not run from the Sol checkout!"
+# safety check
+if [ -e run-master -o -e run-workflow ]; then
+    echo "Do not run from the Sol checkout!"
+    exit 1
 fi
 
 echo "[`date`] setting up for the workflow..."
 t0=`date +%s`
 # arguments
 DEMURL=$1
+
 zipfile="output.zip"
 if [ ! -z "$2" ]; then
         oname="`basename $2`"
@@ -43,19 +42,16 @@ if [ ! -z "$2" ]; then
         zipfile="$oname"
 fi
 
-tdir=/tmp/eemt_tmp.$RANDOM
-mkdir -p $tdir
-cd $tdir
+t0=`date +%s`
+
 DEMTAR=`basename $DEMURL`
 wget -nv $DEMURL 2>&1
 [ $? -ne 0 ] && niceexit 1 $DEMURL $zipfile "Error: could not download DEM $DEMURL."
 echo "[`date`] downloaded DEM from $DEMURL"
 
-cd $WORK_DIR/
-tar xfz $tdir/$DEMTAR
+tar xfz $DEMTAR
 [ $? -ne 0 ] && niceexit 1 $DEMURL $zipfile "Error: could not unzip DEM from $DEMURL."
 DEM=$(basename `ls *.tif | head -n 1`) 
-rm -fr $tdir/$DEMTAR
 
 # let's make sure the dem has a sane name
 DEM_NAME_FIXED=`echo "$DEM" | sed 's/\.tif$//' | sed 's/\./_/g'`".tif"
@@ -65,21 +61,19 @@ if [ "$DEM" != "$DEM_NAME_FIXED" ]; then
     DEM=$DEM_NAME_FIXED
 fi
 
-cd $SOL_INSTALL_DIR
-
 t1=`date +%s`
-# run the workflow
-echo "[`date`] starting the workflow..."
-echo
-echo "================================================================="
-echo
-./run-master $WORK_DIR/$DEM 2>&1
+$SOL_INSTALL/run-master $DEM
 retcode=$?
 t2=`date +%s`
 if [ $retcode -eq 0 ]; then
         echo "[`date`] archiving output ..."
-        cd $WORK_DIR && zip -r $zipfile global/monthly insol/monthly
+        (cd work && zip -r ../$zipfile global/monthly insol/monthly)
 fi
+
+# clean up
+rm -f eemt-current.img
+rm -f .eemt-makeflow-password
+
 echo
 echo "[`date`] Finished, workflow returned exit code $retcode. Output files in $WORK_DIR . Output archive in $WORK_DIR/$zipfile ."
 echo "Time in sec: download `expr $t1 \- $t0` ; workflow `expr $t2 \- $t1`"
