@@ -1,0 +1,126 @@
+#!/bin/bash
+
+COMET_USER=tswetnam
+COMET_PROJECT=uoa112
+
+# Script for submitting workers to SDSC Comet
+
+# The password is the argument
+PASSWORD=$1
+if [ "x$PASSWORD" = "x" ]; then
+    echo "Please specify a password"
+    exit 1
+fi
+
+. /cvmfs/oasis.opensciencegrid.org/osg/modules/lmod/current/init/bash
+module load cctools
+
+for PROJECT in EEMT_Comet; do
+
+    WAITING=0
+    for VALUE in `work_queue_status | grep $PROJECT | awk '{print $4;}'`; do
+        WAITING=$(($WAITING + $VALUE))
+    done
+    
+    RUNNING=0
+    for VALUE in `work_queue_status | grep $PROJECT | awk '{print $5;}'`; do
+        RUNNING=$(($RUNNING + $VALUE))
+    done
+    
+    WORKERS=0
+    for VALUE in `work_queue_status | grep $PROJECT | awk '{print $7;}'`; do
+        WORKERS=$(($WORKERS + $VALUE))
+    done
+
+    echo "Waiting=$WAITING, Running=$RUNNING, Workers=$WORKERS"
+    
+    # any waiting tasks?
+    if [ $WAITING = 0 ]; then
+        echo "No tasks waiting"
+        continue
+    fi
+    
+    # max workers?
+    # 4/7/2016 Tyson changed this from -gt 3 to -gt 15 because he noticed that there was a maximum of 4 workers (96 cores) during the initial test runs
+    if [ $WORKERS -gt 20 ]; then
+        echo "Too many workers. "
+        continue
+    fi
+    
+    # start slow to make sure the system works
+    NEW_WORKER_NODES=1
+    
+    if [ $WAITING -gt 0 -a $RUNNING -gt 0 ]; then
+        NEW_WORKER_NODES=$WAITING
+    fi
+    
+    # limit the number of new workers per iteration
+    if [ $NEW_WORKER_NODES -gt 3 ]; then
+        NEW_WORKER_NODES=5
+    fi
+
+    # make sure we don't have pending workers on Comet
+    PENDING_WORKERS=`ssh $COMET_USER@comet.sdsc.edu "squeue -u $COMET_USER | grep -v JOBID | grep ' PD ' | wc -l "`
+    if [ $PENDING_WORKERS -gt 0 ]; then
+        continue
+    fi
+    
+    echo "Submitting $NEW_WORKERS new workers..."
+    
+    # keep logs on the scratch filesystem
+    WORK_DIR=/local-scratch/$USER/workers/work/comet-`/bin/date +'%F_%H%M%S'`
+    mkdir -p $WORK_DIR
+    cd $WORK_DIR
+    
+    # we need a wrapper
+    cat >sol-worker.sh <<EOF
+#!/bin/bash
+set -x
+set -e
+export PATH=/opt/eemt/bin:/opt/eemt/grass-7.2.0/bin:\$PATH
+export LD_LIBRARY_PATH=/opt/eemt/lib:/opt/eemt/grass-7.2.0/lib
+work_queue_worker -P password.txt -M $PROJECT -s \$PWD -t 600 --cores=0
+EOF
+chmod 755 sol-worker.sh
+    
+    # we need a wrapper to load modules
+    cat >sol-worker.submit <<EOF
+#!/bin/bash
+
+#SBATCH --job-name="sol"
+#SBATCH --output="job.%j.%N.out"
+#SBATCH --partition=compute
+#SBATCH --nodes=$NEW_WORKER_NODES
+#SBATCH --ntasks-per-node=1
+#SBATCH --export=ALL
+#SBATCH -t 24:00:00
+#SBATCH -A $COMET_PROJECT
+
+export SLURM_NODEFILE=\`generate_pbs_nodefile\`
+
+echo
+echo "Master node is" \`hostname -f\` "and assigned nodes are:"
+cat \$SLURM_NODEFILE
+
+for HOST in \`cat \$SLURM_NODEFILE | sort -u\`; do
+    ssh \$HOST "(module load singularity ; \\
+                 cd /scratch/\$USER/\$SLURM_JOB_ID && \\
+                 wget -nv http://xd-login.opensciencegrid.org/scratch/eemt/singularity/eemt-current.img && \\
+                 mkdir -p work && \\
+                 cd work && \
+                 echo "$PASSWORD" >password.txt && \\
+                 cp ~/eemt-workers/sol-worker.sh . && \\
+                 singularity exec --home /scratch/\$USER/\$SLURM_JOB_ID:/srv --pwd /srv --scratch /var/tmp --scratch /tmp --containall eemt-current.img ./sol-worker.sh)" &
+done
+
+wait
+
+EOF
+    chmod 755 sol-worker.submit
+
+    ssh $COMET_USER@comet.sdsc.edu "mkdir -p ~/eemt-workers"
+    scp sol-worker.submit sol-worker.sh $COMET_USER@comet.sdsc.edu:~/eemt-workers
+    ssh $COMET_USER@comet.sdsc.edu "cd ~/eemt-workers && sbatch sol-worker.submit"
+
+done
+
