@@ -1,3 +1,1 @@
-# eemt-singularity
-
-Singularity image for the effective energy and mass transfer (EEMT) project
+Instructions for building a [Singularity](http://singularity.lbl.gov/) container with [OSGEO](http://www.osgeo.org/), [GRASS](https://grasswiki.osgeo.org/wiki/Compile_and_Install_Ubuntu), [GDAL](http://www.gdal.org/), [SAGA-GIS](http://www.saga-gis.org/en/index.html), and [CCTools Makeflow](https://ccl.cse.nd.edu/software/)
