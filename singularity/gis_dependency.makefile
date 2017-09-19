@@ -53,7 +53,7 @@ $(TARGET)/bin/grass72: $(TARGET)/bin/gdalinfo
 	 && tar xzf grass-7.2.1.tar.gz \
 	 && cd grass-7.2.1 \
 	 && export LDFLAGS="-Wl,-rpath,$(TARGET)/lib -lpthread" \
-	 && ./configure --enable-64bit --prefix=$(TARGET) --with-libs=$(TARGET)/lib --with-proj-share=/usr/share/proj --with-gdal=$(TARGET)  --with-cxx --without-fftw --without-python --with-geos=$(TARGET)/bin --with-libs=$(TARGET)/lib -with-opengl=no --with-netcdf --without-tcltk --with-sqlite=yes --with-freetype=yes --with-freetype-includes="/usr/include/freetype2/" \
+	 && ./configure --enable-64bit --prefix=$(TARGET) --with-libs=$(TARGET)/lib --with-proj-share=/usr/share/proj --with-gdal=$(TARGET)  --with-cxx --without-fftw --without-python --with-geos=$(TARGET)/bin --with-libs=$(TARGET)/lib -with-opengl=no --with-netcdf --without-tcltk --with-sqlite=yes --with-freetype=yes --with-freetype-includes="/usr/include/freetype2/" --with-openmp \
 	 && (make || make || make) \
 	 && make install)
 
