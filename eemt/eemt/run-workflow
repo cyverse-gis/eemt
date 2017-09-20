@@ -6,71 +6,75 @@ import sys
 import shutil
 from subprocess import Popen, STDOUT, PIPE
 
+
 MONTHS=["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"]
 MONTH_DAYS=[[1,31],[32,59],[60,90],[91,120],[121,150],[152,181],[182,212],[213,243],[244,273],[274,304],[305,334],[335,365]]
+PARAMS=["tmin","tmax","vp","prcp"]
+
 
 def error(*objs):
     print("ERROR: ", *objs, file=sys.stderr)
     exit(1)
-
 def warning(*objs):
     print("WARNING: ", *objs, file=sys.stderr)
-
 def log(*objs):
     log_file = open("task_output.log","a")
     print(*objs,file=log_file)
     log_file.close()
-
 def error_log(proj_dir,*objs):
     error_file = open(os.path.join(proj_dir,"sys.err"),"a")
     print(*objs,file=error_file)
     error_file.close()
-
 import argparse, getpass
 import sys, os, datetime
 import urllib
 import imp
 from Tiff import Tiff
 
+#rseries = imp.load_source("rseries","./r.series.distributed")
 tiffparser = imp.load_source("tiffparser","./parser.py")
 quiet=True
+try:
+    imp.find_module('work_queue')
+    found = True
+except ImportError:
+    error("Could not find work_queue module. \nAdd location to your PYTHONPATH")
+    exit(1)
+if found:
+    from work_queue import *
+
 
 script_location = os.path.abspath(os.path.dirname(sys.argv[0]))
+na_dem_location = script_location + "/DAYMET/NA_DEM/na_dem.tif"
 
-def rsun_tasks(makeflow, proj_dir, days, dem):
-    tasks=0
-    ##--Paths for input files
-    for day in days: #days is equal to range(1,366)
-        slope="slope_dec.tif"
-        aspect="aspect_dec.tif"
-        makeflow += "\n"
-        makeflow += "global/daily/total_sun_day_%d.tif insol/daily/hours_sun_day_%d.tif : rsun.sh %s %s %s\n" %(day, day, dem, slope, aspect)
-        makeflow += "\t/bin/bash rsun.sh %s %s %s -d %d -D .\n" % (dem, slope, aspect, day)
-        tasks=tasks+1
-    return makeflow, tasks
 
-def monthly_sum(makeflow, proj_dir, dem):
-    i = 0
-    for month in MONTHS:
-        start_day = MONTH_DAYS[i][0] 
-        end_day   =  MONTH_DAYS[i][1]
-        global_inputs = ""
-        insol_inputs  = ""
-        outputs = ""
+def eemt_tasks(makeflow,proj_dir,syear,eyear,dem):
+    tasks = 0
+    reemt = os.path.join(script_location,"reemt.sh")
+    for year in range(syear,eyear+1):
+        for month in MONTHS:
+            eemt_topo = "eemt/EEMT_Topo_%s_%d.tif" % (month,year)
+            eemt_trad = "eemt/EEMT_Trad_%s_%d.tif" % (month,year)
+            total_sun = "global/monthly/total_sun_%s_sum.tif" % month
+            hours_sun = "insol/monthly/hours_sun_%s_average.tif" % month
+            flat_sun = "global/monthly/flat_total_sun_%s_sum.tif" % month
+            slope = "slope_rad.tif"
+            aspect= "aspect_rad.tif"
+            tmin = "daymet/tmin/tmin_%d_%s_local.tif" % (year,month)
+            tmax = "daymet/tmax/tmax_%d_%s_local.tif" % (year,month)
+            twi = "twi.tif"
+            prcp = "daymet/prcp/prcp_%d_%s_local.tif" % (year,month)
+            vp = "daymet/vp/vp_%d_%s_local.tif" % (year,month)
+            na_dem = "daymet/NA_DEM/na_dem.tif"
 
-        for day in range(start_day,end_day+1):
-            global_inputs=global_inputs + "global/daily/total_sun_day_%d.tif " % (day)
-            insol_inputs=insol_inputs + "insol/daily/hours_sun_day_%d.tif " % (day)
+            makeflow += "\n"
+            makeflow += "%s %s: reemt.sh %s %s %s %s %s %s %s %s %s %s %s %s\n" %(eemt_topo, eemt_trad, dem, total_sun, hours_sun, flat_sun, slope, aspect, tmin, tmax, twi, prcp, vp, na_dem)
+            makeflow += "\t/bin/bash reemt.sh . " + month + " " + str(year) + " " + dem + " " + na_dem + " " + tmin + " " + tmax + " " + vp + " " + " " + prcp + " " + twi + " " + total_sun + " " + hours_sun + " " + flat_sun + " " + slope + " " + aspect + "\n"
 
-        outputs = "global/monthly/total_sun_%s_sum.tif " % month \
-                + "insol/monthly/hours_sun_%s_sum.tif " % month \
+            tasks=tasks+1
 
-        makeflow += "\n"
-        makeflow += "%s: rsum.sh %s %s %s \n" %(outputs, dem, global_inputs, insol_inputs)
-        makeflow += "\t./rsum.sh %s -D . %s %s %s \n" % (month, dem, global_inputs, insol_inputs)
+    return makeflow,tasks
 
-        i = i+1
-    return makeflow, i 
 
 def create_project_directories(proj_dir):
     if not os.path.exists(os.path.join(proj_dir,"global")):
@@ -79,26 +83,62 @@ def create_project_directories(proj_dir):
     if not os.path.exists(os.path.join(proj_dir,"insol")):
         os.makedirs(os.path.join(proj_dir,"insol","daily"))
         os.makedirs(os.path.join(proj_dir,"insol","monthly"))
-    
+    if not os.path.exists(os.path.join(proj_dir,"eemt")):
+        os.makedirs(os.path.join(proj_dir,"eemt"))
+        os.makedirs(os.path.join(proj_dir,"eemt/summary"))
+        for month in MONTHS:
+            os.makedirs(os.path.join(proj_dir,"eemt/summary",month))
+        os.makedirs(os.path.join(proj_dir,"eemt/yearly"))
+        for year in range(1980,2014):
+            os.makedirs(os.path.join(proj_dir,"eemt/yearly/%d" % year))
+            for month in MONTHS:
+                os.makedirs(os.path.join(proj_dir,"eemt/yearly/%d" % year, month))
+    if not os.path.exists(os.path.join(proj_dir,"daymet")):
+        os.makedirs(os.path.join(proj_dir,"daymet"))
+        os.makedirs(os.path.join(proj_dir,"daymet/tmin"))
+        os.makedirs(os.path.join(proj_dir,"daymet/tmax"))
+        os.makedirs(os.path.join(proj_dir,"daymet/prcp"))
+        os.makedirs(os.path.join(proj_dir,"daymet/vp"))
+        #Currently we are not using DAYMET SWE, DAYL, or SRAD data but we are maintaining these for future incorporation.
+        #os.makedirs(os.path.join(proj_dir,"daymet/swe"))
+        #os.makedirs(os.path.join(proj_dir,"daymet/dayl"))
+        #os.makedirs(os.path.join(proj_dir,"daymet/srad"))
+        #os.makedirs(os.path.join(proj_dir,"daymet/twi"))
+
+
 def main():
+
 ##--Argument Parser
     parser = argparse.ArgumentParser()
+    parser.add_argument('--start-year', '-s', type=int, dest="start")
+    parser.add_argument('--end-year', '-e', type=int, dest="end")
     parser.add_argument('--name','-n',dest="name")
     parser.add_argument('-O',dest="output")
     parser.add_argument('-v',dest="verbose")
     parser.add_argument('args',nargs=1)
-    args = parser.parse_args()
-    dem = args.args[0]
+    args=parser.parse_args()
 
+    dem = args.args[0]
+    start_year= args.start
+    end_year  = args.end
     name      = args.name
     proj_dir  = args.output
     verbose   = args.verbose
     port      = 0 # random port
 
 ##--Argument Validation
+##--If start=null, start at beginning of time
+    if not start_year:
+        start_year = 1980
+##--If end=null, finish at end of time
+    if not end_year:
+        end_year = datetime.date.today().year - 2
+##--End must be > Start
+    if end_year < start_year:
+        error("End year must occur after start year!")
 ##--Default WQ name
     if not name:
-        name=getpass.getuser() + "_SOL"
+        name=getpass.getuser() + "_EEMT"
 ##--Verify DEM Exists
     if not os.path.isfile(dem):
         error("DEM not found!")
@@ -107,23 +147,17 @@ def main():
         error("DEM must be a .tif file.")
 ##--If output null, output to current directory
     if not proj_dir:
-        proj_dir="./"+"sol_"+dem[:-4]
+        proj_dir="./"+"eemt_"+dem[:-4]
     if verbose:
         quiet=False
     start=datetime.datetime.now()
-    print("run-workflow started at: ",start.strftime("%d%b %H:%M"))
+    print("Started at: ",start.strftime("%d%b %H:%M"))
 
 ##--Create project directory structure
     create_project_directories(proj_dir)
 
     # the actual workflow definition
     makeflow = ""
-    
-    # needed for multicore slots
-    makeflow += "CATEGORY=\"analysis\"\n"
-    makeflow += "CORES=1\n"
-    makeflow += "MEMORY=2500\n"
-    makeflow += "DISK=1000\n"
 
     test=tiffparser.TiffParser()
     test.loadTiff(dem)
@@ -140,19 +174,43 @@ def main():
 
     sys.stdout.flush()
 
-    # Create the full workflow - this means makeflow rules for all the compute steps
+    # create the full workflow - this means makeflow rules for all the compute steps
 
-    # Call SAGA slope and aspect calculation done in input_rasters.sh
+    # needed for multicore slots
+    makeflow += "CATEGORY=\"analysis\"\n"
+    makeflow += "CORES=1\n"
+    #makeflow += "MEMORY=2000\n"
+    #makeflow += "DISK=10000\n"
+
+    ##--Get DAYMET Data for given years
+    for extra_file in ["NA_DEM/na_dem.tif"]:
+        url = os.path.join("http://xd-login.opensciencegrid.org/scratch/eemtdemo/DAYMET", extra_file)
+        extra_dir = os.path.dirname(extra_file)
+        makeflow += "\n"
+        makeflow += "daymet/%s: \n" %(extra_file)
+        makeflow += "\tmkdir -p daymet/%s" %(extra_dir)
+        makeflow += " && wget -nv -O daymet/%s %s\n" %(extra_file, url)
+    for year in range(start_year,end_year+1):
+        for param in PARAMS:
+            for month in MONTHS:
+                url = os.path.join("http://xd-login.opensciencegrid.org/scratch/eemtdemo/DAYMET",param,param+"_"+str(year)+"_"+month+".tif")
+                makeflow += "\n"
+                makeflow += "daymet/%s/%s_%d_%s_local.tif: metget.sh\n" %(param, param, year, month)
+                makeflow += "\t/bin/bash metget.sh %s %f %f %f %f daymet/%s/%s_%d_%s_local.tif\n" %(url, ulx, uly, lrx, lry, param, param, year, month)
+
+    # TWI
     makeflow += "\n"
-    makeflow += "aspect_dec.tif slope_dec.tif: input_rasters.sh %s.tif\n" %(warped_tif.getName())
-    makeflow += "\t/bin/bash input_rasters.sh %s.tif\n" %(warped_tif.getName())
-    # Call GRASS r.sun and calculate for days 1-365 of the year
+    makeflow += "catchment.tif aspect_dec.tif aspect_rad.tif slope_dec.tif slope_rad.tif twi.tif: twi.sh %s.tif\n" %(warped_tif.getName())
+    makeflow += "\t/bin/bash twi.sh %s.tif\n" %(warped_tif.getName())
+
     makeflow,tasks_sun = rsun_tasks(makeflow,proj_dir,range(1,366),warped_tif.getName()+".tif")
-    # Call GRASS and calculate sum global radiation and hours of insolation
-    makeflow,tasks_avg = monthly_sum(makeflow, proj_dir, warped_tif.getName()+".tif")
+
+    makeflow,tasks_avg = monthly_averages(makeflow, proj_dir, warped_tif.getName()+".tif")
+
+    makeflow,tasks_eemt = eemt_tasks(makeflow, proj_dir, start_year, end_year, warped_tif.getName()+".tif")
 
     # copies of binaries
-    for binary in ["rsum.sh", "rsun.sh", "input_rasters.sh"]:
+    for binary in ["metget.sh", "rmean.sh", "rsun.sh", "twi.sh", "reemt.sh"]:
         shutil.copy2("%s/%s" %(script_location, binary), "%s/%s" %(proj_dir, binary))
     
     os.chdir(proj_dir)
@@ -163,14 +221,54 @@ def main():
 
     sys.stdout.flush()
 
-    # make sure the ~/.eemt-makeflow-password file exists
-    if not os.path.exists(os.path.expanduser("~/.eemt-makeflow-password")):
-        print("~/.eemt-makeflow-password does not exist! Unable to submit workflow.")
-        sys.exit(1)
-
-    process=Popen("makeflow --retry-count=3 --batch-type=wq --password=" + os.path.expanduser("~/.eemt-makeflow-password") + " --wq-keepalive-interval=180 --port=%d --project=%s workflow.mf" %(port, name), shell=True)
+    process=Popen("makeflow --retry-count=3 --batch-type=wq --port=%d --project=%s workflow.mf" %(port, name), shell=True)
     process.communicate()
 
+def rsun_tasks(makeflow, proj_dir, days, dem):
+    tasks=0
+    ##--Paths for input files
+    for day in days:
+        makeflow += "\n"
+        makeflow += "global/daily/flat_total_sun_day_%d.tif global/daily/total_sun_day_%d.tif insol/daily/hours_sun_day_%d.tif : rsun.sh %s\n" %(day, day, day, dem)
+        makeflow += "\t/bin/bash rsun.sh %s -d %d -D .\n" % (dem, day)
+        tasks=tasks+1
+    return makeflow, tasks
+
+
+def monthly_averages(makeflow, proj_dir, dem):
+    i = 0
+    for month in MONTHS:
+        start_day = MONTH_DAYS[i][0] 
+        end_day   =  MONTH_DAYS[i][1]
+        
+        global_inputs = ""
+        insol_inputs  = ""
+        flat_inputs   = ""
+        outputs = ""
+
+        for day in range(start_day,end_day+1):
+            global_inputs=global_inputs + "global/daily/total_sun_day_%d.tif " % (day)
+            insol_inputs=insol_inputs + "insol/daily/hours_sun_day_%d.tif " % (day)
+            flat_inputs=flat_inputs + "global/daily/flat_total_sun_day_%d.tif " % (day)
+
+        outputs = "global/monthly/total_sun_%s_sum.tif " % month \
+                + "insol/monthly/hours_sun_%s_sum.tif " % month \
+                + "global/monthly/flat_total_sun_%s_sum.tif " % month \
+                + "global/monthly/total_sun_%s_average.tif " % month \
+                + "insol/monthly/hours_sun_%s_average.tif " % month \
+                + "global/monthly/total_sun_%s_median.tif " % month \
+                + "insol/monthly/hours_sun_%s_median.tif " % month \
+                + "global/monthly/total_sun_%s_stddev.tif " % month \
+                + "insol/monthly/hours_sun_%s_stddev.tif " % month \
+                + "global/monthly/total_sun_%s_variance.tif " % month \
+                + "insol/monthly/hours_sun_%s_variance.tif " % month \
+
+        makeflow += "\n"
+        makeflow += "%s: rmean.sh %s %s %s %s\n" %(outputs, dem, global_inputs, insol_inputs, flat_inputs)
+        makeflow += "\t./rmean.sh %s -D . %s %s %s %s\n" % (month, dem, global_inputs, insol_inputs, flat_inputs)
+
+        i = i+1
+    return makeflow, i
 
 if __name__ == '__main__':
     main()
