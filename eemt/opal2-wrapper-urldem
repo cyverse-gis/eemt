@@ -1,0 +1,82 @@
+#!/bin/bash
+
+# exit with metadata.xml to report job status to opal2
+function niceexit {
+        rcode=$1
+        input="$2"
+        output="$3"
+        msg="$4"
+        rfile=$WORK_DIR/metadata.xml
+        echo "$msg"
+        if [ $rcode -eq 0 ]; then
+                echo -e "<results><status>success</status><input>$input</input><output>$output</output><message/></results>" >$rfile
+                exit 0
+        else
+                echo -e "<results><status>failed</status><input>$input</input><output/><message>$msg</message></results>" >$rfile
+                exit $rcode
+        fi
+}
+
+# WORK_DIR is also used by run-master
+export WORK_DIR=`pwd`
+
+# figure out the full path for the sol directory
+SOL_INSTALL=`dirname $0`
+SOL_INSTALL=`cd $SOL_INSTALL && pwd`
+
+# safety check
+if [ -e run-master -o -e run-workflow ]; then
+    echo "Do not run from the Sol checkout!"
+    exit 1
+fi
+
+echo "[`date`] setting up for the workflow..."
+t0=`date +%s`
+# arguments
+DEMURL=$1
+
+zipfile="output.zip"
+if [ ! -z "$2" ]; then
+        oname="`basename $2`"
+        [ "`basename $oname .zip`" == "${oname}" ] && oname="${oname}.zip"
+        zipfile="$oname"
+fi
+
+t0=`date +%s`
+
+DEMTAR=`basename $DEMURL`
+wget -nv $DEMURL 2>&1
+[ $? -ne 0 ] && niceexit 1 $DEMURL $zipfile "Error: could not download DEM $DEMURL."
+echo "[`date`] downloaded DEM from $DEMURL"
+
+tar xfz $DEMTAR
+[ $? -ne 0 ] && niceexit 1 $DEMURL $zipfile "Error: could not unzip DEM from $DEMURL."
+DEM=$(basename `ls *.tif | head -n 1`) 
+
+# let's make sure the dem has a sane name
+DEM_NAME_FIXED=`echo "$DEM" | sed 's/\.tif$//' | sed 's/\./_/g'`".tif"
+if [ "$DEM" != "$DEM_NAME_FIXED" ]; then
+    echo "[`date`] Fixed the DEM file nameing: $DEM -> $DEM_NAME_FIXED"
+    mv $DEM $DEM_NAME_FIXED
+    DEM=$DEM_NAME_FIXED
+fi
+
+t1=`date +%s`
+$SOL_INSTALL/run-master $DEM
+retcode=$?
+t2=`date +%s`
+if [ $retcode -eq 0 ]; then
+        echo "[`date`] archiving output ..."
+        (cd work && zip -r ../$zipfile global/monthly insol/monthly)
+fi
+
+# clean up
+rm -f eemt-current.img
+rm -f .eemt-makeflow-password
+
+echo
+echo "[`date`] Finished, workflow returned exit code $retcode. Output files in $WORK_DIR . Output archive in $WORK_DIR/$zipfile ."
+echo "Time in sec: download `expr $t1 \- $t0` ; workflow `expr $t2 \- $t1`"
+niceexit $retcode $DEMURL $zipfile "Input from $DEMURL. Output in $WORK_DIR/$zipfile . Execution time: `expr $t2 \- $t0` seconds"
+
+
