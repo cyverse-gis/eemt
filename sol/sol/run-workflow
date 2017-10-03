@@ -122,7 +122,7 @@ def main():
     # needed for multicore slots
     makeflow += "CATEGORY=\"analysis\"\n"
     makeflow += "CORES=1\n"
-    makeflow += "MEMORY=4000\n" # increased ram to 4GB from 2.5GB
+    makeflow += "MEMORY=3000\n" # increased ram to 3GB from 2.5GB
     makeflow += "DISK=2000\n" # increased disk from 1GB to 2GB
 
     test=tiffparser.TiffParser()
