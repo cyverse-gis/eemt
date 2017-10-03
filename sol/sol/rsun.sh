@@ -36,9 +36,10 @@ done
 # Input files
 DEM=$1
 
-# Depreciated old slope and aspect data.
+# Depreciated SAGA-GIS derived slope and aspect layers
 # SLOPE=$2
 # ASPECT=$3
+
 # Set Working Directory
 WORKING_DIR=$RANDOM
 LOCATION=${DIRECTORY}/sol_data/tmp_${WORKING_DIR}/PERMANENT
@@ -132,7 +133,7 @@ echo "Setting Region"
 g.region -sa raster=dem
 
 # Generate slope and aspect (decimal degrees)
-echo "Calculating Slope and Aspect (decimal degrees)
+echo "Calculating Slope and Aspect (decimal degrees)"
 r.slope.aspect elevation=dem slope=slope_dec aspect=aspect_dec
 
 # Run r.sun.mp - set to 4 threads for OpenScienceGrid - can be scaled to the # of cores per node
