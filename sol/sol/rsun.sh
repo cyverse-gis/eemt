@@ -37,8 +37,8 @@ done
 DEM=$1
 
 # Depreciated SAGA-GIS derived slope and aspect layers
-# SLOPE=$2
-# ASPECT=$3
+SLOPE=$2
+ASPECT=$3
 
 # Set Working Directory
 WORKING_DIR=$RANDOM
