@@ -41,8 +41,8 @@ def rsun_tasks(makeflow, proj_dir, days, dem):
     tasks=0
     ##--Paths for input files
     for day in days: #days is equal to range(1,366)
-        slope="slope_dec.tif"
-        aspect="aspect_dec.tif"
+        slope="slope_dec.tif" # this is marked for removal from input_rasters.sh - depreciating SAGA-GIS from this stage of the workflow
+        aspect="aspect_dec.tif" # this is marked for removal from input_rasters.sh - depreciating SAGA-GIS from this stage of the workflow
         makeflow += "\n"
         makeflow += "global/daily/total_sun_day_%d.tif insol/daily/hours_sun_day_%d.tif : rsun.sh %s %s %s\n" %(day, day, dem, slope, aspect)
         makeflow += "\t/bin/bash rsun.sh %s %s %s -d %d -D .\n" % (dem, slope, aspect, day)
@@ -133,7 +133,7 @@ def main():
     warped_tif = tiffparser.TiffParser()
     warped_tif.loadTiff(warped_path)
     warped_coords = warped_tif.getProjCoords()
-    lrx = float(warped_coords[0][0].split(',')[0])+4000
+    lrx = float(warped_coords[0][0].split(',')[0])+4000 # we are adding a 4km buffer to the DEM to ensure we avoid edge effects in the reprojection
     lry = float(warped_coords[0][0].split(',')[1])-4000
     ulx = float(warped_coords[0][1].split(',')[0])-4000
     uly = float(warped_coords[0][1].split(',')[1])+4000
@@ -143,15 +143,18 @@ def main():
     # Create the full workflow - this means makeflow rules for all the compute steps
 
     # Call SAGA slope and aspect calculation done in input_rasters.sh
+    # this is marked for removal from input_rasters.sh - depreciating SAGA-GIS from this stage of the workflow
     makeflow += "\n"
     makeflow += "aspect_dec.tif slope_dec.tif: input_rasters.sh %s.tif\n" %(warped_tif.getName())
     makeflow += "\t/bin/bash input_rasters.sh %s.tif\n" %(warped_tif.getName())
+        
     # Call GRASS r.sun and calculate for days 1-365 of the year
     makeflow,tasks_sun = rsun_tasks(makeflow,proj_dir,range(1,366),warped_tif.getName()+".tif")
+    
     # Call GRASS and calculate sum global radiation and hours of insolation
     makeflow,tasks_avg = monthly_sum(makeflow, proj_dir, warped_tif.getName()+".tif")
 
-    # copies of binaries
+    # Copies of binaries
     for binary in ["rsum.sh", "rsun.sh", "input_rasters.sh"]:
         shutil.copy2("%s/%s" %(script_location, binary), "%s/%s" %(proj_dir, binary))
     
@@ -163,7 +166,7 @@ def main():
 
     sys.stdout.flush()
 
-    # make sure the ~/.eemt-makeflow-password file exists
+    # Make sure the ~/.eemt-makeflow-password file exists - change this often.
     if not os.path.exists(os.path.expanduser("~/.eemt-makeflow-password")):
         print("~/.eemt-makeflow-password does not exist! Unable to submit workflow.")
         sys.exit(1)
