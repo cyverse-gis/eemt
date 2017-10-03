@@ -2,7 +2,7 @@
 
 set -e
 
-#Read options
+# Read options
 ARGS=`getopt -o d:D: --long day:,directory: -n 'rsun.sh' -- "$@"`
 if [ $? -ne 0 ]; then
 echo "Incorrect usage"
@@ -33,16 +33,17 @@ break
 esac
 done
 
-#Input files
+# Input files
 DEM=$1
-SLOPE=$2
-ASPECT=$3
-#Set Working Directory
+
+# Depreciated old slope and aspect data.
+# SLOPE=$2
+# ASPECT=$3
+# Set Working Directory
 WORKING_DIR=$RANDOM
 LOCATION=${DIRECTORY}/sol_data/tmp_${WORKING_DIR}/PERMANENT
 GRASSRC=${DIRECTORY}/.grassrc_${WORKING_DIR}
 export GISRC=${GRASSRC}
-
 export GRASS_VERBOSE=0
 
 ###############################################################################
@@ -52,7 +53,7 @@ export GRASS_VERBOSE=0
 echo
 echo "Calculating for day $DAY"
 
-#Create output structure
+# Create output structure
 if [ ! -e ./global ]; then
 mkdir -p global/daily
 mkdir -p global/monthly
@@ -63,11 +64,11 @@ mkdir -p insol/daily
 mkdir -p insol/monthly
 mkdir -p insol/annual
 fi
-#Create location directory structure
+# Create location directory structure
 if [ ! -e $LOCATION ]; then
 mkdir -p $LOCATION
 fi
-#Set wind info
+# Set wind info
 if [ ! -e ${LOCATION}/DEFAULT_WIND ]; then
 cat > "${LOCATION}/DEFAULT_WIND" << __EOF__
 proj: 99
@@ -91,42 +92,55 @@ t-b resol: 1
 __EOF__
 cp ${LOCATION}/DEFAULT_WIND ${LOCATION}/WIND
 fi
-#Set GRASS settings
+
+# Set GRASS settings
 echo "GISDBASE: ${DIRECTORY}/sol_data" > $GRASSRC
 echo "LOCATION_NAME: tmp_${WORKING_DIR}" >> $GRASSRC
 echo "MAPSET: PERMANENT" >> $GRASSRC
 echo "GRASS_GUI: text" >> $GRASSRC
-#Test STEPSIZE set at 30 minutes (0.5) - final run needs to be set to 15 minutes (0.25)
+
+# Test STEPSIZE set at 30 minutes (0.5) - final run needs to be set to 15 minutes (0.25) or less
 STEPSIZE=0.5
+
 ###############################################################################
-#SETUP COMPLETE => START GRASS OPERATIONS
+# SETUP COMPLETE => START GRASS OPERATIONS
 ###############################################################################
-if [ -e /unsupported/czo/czorc ]; then
-    source /unsupported/czo/czorc
-fi
+
+# Old source for running workflow on University of Arizona HPC
+# if [ -e /unsupported/czo/czorc ]; then
+#     source /unsupported/czo/czorc
+# fi
 
 echo "Running r.sun for day $DAY"
 echo "DEM: $DEM"
-#Create new projection info
-g.proj -c georef=$DEM
-#Import Dem
-#g.remove -f "*"
-echo "Importing DEM"
-r.in.gdal input=$DEM output=dem
-echo "Importing Slope (decimal degrees)"
-r.in.gdal input=$SLOPE output=slope_dec
-echo "Importing Aspect (decimal degrees)"
-r.in.gdal input=$ASPECT output=aspect_dec
 
-#Set Region
+# Create new projection info
+g.proj -c georef=$DEM
+
+# Import Dem
+g.remove -f "*"
+# echo "Importing DEM"
+r.in.gdal input=$DEM output=dem
+
+# echo "Importing Slope (decimal degrees)"
+# r.in.gdal input=$SLOPE output=slope_dec
+# echo "Importing Aspect (decimal degrees)"
+# r.in.gdal input=$ASPECT output=aspect_dec
+
+# Set GRASS Region
 echo "Setting Region"
-g.region -sa rast=dem
-#Using dem and slope and aspect (decimal degrees), generate a global insolation model with local shading effects (-s) on
-#All other settings are default
-echo "Running r.sun for global radiation and hours insolation time with step size $STEPSIZE"
-r.sun elevation=dem aspect=aspect_dec slope=slope_dec day=$DAY step=$STEPSIZE insol_time=hours_sun glob_rad=total_sun
+g.region -sa raster=dem
+
+# Generate slope and aspect (decimal degrees)
+echo "Calculating Slope and Aspect (decimal degrees)
+r.slope.aspect elevation=dem slope=slope_dec aspect=aspect_dec
+
+# Run r.sun.mp - set to 4 threads for OpenScienceGrid - can be scaled to the # of cores per node
+echo "Running Open MP r.sun.mp for global radiation and hours insolation time with step size $STEPSIZE"
+r.sun.mp elevation=dem aspect=aspect_dec slope=slope_dec day=$DAY step=$STEPSIZE insol_time=hours_sun glob_rad=total_sun threads=4
 echo "Day # $DAY done!"
-#Output
+
+# Export as GeoTiff
 echo "Export Global Radiation"
 r.out.gdal createopt="COMPRESS=LZW" -c input=total_sun output=./global/daily/total_sun_day_${DAY}.tif
 echo "Export Hours Sun"
