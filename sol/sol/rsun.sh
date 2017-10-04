@@ -36,7 +36,7 @@ done
 # Input files
 DEM=$1
 
-# Depreciated SAGA-GIS derived slope and aspect layers
+# Plan to depreciate SAGA-GIS derived slope and aspect layers, switch to GRASS r.slope.aspect
 SLOPE=$2
 ASPECT=$3
 
@@ -119,7 +119,8 @@ echo "DEM: $DEM"
 g.proj -c georef=$DEM
 
 # Import Dem
-g.remove -f "*"
+# g.remove -f "*"
+
 # echo "Importing DEM"
 r.in.gdal input=$DEM output=dem
 
@@ -133,7 +134,7 @@ echo "Setting Region"
 g.region -sa raster=dem
 
 # Generate slope and aspect (decimal degrees)
-echo "Calculating Slope and Aspect (decimal degrees)"
+echo "Calculate Slope and Aspect (decimal degrees) with GRASS r.slope.aspect"
 r.slope.aspect elevation=dem slope=slope_dec aspect=aspect_dec
 
 # Run r.sun.mp - set to 4 threads for OpenScienceGrid - can be scaled to the # of cores per node
