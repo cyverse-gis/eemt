@@ -37,19 +37,31 @@ quiet=True
 
 script_location = os.path.abspath(os.path.dirname(sys.argv[0]))
 
-def rsun_tasks(makeflow, proj_dir, days, dem):
+def rsun_tasks(args, makeflow, proj_dir, days, dem):
     tasks=0
-    ##--Paths for input files
+
+    makeflow += "\n\n\n"
+    makeflow += "CATEGORY=\"rsun\"\n"
+    makeflow += "CORES=4\n"
+    makeflow += "MEMORY=3000\n" # increased ram to 3GB from 2.5GB
+    makeflow += "DISK=2000\n" # increased disk from 1GB to 2GB
+
     for day in days: #days is equal to range(1,366)
         slope="slope_dec.tif" # this is marked for removal from input_rasters.sh - depreciating SAGA-GIS from this stage of the workflow
         aspect="aspect_dec.tif" # this is marked for removal from input_rasters.sh - depreciating SAGA-GIS from this stage of the workflow
         makeflow += "\n"
         makeflow += "global/daily/total_sun_day_%d.tif insol/daily/hours_sun_day_%d.tif : rsun.sh %s %s %s\n" %(day, day, dem, slope, aspect)
-        makeflow += "\t/bin/bash rsun.sh %s %s %s -d %d -D .\n" % (dem, slope, aspect, day)
+        makeflow += "\t/bin/bash rsun.sh %s %s %s -d %d -D . -s %s -l %s -a %s\n" % (dem, slope, aspect, day, args.step, args.linke_value, args.albedo_value)
         tasks=tasks+1
     return makeflow, tasks
 
 def monthly_sum(makeflow, proj_dir, dem):
+
+    makeflow += "\n\n\n"
+    makeflow += "CATEGORY=\"summary\"\n"
+    makeflow += "CORES=1\n"
+    makeflow += "MEMORY=3000\n" # increased ram to 3GB from 2.5GB
+    makeflow += "DISK=2000\n" # increased disk from 1GB to 2GB
     i = 0
     for month in MONTHS:
         start_day = MONTH_DAYS[i][0] 
@@ -86,6 +98,9 @@ def main():
     parser.add_argument('--name','-n',dest="name")
     parser.add_argument('-O',dest="output")
     parser.add_argument('-v',dest="verbose")
+    parser.add_argument('--step',dest="step")
+    parser.add_argument('--linke_value',dest="linke_value")
+    parser.add_argument('--albedo_value',dest="albedo_value")
     parser.add_argument('args',nargs=1)
     args = parser.parse_args()
     dem = args.args[0]
@@ -149,7 +164,7 @@ def main():
     makeflow += "\t/bin/bash input_rasters.sh %s.tif\n" %(warped_tif.getName())
         
     # Call GRASS r.sun and calculate for days 1-365 of the year
-    makeflow,tasks_sun = rsun_tasks(makeflow,proj_dir,range(1,366),warped_tif.getName()+".tif")
+    makeflow,tasks_sun = rsun_tasks(args, makeflow,proj_dir,range(1,366),warped_tif.getName()+".tif")
     
     # Call GRASS and calculate sum global radiation and hours of insolation
     makeflow,tasks_avg = monthly_sum(makeflow, proj_dir, warped_tif.getName()+".tif")

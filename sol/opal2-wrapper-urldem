@@ -42,6 +42,10 @@ if [ ! -z "$2" ]; then
         zipfile="$oname"
 fi
 
+STEP=$3
+LINKE_VALUE=$4
+ALBEDO_VALUE=$5
+
 t0=`date +%s`
 
 DEMTAR=`basename $DEMURL`
@@ -62,7 +66,7 @@ if [ "$DEM" != "$DEM_NAME_FIXED" ]; then
 fi
 
 t1=`date +%s`
-$SOL_INSTALL/run-master $DEM
+$SOL_INSTALL/run-master $DEM $STEP $LINKE_VALUE $ALBEDO_VALUE
 retcode=$?
 t2=`date +%s`
 if [ $retcode -eq 0 ]; then

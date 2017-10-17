@@ -16,6 +16,21 @@ DEM_DIR=`cd $DEM_DIR && pwd`
 DEM_NAME=`basename $1`
 DEM="$DEM_DIR/$DEM_NAME"
 
+STEP=$2
+LINKE_VALUE=$3
+ALBEDO_VALUE=$4
+
+# default values
+if [ "x$STEP" = "x" ]; then
+    STEP="0.5"
+fi
+if [ "x$LINKE_VALUE" = "x" ]; then
+    LINKE_VALUE="3.0"
+fi
+if [ "x$ALBEDO_VALUE" = "x" ]; then
+    ALBEDO_VALUE="0.2"
+fi
+
 # make sure we have a password, and create a hash for the project name
 if [ ! -r ~/.eemt-makeflow-password ]; then
     echo "Please create ~/.eemt-makeflow-password , and populate it with your workqueue password"
@@ -60,6 +75,9 @@ singularity exec \
   $WORK_DIR/eemt-current.img \
   /srv/run-workflow \
     --name EEMT-$PW_HASH \
+    --step $STEP \
+    --linke_value $LINKE_VALUE \
+    --albedo_value $ALBEDO_VALUE \
     -O /srv/work \
     /srv/$DEM_NAME
 

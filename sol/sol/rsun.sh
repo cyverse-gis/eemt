@@ -3,34 +3,60 @@
 set -e
 
 # Read options
-ARGS=`getopt -o d:D: --long day:,directory: -n 'rsun.sh' -- "$@"`
+ARGS=`getopt -o d:D:s:l:a: --long day:,directory:,step:,linke_value:,albedo_value: -n 'rsun.sh' -- "$@"`
 if [ $? -ne 0 ]; then
-echo "Incorrect usage"
-exit 1
+    echo "Incorrect usage"
+    exit 1
 fi
+
 eval set -- "$ARGS"
 while true; do
-case "$1" in
--d|--day)
-shift;
-if [ -n "$1" ]; then
-DAY=$1
-shift
-fi
-;;
--D|--directory)
-shift
-if [ -n "$1" ]; then
-DIRECTORY=$1
-shift;
-fi
-;;
---)
-shift
-break
-;;
-*) echo "Internal Error"; exit 1 ;;
-esac
+  case "$1" in
+    -d|--day)
+      shift;
+      if [ -n "$1" ]; then
+        DAY=$1
+        shift
+      fi
+    ;;
+    -D|--directory)
+      shift
+      if [ -n "$1" ]; then
+        DIRECTORY=$1
+        shift;
+      fi
+    ;;
+    -s|--step)
+      shift
+      if [ -n "$1" ]; then
+        STEP=$1
+        shift;
+      fi
+    ;;
+    -l|--linke)
+      shift
+      if [ -n "$1" ]; then
+        LINKE_VALUE=$1
+        shift;
+      fi
+    ;;
+    -a|--albedo)
+      shift
+      if [ -n "$1" ]; then
+        ALBEDO_VALUE=$1
+        shift;
+      fi
+    ;;
+    --)
+      shift
+      break
+      ;;
+    *) 
+      echo "Argument Error: $1"
+      echo 
+      exit 1
+      ;;
+  esac
 done
 
 # Input files
@@ -100,9 +126,6 @@ echo "LOCATION_NAME: tmp_${WORKING_DIR}" >> $GRASSRC
 echo "MAPSET: PERMANENT" >> $GRASSRC
 echo "GRASS_GUI: text" >> $GRASSRC
 
-# Test STEPSIZE set at 30 minutes (0.5) - final run needs to be set to 15 minutes (0.25) or less
-STEPSIZE=0.5
-
 ###############################################################################
 # SETUP COMPLETE => START GRASS OPERATIONS
 ###############################################################################
@@ -138,8 +161,8 @@ echo "Calculate Slope and Aspect (decimal degrees) with GRASS r.slope.aspect"
 r.slope.aspect elevation=dem slope=slope_dec aspect=aspect_dec
 
 # Run r.sun.mp - set to 4 threads for OpenScienceGrid - can be scaled to the # of cores per node
-echo "Running Open MP r.sun.mp for global radiation and hours insolation time with step size $STEPSIZE"
-r.sun.mp elevation=dem aspect=aspect_dec slope=slope_dec day=$DAY step=$STEPSIZE insol_time=hours_sun glob_rad=total_sun threads=4
+echo "Running Open MP r.sun.mp for global radiation and hours insolation time with step=$STEP linke_value=$LINKE_VALUE albedo_value=$ALBEDO_VALUE"
+r.sun.mp elevation=dem aspect=aspect_dec slope=slope_dec day=$DAY step=$STEP linke_value=$LINKE_VALUE albedo_value=$ALBEDO_VALUE insol_time=hours_sun glob_rad=total_sun threads=4
 echo "Day # $DAY done!"
 
 # Export as GeoTiff
