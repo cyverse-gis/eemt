@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# looking to depreciate this text - no longer needed with the Singularity container.
 if [ -e /unsupported/czo/czorc ]; then
     module load unsupported
     module load czo/sol/0.0.1
