@@ -81,7 +81,7 @@ singularity exec \
   --scratch /var/tmp \
   --scratch /tmp \
   --contain --ipc --pid \
-  $TOP_DIR/eemt-current.img \
+  eemt-current.img \
   work_queue_worker -P .eemt-makeflow-password \
                     -M ${PROJECT_NAME}-${PW_HASH} \
                     -s /srv \
