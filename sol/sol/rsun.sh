@@ -47,6 +47,13 @@ while true; do
         shift;
       fi
     ;;
+    -n|--numthreads)
+      shift
+      if [ -n "$1" ]; then
+        NUM_THREADS=$1
+        shift;
+      fi
+    ;;
     --)
       shift
       break
@@ -58,6 +65,10 @@ while true; do
       ;;
   esac
 done
+
+if [ "x$NUM_THREADS" = "x" ]; then
+    NUM_THREADS=4
+fi
 
 # Input files
 DEM=$1
@@ -162,7 +173,7 @@ r.slope.aspect elevation=dem slope=slope_dec aspect=aspect_dec
 
 # Run r.sun.mp - set to 4 threads for OpenScienceGrid - can be scaled to the # of cores per node
 echo "Running Open MP r.sun.mp for global radiation and hours insolation time with step=$STEP linke_value=$LINKE_VALUE albedo_value=$ALBEDO_VALUE"
-r.sun.mp elevation=dem aspect=aspect_dec slope=slope_dec day=$DAY step=$STEP linke_value=$LINKE_VALUE albedo_value=$ALBEDO_VALUE insol_time=hours_sun glob_rad=total_sun threads=4
+r.sun.mp elevation=dem aspect=aspect_dec slope=slope_dec day=$DAY step=$STEP linke_value=$LINKE_VALUE albedo_value=$ALBEDO_VALUE insol_time=hours_sun glob_rad=total_sun threads=$NUM_THREADS
 echo "Day # $DAY done!"
 
 # Export as GeoTiff

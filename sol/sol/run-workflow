@@ -42,16 +42,16 @@ def rsun_tasks(args, makeflow, proj_dir, days, dem):
 
     makeflow += "\n\n\n"
     makeflow += "CATEGORY=\"rsun\"\n"
-    makeflow += "CORES=4\n"
-    makeflow += "MEMORY=3000\n" # increased ram to 3GB from 2.5GB
-    makeflow += "DISK=2000\n" # increased disk from 1GB to 2GB
+    makeflow += "CORES=" + str(args.num_threads) + "\n"
+    makeflow += "MEMORY=" + str(args.num_threads * 1000) + "\n"
+    makeflow += "DISK=" + str(args.num_threads * 2000) + "\n"
 
     for day in days: #days is equal to range(1,366)
         slope="slope_dec.tif" # this is marked for removal from input_rasters.sh - depreciating SAGA-GIS from this stage of the workflow
         aspect="aspect_dec.tif" # this is marked for removal from input_rasters.sh - depreciating SAGA-GIS from this stage of the workflow
         makeflow += "\n"
         makeflow += "global/daily/total_sun_day_%d.tif insol/daily/hours_sun_day_%d.tif : rsun.sh %s %s %s\n" %(day, day, dem, slope, aspect)
-        makeflow += "\t/bin/bash rsun.sh %s %s %s -d %d -D . -s %s -l %s -a %s\n" % (dem, slope, aspect, day, args.step, args.linke_value, args.albedo_value)
+        makeflow += "\t/bin/bash rsun.sh %s %s %s -d %d -D . -s %s -l %s -a %s -n %d\n" % (dem, slope, aspect, day, args.step, args.linke_value, args.albedo_value, args.num_threads)
         tasks=tasks+1
     return makeflow, tasks
 
@@ -101,14 +101,15 @@ def main():
     parser.add_argument('--step',dest="step")
     parser.add_argument('--linke_value',dest="linke_value")
     parser.add_argument('--albedo_value',dest="albedo_value")
+    parser.add_argument('--num_threads',dest="num_threads")
     parser.add_argument('args',nargs=1)
     args = parser.parse_args()
     dem = args.args[0]
 
-    name      = args.name
-    proj_dir  = args.output
-    verbose   = args.verbose
-    port      = 0 # random port
+    name        = args.name
+    proj_dir    = args.output
+    verbose     = args.verbose
+    port        = 0 # random port
 
 ##--Argument Validation
 ##--Default WQ name
@@ -127,6 +128,11 @@ def main():
         quiet=False
     start=datetime.datetime.now()
     print("run-workflow started at: ",start.strftime("%d%b %H:%M"))
+##--default threads for r.sun.mp
+    if not args.num_threads:
+        args.num_threads = 4
+    # make sure it is an int so we can do arithmetic later
+    args.num_threads = int(args.num_threads) 
 
 ##--Create project directory structure
     create_project_directories(proj_dir)
@@ -137,7 +143,7 @@ def main():
     # needed for multicore slots
     makeflow += "CATEGORY=\"analysis\"\n"
     makeflow += "CORES=1\n"
-    makeflow += "MEMORY=3000\n" # increased ram to 3GB from 2.5GB
+    makeflow += "MEMORY=4000\n" # increased ram to 3GB from 2.5GB
     makeflow += "DISK=2000\n" # increased disk from 1GB to 2GB
 
     test=tiffparser.TiffParser()

@@ -30,7 +30,6 @@ if [ -e run-master -o -e run-workflow ]; then
     exit 1
 fi
 
-echo "[`date`] setting up for the workflow..."
 t0=`date +%s`
 # arguments
 DEMURL=$1
@@ -45,6 +44,8 @@ fi
 STEP=$3
 LINKE_VALUE=$4
 ALBEDO_VALUE=$5
+
+echo "[`date`] Got the following parameters: step=$STEP linke_value=$LINKE_VALUE albedo_value=$ALBEDO_VALUE"
 
 t0=`date +%s`
 
