@@ -3,7 +3,7 @@
 set -e
 
 # Read options
-ARGS=`getopt -o d:D:s:l:a: --long day:,directory:,step:,linke_value:,albedo_value: -n 'rsun.sh' -- "$@"`
+ARGS=`getopt -o d:D:s:l:a:n: --long day:,directory:,step:,linke_value:,albedo_value:,num_threads: -n 'rsun.sh' -- "$@"`
 if [ $? -ne 0 ]; then
     echo "Incorrect usage"
     exit 1

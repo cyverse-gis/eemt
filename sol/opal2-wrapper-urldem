@@ -17,6 +17,57 @@ function niceexit {
         fi
 }
 
+# Read options
+ARGS=`getopt -o u:s:l:a: --long demurl:,step:,linke_value:,albedo_value: -n 'rsun.sh' -- "$@"`
+if [ $? -ne 0 ]; then
+    echo "Incorrect usage"
+    echo "Example: ./opal2-wrapper-urldem --demurl ... --step ... --linke_value ... --albedo_value ..."
+    exit 1
+fi
+
+eval set -- "$ARGS"
+while true; do
+  case "$1" in
+    -u|--demurl)
+      shift;
+      if [ -n "$1" ]; then
+        DEMURL=$1
+        shift
+      fi
+    ;;
+    -s|--step)
+      shift
+      if [ -n "$1" ]; then
+        STEP=$1
+        shift;
+      fi
+    ;;
+    -l|--linke_value)
+      shift
+      if [ -n "$1" ]; then
+        LINKE_VALUE=$1
+        shift;
+      fi
+    ;;
+    -a|--albedo_value)
+      shift
+      if [ -n "$1" ]; then
+        ALBEDO_VALUE=$1
+        shift;
+      fi
+    ;;
+    --)
+      shift
+      break
+      ;;
+    *) 
+      echo "Argument Error: $1"
+      echo 
+      exit 1
+      ;;
+  esac
+done
+
 # WORK_DIR is also used by run-master
 export WORK_DIR=`pwd`
 
@@ -31,19 +82,7 @@ if [ -e run-master -o -e run-workflow ]; then
 fi
 
 t0=`date +%s`
-# arguments
-DEMURL=$1
-
 zipfile="output.zip"
-if [ ! -z "$2" ]; then
-        oname="`basename $2`"
-        [ "`basename $oname .zip`" == "${oname}" ] && oname="${oname}.zip"
-        zipfile="$oname"
-fi
-
-STEP=$3
-LINKE_VALUE=$4
-ALBEDO_VALUE=$5
 
 echo "[`date`] Got the following parameters: step=$STEP linke_value=$LINKE_VALUE albedo_value=$ALBEDO_VALUE"
 
