@@ -111,7 +111,7 @@ retcode=$?
 t2=`date +%s`
 if [ $retcode -eq 0 ]; then
         echo "[`date`] archiving output ..."
-        (cd work && zip -r ../$zipfile global/monthly insol/monthly)
+        (cd work && zip -r ../$zipfile global/daily global/monthly insol/daily insol/monthly)
 fi
 
 # clean up
