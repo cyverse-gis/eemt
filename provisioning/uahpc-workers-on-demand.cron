@@ -8,29 +8,30 @@ if [ "x$PASSWORD" = "x" ]; then
     echo "Please specify a password"
     exit 1
 fi
+PW_HASH=`echo "$PASSWORD" | sha256sum | cut -d ' ' -f 1`
 
 #module load cctools
 export PATH=${HOME}/cctools/bin:$PATH
 
-for PROJECT in EEMT_UAHPC; do
+for PROJECT in EEMT_LARGE-$PW_HASH EEMT-$PW_HASH; do
 
     WAITING=0
-    for VALUE in `work_queue_status | grep $PROJECT | awk '{print $4;}'`; do
+    for VALUE in `work_queue_status --project-name=$PROJECT | grep -v ^PROJECT | awk '{print $4;}'`; do
         WAITING=$(($WAITING + $VALUE))
     done
-    
+
     RUNNING=0
-    for VALUE in `work_queue_status | grep $PROJECT | awk '{print $5;}'`; do
+    for VALUE in `work_queue_status --project-name=$PROJECT | grep -v ^PROJECT | awk '{print $5;}'`; do
         RUNNING=$(($RUNNING + $VALUE))
     done
-    
+
     WORKERS=0
-    for VALUE in `work_queue_status | grep $PROJECT | awk '{print $7;}'`; do
+    for VALUE in `work_queue_status --project-name=$PROJECT | grep -v ^PROJECT | awk '{print $7;}'`; do
         WORKERS=$(($WORKERS + $VALUE))
     done
 
-    echo "Waiting=$WAITING, Running=$RUNNING, Workers=$WORKERS"
-    
+    echo "$PROJECT     Waiting=$WAITING, Running=$RUNNING, Workers=$WORKERS"   
+ 
     # any waiting tasks?
     if [ $WAITING = 0 ]; then
         echo "No tasks waiting"
@@ -50,7 +51,7 @@ for PROJECT in EEMT_UAHPC; do
     fi
     
     # limit the number of new workers to 3 per iteration
-    if [ $NEW_WORKER_NODES -gt 1 ]; then
+    if [ $NEW_WORKER_NODES -gt 3 ]; then
         NEW_WORKER_NODES=3
     fi
 
@@ -106,8 +107,6 @@ echo "$PASSWORD" >password.txt
 
 wget -nv http://xd-login.opensciencegrid.org/scratch/eemt/singularity/eemt-current.img
 
-export PATH=/opt/eemt/bin:/opt/eemt/grass-7.2.0/bin:\$PATH
-export LD_LIBRARY_PATH=/opt/eemt:/opt/eemt/grass-7.2.0/lib
 singularity exec --home \$PWD:/srv --pwd /srv --scratch /var/tmp --scratch /tmp --containall eemt-current.img work_queue_worker -P password.txt -M $PROJECT -s /srv -t 600 --cores=0
 
 rm -f eemt-*.img
