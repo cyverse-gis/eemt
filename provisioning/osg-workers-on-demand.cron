@@ -46,26 +46,26 @@ for PROJECT in EEMT-$PW_HASH; do
     fi
     
     # max workers?
-    if [ $WORKERS -gt 10 ]; then
+    if [ $WORKERS -gt 500 ]; then
         echo "Too many workers. "
         continue
     fi
     
     # start slow to make sure the system works
-    NEW_WORKERS=20
+    NEW_WORKERS=30
     
     if [ $WAITING -gt 0 -a $RUNNING -gt 0 ]; then
         NEW_WORKERS=$WAITING
     fi
     
-    # limit the number of new workers to 100 per iteration
-    if [ $NEW_WORKERS -gt 100 ]; then
-        NEW_WORKERS=100
+    # limit the number of new workers to 20 per iteration
+    if [ $NEW_WORKERS -gt 20 ]; then
+        NEW_WORKERS=20
     fi
 
     # make sure we don't have too many idle jobs
-    IDLE_JOBS=`condor_q $USER | grep " I " | wc -l`
-    if [ $IDLE_JOBS -gt 50 ]; then
+    IDLE_JOBS=`condor_q -nob $USER | grep " I " | wc -l`
+    if [ $IDLE_JOBS -gt 20 ]; then
         echo "Too many idle jobs"
         continue
     fi
@@ -89,10 +89,14 @@ for PROJECT in EEMT-$PW_HASH; do
 #!/bin/bash
 set -x
 set -e
-export PATH=/opt/eemt/bin:/opt/eemt/grass-7.2.0/bin:\$PATH
-export LD_LIBRARY_PATH=/opt/eemt/lib:/opt/eemt/grass-7.2.0/lib
+
+# avoid HTCondor's auto transfers of outputs
 touch dummy.txt
-work_queue_worker -P password.txt -M $PROJECT -s \$PWD -t 600
+mkdir -p container
+mv password.txt container/
+cd container
+
+work_queue_worker -P password.txt -M $PROJECT -s \$PWD -t 600 --cores 4 --memory 7000 --disk 15000
 EOF
 chmod 755 sol-worker.sh
 
@@ -102,11 +106,11 @@ universe = vanilla
 
 executable = sol-worker.sh
 
-Requirements = HAS_SINGULARITY == TRUE
+Requirements = HAS_SINGULARITY == TRUE && GLIDEIN_Site =!= "Caltech"
 
-request_cpus = 1
-request_memory = 1800M
-request_disk = 15G
+request_cpus = 4
+request_memory = 7G
+request_disk = 20G
 
 +SingularityImage = "http://xd-login.opensciencegrid.org/scratch/eemt/singularity/eemt-current.img"
 
@@ -120,9 +124,9 @@ log = logs/\$(Cluster).\$(Process).log
 ShouldTransferFiles = YES
 when_to_transfer_output = ON_EXIT
 
-periodic_remove = ( JobStatus == 5 ) && ( ( CurrentTime - EnteredCurrentStatus ) > 1800 )
+periodic_remove = ( JobStatus == 5 ) && ( ( CurrentTime - EnteredCurrentStatus ) > 600 )
 
-+projectname = "$ACCTPROJECT" 
++ProjectName = "$ACCTPROJECT" 
 
 notification = Never
 
