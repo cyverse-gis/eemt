@@ -81,7 +81,7 @@ for PROJECT in EEMT_LARGE-$PW_HASH EEMT-$PW_HASH; do
 
 ### Set the queue for this job as windfall or standard (adjust### and #)
 ### example: PBS -q windfall
-#PBS -q standard
+#PBS -q windfall
 
 ### Output/error streams
 #PBS -j oe
