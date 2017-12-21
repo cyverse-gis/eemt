@@ -70,7 +70,6 @@ for PROJECT in EEMT_LARGE-$PW_HASH EEMT-$PW_HASH; do
 
     # we need a wrapper to load modules
     cat >sol-worker.submit <<EOF
-#!/bin/bash
 
 ### Set the Job Name
 #PBS -N eemt_singularity
