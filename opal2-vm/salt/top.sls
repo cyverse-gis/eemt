@@ -5,4 +5,5 @@ base:
     - yum
     - cvmfs
     - fw
+    - opal2
 
