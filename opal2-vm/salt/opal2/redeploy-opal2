@@ -1,0 +1,53 @@
+#!/bin/bash
+
+set -e
+set -v
+
+if ! id eemt >/dev/null 2>&1 ; then
+    echo "The eemt user has to exist before install the stack"
+    exit 1
+fi
+
+/etc/init.d/tomcat stop >/dev/null 2>&1 || true
+
+cd /srv/
+
+# remove old installs
+rm -rf tomcat tomcat-deployer opal-ws apache-tomcat-*.tar.gz opal*.tar.gz
+
+# tomcat
+wget -nv https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.15/bin/apache-tomcat-8.5.15.tar.gz
+tar xfz apache-tomcat-8.5.15.tar.gz
+mv apache-tomcat-8.5.15 tomcat
+rm -f apache-tomcat-8.5.15.tar.gz
+
+# tomcat deployer
+#wget -nv https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.15/bin/apache-tomcat-8.5.15-deployer.tar.gz
+#tar xfz apache-tomcat-8.5.15-deployer.tar.gz
+#mv apache-tomcat-8.5.15-deployer tomcat-deployer
+#rm -f apache-tomcat-8.5.15-deployer.tar.gz
+
+# opal2
+wget -nv https://sourceforge.net/projects/opaltoolkit/files/opal2-core-java/2.5/opal-ws-2.5.tar.gz
+tar xfz /srv/software/opal-ws-2.5.tar.gz
+mv opal-ws-2.5 opal-ws
+rm -f opal-ws-2.5.tar.gz
+
+cp /srv/eemt/opal2-vm/salt/opal2/build.properties /srv/opal-ws/
+cp /srv/eemt/opal2-vm/salt/opal2/opal.properties /srv/opal-ws/etc/
+cp /srv/eemt/opal2-vm/salt/opal2/opal2-web.xml /srv/opal-ws/webapps/opal2/WEB-INF/web.xml
+
+cd /srv/opal-ws/
+HOSTNAME=`hostname -f`
+perl -p -i -e "s/___HOSTNAME___/$HOSTNAME/g" /srv/opal-ws/etc/opal.properties
+ant install
+
+mkdir -p /srv/tomcat/conf/Catalina/localhost
+cp /srv/eemt/opal2-vm/salt/opal2/opal.xml /srv/tomcat/conf/Catalina/localhost/
+
+# tomcat install to be owned by "eemt"
+cd /srv
+chown -R eemt: tomcat
+
+/etc/init.d/tomcat start >/dev/null 2>&1 || true
+

@@ -16,3 +16,15 @@ osg-oasis:
     - require:
       - file: /etc/yum.repos.d/osg.repo
 
+java-1.8.0-openjdk-devel:
+  pkg:
+    - installed
+
+java-1.8.0-openjdk:
+  pkg:
+    - installed
+
+ant:
+  pkg:
+    - installed
+
