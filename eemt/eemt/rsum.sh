@@ -1,11 +1,5 @@
 #!/bin/bash
 
-if [ -e /unsupported/czo/czorc ]; then
-    module load unsupported
-    module load czo/sol/0.0.1
-    source /unsuported/czo/czorc
-fi
-
 #Read options
 ARGS=`getopt -o D: --long directory: -n 'rsum.sh' -- "$@"`
 
@@ -87,7 +81,6 @@ __EOF__
         cp ${LOCATION}/DEFAULT_WIND ${LOCATION}/WIND
 fi
 
-
 #Set GRASS settings
 echo "GISDBASE: ${DIRECTORY}/sol_data" > $GRASSRC
 echo "LOCATION_NAME: tmp_${WORKING_DIR}" >> $GRASSRC
@@ -97,6 +90,7 @@ echo "GRASS_GUI: text" >> $GRASSRC
 ###############################################################################
 #SETUP COMPLETE => START GRASS OPERATIONS
 ###############################################################################
+
 echo "Computing Series for $MONTH"
 #Create new projection info
 g.proj -c georef=$1
@@ -121,16 +115,52 @@ rm -f temp
 
 g.region -s rast=$NAME
 
-#compute Sum
-r.series -n input="`g.list type=raster pattern='total_sun_day_*' separator=,`" output=total_sun_${MONTH}_sum method=sum
-r.series -n input="`g.list type=raster pattern='hours_sun_day_*' separator=,`" output=hours_sun_${MONTH}_sum method=sum
+# Compute Sum
+r.series -n input="`g.mlist pattern='total_sun_day_*' sep=,`" output=total_sun_${MONTH}_sum method=sum
+r.series -n input="`g.mlist pattern='hours_sun_day_*' sep=,`" output=hours_sun_${MONTH}_sum method=sum
+r.series -n input="`g.mlist pattern='flat_total_sun_day_*' sep=,`" output=flat_total_sun_${MONTH}_sum method=sum
+
+# Compute average 
+r.series -n input="`g.mlist pattern='total_sun_day_*' sep=,`" output=total_sun_${MONTH}_average method=average
+r.series -n input="`g.mlist pattern='hours_sun_day_*' sep=,`" output=hours_sun_${MONTH}_average method=average
+r.series -n input="`g.mlist pattern='flat_total_sun_day_*' sep=,`" output=flat_total_sun_${MONTH}_average method=average
+
+# Compute median
+# r.series -n input="`g.mlist pattern='total_sun_day_*' sep=,`" output=total_sun_${MONTH}_median method=median
+# r.series -n input="`g.mlist pattern='hours_sun_day_*' sep=,`" output=hours_sun_${MONTH}_median method=median
+
+# Compute standard deviation
+# r.series -n input="`g.mlist pattern='total_sun_day_*' sep=,`" output=total_sun_${MONTH}_stddev method=stddev
+# r.series -n input="`g.mlist pattern='hours_sun_day_*' sep=,`" output=hours_sun_${MONTH}_stddev method=stddev
+
+# Compute variance
+# r.series -n input="`g.mlist pattern='total_sun_day_*' sep=,`" output=total_sun_${MONTH}_variance method=variance
+# r.series -n input="`g.mlist pattern='hours_sun_day_*' sep=,`" output=hours_sun_${MONTH}_variance method=variance
 
 
 echo "Printing out Sum maps: global/monthly/total_sun_${MONTH}_sum.tif"
-#Sum Maps
+# Sum Maps
 r.out.gdal -c input=total_sun_${MONTH}_sum output=${DIRECTORY}/global/monthly/total_sun_${MONTH}_sum.tif
 r.out.gdal -c input=hours_sun_${MONTH}_sum output=${DIRECTORY}/insol/monthly/hours_sun_${MONTH}_sum.tif
+r.out.gdal -c input=flat_total_sun_${MONTH}_sum output=${DIRECTORY}/global/monthly/flat_total_sun_${MONTH}_sum.tif
 
+# Average Maps
+echo "Printing out Average maps: global/monthly/flat_total_sun_${MONTH}_sum.tif"
+r.out.gdal -c input=total_sun_${MONTH}_average output=${DIRECTORY}/global/monthly/total_sun_${MONTH}_average.tif
+r.out.gdal -c input=hours_sun_${MONTH}_average output=${DIRECTORY}/insol/monthly/hours_sun_${MONTH}_average.tif
+r.out.gdal -c input=flat_total_sun_${MONTH}_average output=${DIRECTORY}/global/monthly/flat_total_sun_${MONTH}_average.tif
+
+# Median Maps
+# r.out.gdal -c input=total_sun_${MONTH}_median output=${DIRECTORY}/global/monthly/total_sun_${MONTH}_median.tif
+# r.out.gdal -c input=hours_sun_${MONTH}_median output=${DIRECTORY}/insol/monthly/hours_sun_${MONTH}_median.tif
+
+# Standard Deviation Maps
+# r.out.gdal -c input=total_sun_${MONTH}_stddev output=${DIRECTORY}/global/monthly/total_sun_${MONTH}_stddev.tif
+# r.out.gdal -c input=hours_sun_${MONTH}_stddev output=${DIRECTORY}/insol/monthly/hours_sun_${MONTH}_stddev.tif
+
+# Variance Maps
+# r.out.gdal -c input=total_sun_${MONTH}_variance output=${DIRECTORY}/global/monthly/total_sun_${MONTH}_variance.tif
+# r.out.gdal -c input=hours_sun_${MONTH}_variance output=${DIRECTORY}/insol/monthly/hours_sun_${MONTH}_variance.tif
 
 ###############################################################################
 #GRASS OPERATIONS COMPLETE => CLEAN UP FILES
