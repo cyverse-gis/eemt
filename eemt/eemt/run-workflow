@@ -216,7 +216,7 @@ def main():
     makeflow,tasks_avg = monthly_sum(makeflow, proj_dir, warped_tif.getName()+".tif")
 
     # copies of binaries
-    for binary in ["metget.sh", "rmean.sh", "rsun.sh", "twi.sh", "reemt.sh"]:
+    for binary in ["metget.sh", "rsum.sh", "rsun.sh", "twi.sh", "reemt.sh"]:
         shutil.copy2("%s/%s" %(script_location, binary), "%s/%s" %(proj_dir, binary))
     
     os.chdir(proj_dir)
