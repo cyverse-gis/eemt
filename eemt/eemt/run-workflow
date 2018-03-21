@@ -201,16 +201,19 @@ def main():
                 makeflow += "daymet/%s/%s_%d_%s_local.tif: metget.sh\n" %(param, param, year, month)
                 makeflow += "\t/bin/bash metget.sh %s %f %f %f %f daymet/%s/%s_%d_%s_local.tif\n" %(url, ulx, uly, lrx, lry, param, param, year, month)
 
-    # TWI
+    # Create the full workflow - this means makeflow rules for all the compute steps
+
+    # Call SAGA slope and aspect calculation done in input_rasters.sh
+    # this is marked for removal from input_rasters.sh - depreciating SAGA-GIS from this stage of the workflow
     makeflow += "\n"
-    makeflow += "catchment.tif aspect_dec.tif aspect_rad.tif slope_dec.tif slope_rad.tif twi.tif: twi.sh %s.tif\n" %(warped_tif.getName())
-    makeflow += "\t/bin/bash twi.sh %s.tif\n" %(warped_tif.getName())
-
-    makeflow,tasks_sun = rsun_tasks(makeflow,proj_dir,range(1,366),warped_tif.getName()+".tif")
-
-    makeflow,tasks_avg = monthly_averages(makeflow, proj_dir, warped_tif.getName()+".tif")
-
-    makeflow,tasks_eemt = eemt_tasks(makeflow, proj_dir, start_year, end_year, warped_tif.getName()+".tif")
+    makeflow += "aspect_dec.tif slope_dec.tif: input_rasters.sh %s.tif\n" %(warped_tif.getName())
+    makeflow += "\t/bin/bash input_rasters.sh %s.tif\n" %(warped_tif.getName())
+        
+    # Call GRASS r.sun and calculate for days 1-365 of the year
+    makeflow,tasks_sun = rsun_tasks(args, makeflow,proj_dir,range(1,366),warped_tif.getName()+".tif")
+    
+    # Call GRASS and calculate sum global radiation and hours of insolation
+    makeflow,tasks_avg = monthly_sum(makeflow, proj_dir, warped_tif.getName()+".tif")
 
     # copies of binaries
     for binary in ["metget.sh", "rmean.sh", "rsun.sh", "twi.sh", "reemt.sh"]:
