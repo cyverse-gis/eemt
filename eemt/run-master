@@ -53,7 +53,7 @@ if [ "x$WORK_DIR" = "x" ]; then
     WORK_DIR=`mktemp -d -t master.XXXXXXXX`
 fi
 cd $WORK_DIR
-cp $TOP_DIR/sol/* ./
+cp $TOP_DIR/eemt/* ./
 if [ ! -e $DEM_NAME ]; then
     cp $DEM ./
 fi
