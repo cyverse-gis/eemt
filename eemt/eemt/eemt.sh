@@ -1,9 +1,6 @@
 #!/bin/bash
 
 set -e
-if [ -e /unsupported/czo/czorc ]; then
-    source /unsupported/czo/czorc
-fi
 
 # Input Files
 DIRECTORY=$1
