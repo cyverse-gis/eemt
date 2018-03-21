@@ -37,6 +37,12 @@ function find_work_dir()
 TOP_DIR=`dirname $0`
 TOP_DIR=`cd $TOP_DIR && pwd`
 
+if [ "x$1" = "x" ]; then
+    echo "Please specify the project. Example: ./run-worker EEMT_LARGE"
+    exit 1
+fi
+PROJECT_NAME="$1"
+
 # make sure we have a password, and create a hash for the project name
 if [ ! -r ~/.eemt-makeflow-password ]; then
     echo "Please create ~/.eemt-makeflow-password , and populate it with your workqueue password"
@@ -50,13 +56,7 @@ export TCP_HIGH_PORT=60000
 module load singularity >/dev/null 2>&1 || true
 
 # should be in the container
-export PYTHONPATH=/opt/eemt/lib/python2.6/site-packages:/opt/eemt/lib64/python2.6/site-packages
-
-# download the container if we do not already have it
-if [ ! -e "$TOP_DIR/eemt-current.img" ]; then
-    wget -nv -O $TOP_DIR/eemt-current.img \
-         http://xd-login.opensciencegrid.org/scratch/eemt/singularity/eemt-current.img
-fi
+export PYTHONPATH=/opt/osgeo/lib/python2.7/site-packages:/opt/osgeo/lib64/python2.7/site-packages
 
 # we need a temporary directory to run from
 if ! find_work_dir; then
@@ -64,7 +64,13 @@ if ! find_work_dir; then
     exit 1
 fi
 cd $WORK_DIR
-cp $TOP_DIR/sol/* ./
+
+# download the container if we do not already have it
+if [ ! -e "$TOP_DIR/eemt-current.simg" ]; then
+   singularity pull --name eemt-current.simg shub://tyson-swetnam/osgeo-singularity
+fi
+
+cp $TOP_DIR/eemt/* ./
 
 # we also need the password file
 cp ~/.eemt-makeflow-password ./
@@ -76,10 +82,9 @@ singularity exec \
   --scratch /var/tmp \
   --scratch /tmp \
   --contain --ipc --pid \
-  $TOP_DIR/eemt-current.img \
+  eemt-current.simg \
   work_queue_worker -P .eemt-makeflow-password \
-                    -M EEMT-$PW_HASH \
+                    -M ${PROJECT_NAME}-${PW_HASH} \
                     -s /srv \
                     -t 600 \
                     --cores=0
-
