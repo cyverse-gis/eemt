@@ -15,16 +15,20 @@ PARAMS=["tmin","tmax","vp","prcp"]
 def error(*objs):
     print("ERROR: ", *objs, file=sys.stderr)
     exit(1)
+
 def warning(*objs):
     print("WARNING: ", *objs, file=sys.stderr)
+
 def log(*objs):
     log_file = open("task_output.log","a")
     print(*objs,file=log_file)
     log_file.close()
+
 def error_log(proj_dir,*objs):
     error_file = open(os.path.join(proj_dir,"sys.err"),"a")
     print(*objs,file=error_file)
     error_file.close()
+
 import argparse, getpass
 import sys, os, datetime
 import urllib
@@ -34,19 +38,9 @@ from Tiff import Tiff
 #rseries = imp.load_source("rseries","./r.series.distributed")
 tiffparser = imp.load_source("tiffparser","./parser.py")
 quiet=True
-try:
-    imp.find_module('work_queue')
-    found = True
-except ImportError:
-    error("Could not find work_queue module. \nAdd location to your PYTHONPATH")
-    exit(1)
-if found:
-    from work_queue import *
-
 
 script_location = os.path.abspath(os.path.dirname(sys.argv[0]))
 na_dem_location = script_location + "/DAYMET/NA_DEM/na_dem.tif"
-
 
 def eemt_tasks(makeflow,proj_dir,syear,eyear,dem):
     tasks = 0
@@ -74,7 +68,6 @@ def eemt_tasks(makeflow,proj_dir,syear,eyear,dem):
             tasks=tasks+1
 
     return makeflow,tasks
-
 
 def create_project_directories(proj_dir):
     if not os.path.exists(os.path.join(proj_dir,"global")):
@@ -151,13 +144,25 @@ def main():
     if verbose:
         quiet=False
     start=datetime.datetime.now()
-    print("Started at: ",start.strftime("%d%b %H:%M"))
+    print("run-workflow started at: ",start.strftime("%d%b %H:%M"))
+##--default threads for r.sun.mp
+    if not args.num_threads:
+        args.num_threads = 4
+    # make sure it is an int so we can do arithmetic later
+    args.num_threads = int(args.num_threads) 
+
 
 ##--Create project directory structure
     create_project_directories(proj_dir)
 
     # the actual workflow definition
     makeflow = ""
+
+    # needed for multicore slots
+    makeflow += "CATEGORY=\"analysis\"\n"
+    makeflow += "CORES=1\n"
+    makeflow += "MEMORY=4000\n" # increased ram to 3GB from 2.5GB
+    makeflow += "DISK=2000\n" # increased disk from 1GB to 2GB
 
     test=tiffparser.TiffParser()
     test.loadTiff(dem)
@@ -175,12 +180,6 @@ def main():
     sys.stdout.flush()
 
     # create the full workflow - this means makeflow rules for all the compute steps
-
-    # needed for multicore slots
-    makeflow += "CATEGORY=\"analysis\"\n"
-    makeflow += "CORES=1\n"
-    #makeflow += "MEMORY=2000\n"
-    #makeflow += "DISK=10000\n"
 
     ##--Get DAYMET Data for given years
     for extra_file in ["NA_DEM/na_dem.tif"]:
@@ -221,7 +220,7 @@ def main():
 
     sys.stdout.flush()
 
-    process=Popen("makeflow --retry-count=3 --batch-type=wq --port=%d --project=%s workflow.mf" %(port, name), shell=True)
+    process=Popen("makeflow --retry-count=3 --batch-type=wq --password=" + os.path.expanduser("~/.eemt-makeflow-password") + " --wq-keepalive-interval=180 --port=%d --project=%s workflow.mf" %(port, name), shell=True)
     process.communicate()
 
 def rsun_tasks(makeflow, proj_dir, days, dem):
