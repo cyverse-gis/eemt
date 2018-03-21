@@ -173,7 +173,7 @@ echo "Day # $DAY done!"
 
 #Create flat solar map
 echo "Creating Flat Global radiation"
-r.mapcalc "zeros=if(dem>0,0,null())"
+r.mapcalc zeros=if(dem>0,0,null())
 
 echo "Running r.sun.mp on Flat Global"
 #Using dem and flat slope and aspect, generates a global insolation model with local shading off (-p)
