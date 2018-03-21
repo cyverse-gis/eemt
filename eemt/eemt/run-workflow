@@ -223,51 +223,53 @@ def main():
     process=Popen("makeflow --retry-count=3 --batch-type=wq --password=" + os.path.expanduser("~/.eemt-makeflow-password") + " --wq-keepalive-interval=180 --port=%d --project=%s workflow.mf" %(port, name), shell=True)
     process.communicate()
 
-def rsun_tasks(makeflow, proj_dir, days, dem):
+def rsun_tasks(args, makeflow, proj_dir, days, dem):
     tasks=0
-    ##--Paths for input files
-    for day in days:
+
+    makeflow += "\n\n\n"
+    makeflow += "CATEGORY=\"rsun\"\n"
+    makeflow += "CORES=" + str(args.num_threads) + "\n"
+    makeflow += "MEMORY=" + str(args.num_threads * 1000) + "\n"
+    makeflow += "DISK=" + str(args.num_threads * 2000) + "\n"
+
+    for day in days: #days is equal to range(1,366)
+        slope="slope_dec.tif" # this is marked for removal from input_rasters.sh - depreciating SAGA-GIS from this stage of the workflow
+        aspect="aspect_dec.tif" # this is marked for removal from input_rasters.sh - depreciating SAGA-GIS from this stage of the workflow
         makeflow += "\n"
-        makeflow += "global/daily/flat_total_sun_day_%d.tif global/daily/total_sun_day_%d.tif insol/daily/hours_sun_day_%d.tif : rsun.sh %s\n" %(day, day, day, dem)
-        makeflow += "\t/bin/bash rsun.sh %s -d %d -D .\n" % (dem, day)
+        makeflow += "global/daily/total_sun_day_%d.tif insol/daily/hours_sun_day_%d.tif : rsun.sh %s %s %s\n" %(day, day, dem, slope, aspect)
+        makeflow += "\t/bin/bash rsun.sh %s %s %s -d %d -D . -s %s -l %s -a %s -n %d\n" % (dem, slope, aspect, day, args.step, args.linke_value, args.albedo_value, args.num_threads)
         tasks=tasks+1
     return makeflow, tasks
 
 
-def monthly_averages(makeflow, proj_dir, dem):
+def monthly_sum(makeflow, proj_dir, dem):
+
+    makeflow += "\n\n\n"
+    makeflow += "CATEGORY=\"summary\"\n"
+    makeflow += "CORES=1\n"
+    makeflow += "MEMORY=3000\n" # increased ram to 3GB from 2.5GB
+    makeflow += "DISK=2000\n" # increased disk from 1GB to 2GB
     i = 0
     for month in MONTHS:
         start_day = MONTH_DAYS[i][0] 
         end_day   =  MONTH_DAYS[i][1]
-        
         global_inputs = ""
         insol_inputs  = ""
-        flat_inputs   = ""
         outputs = ""
 
         for day in range(start_day,end_day+1):
             global_inputs=global_inputs + "global/daily/total_sun_day_%d.tif " % (day)
             insol_inputs=insol_inputs + "insol/daily/hours_sun_day_%d.tif " % (day)
-            flat_inputs=flat_inputs + "global/daily/flat_total_sun_day_%d.tif " % (day)
 
         outputs = "global/monthly/total_sun_%s_sum.tif " % month \
                 + "insol/monthly/hours_sun_%s_sum.tif " % month \
-                + "global/monthly/flat_total_sun_%s_sum.tif " % month \
-                + "global/monthly/total_sun_%s_average.tif " % month \
-                + "insol/monthly/hours_sun_%s_average.tif " % month \
-                + "global/monthly/total_sun_%s_median.tif " % month \
-                + "insol/monthly/hours_sun_%s_median.tif " % month \
-                + "global/monthly/total_sun_%s_stddev.tif " % month \
-                + "insol/monthly/hours_sun_%s_stddev.tif " % month \
-                + "global/monthly/total_sun_%s_variance.tif " % month \
-                + "insol/monthly/hours_sun_%s_variance.tif " % month \
 
         makeflow += "\n"
-        makeflow += "%s: rmean.sh %s %s %s %s\n" %(outputs, dem, global_inputs, insol_inputs, flat_inputs)
-        makeflow += "\t./rmean.sh %s -D . %s %s %s %s\n" % (month, dem, global_inputs, insol_inputs, flat_inputs)
+        makeflow += "%s: rsum.sh %s %s %s \n" %(outputs, dem, global_inputs, insol_inputs)
+        makeflow += "\t./rsum.sh %s -D . %s %s %s \n" % (month, dem, global_inputs, insol_inputs)
 
         i = i+1
-    return makeflow, i
+    return makeflow, i 
 
 if __name__ == '__main__':
     main()
