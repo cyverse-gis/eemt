@@ -116,26 +116,26 @@ rm -f temp
 g.region -s rast=$NAME
 
 # Compute Sum
-r.series -n input="`g.mlist pattern='total_sun_day_*' sep=,`" output=total_sun_${MONTH}_sum method=sum
-r.series -n input="`g.mlist pattern='hours_sun_day_*' sep=,`" output=hours_sun_${MONTH}_sum method=sum
-r.series -n input="`g.mlist pattern='flat_total_sun_day_*' sep=,`" output=flat_total_sun_${MONTH}_sum method=sum
+r.series -n input="`g.list pattern='total_sun_day_*' sep=,`" output=total_sun_${MONTH}_sum method=sum
+r.series -n input="`g.list pattern='hours_sun_day_*' sep=,`" output=hours_sun_${MONTH}_sum method=sum
+r.series -n input="`g.list pattern='flat_total_sun_day_*' sep=,`" output=flat_total_sun_${MONTH}_sum method=sum
 
 # Compute average 
-r.series -n input="`g.mlist pattern='total_sun_day_*' sep=,`" output=total_sun_${MONTH}_average method=average
-r.series -n input="`g.mlist pattern='hours_sun_day_*' sep=,`" output=hours_sun_${MONTH}_average method=average
-r.series -n input="`g.mlist pattern='flat_total_sun_day_*' sep=,`" output=flat_total_sun_${MONTH}_average method=average
+r.series -n input="`g.list pattern='total_sun_day_*' sep=,`" output=total_sun_${MONTH}_average method=average
+r.series -n input="`g.list pattern='hours_sun_day_*' sep=,`" output=hours_sun_${MONTH}_average method=average
+r.series -n input="`g.list pattern='flat_total_sun_day_*' sep=,`" output=flat_total_sun_${MONTH}_average method=average
 
 # Compute median
-# r.series -n input="`g.mlist pattern='total_sun_day_*' sep=,`" output=total_sun_${MONTH}_median method=median
-# r.series -n input="`g.mlist pattern='hours_sun_day_*' sep=,`" output=hours_sun_${MONTH}_median method=median
+# r.series -n input="`g.list pattern='total_sun_day_*' sep=,`" output=total_sun_${MONTH}_median method=median
+# r.series -n input="`g.list pattern='hours_sun_day_*' sep=,`" output=hours_sun_${MONTH}_median method=median
 
 # Compute standard deviation
-# r.series -n input="`g.mlist pattern='total_sun_day_*' sep=,`" output=total_sun_${MONTH}_stddev method=stddev
-# r.series -n input="`g.mlist pattern='hours_sun_day_*' sep=,`" output=hours_sun_${MONTH}_stddev method=stddev
+# r.series -n input="`g.list pattern='total_sun_day_*' sep=,`" output=total_sun_${MONTH}_stddev method=stddev
+# r.series -n input="`g.list pattern='hours_sun_day_*' sep=,`" output=hours_sun_${MONTH}_stddev method=stddev
 
 # Compute variance
-# r.series -n input="`g.mlist pattern='total_sun_day_*' sep=,`" output=total_sun_${MONTH}_variance method=variance
-# r.series -n input="`g.mlist pattern='hours_sun_day_*' sep=,`" output=hours_sun_${MONTH}_variance method=variance
+# r.series -n input="`g.list pattern='total_sun_day_*' sep=,`" output=total_sun_${MONTH}_variance method=variance
+# r.series -n input="`g.list pattern='hours_sun_day_*' sep=,`" output=hours_sun_${MONTH}_variance method=variance
 
 
 echo "Printing out Sum maps: global/monthly/total_sun_${MONTH}_sum.tif"
