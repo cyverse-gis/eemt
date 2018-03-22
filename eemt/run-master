@@ -16,11 +16,19 @@ DEM_DIR=`cd $DEM_DIR && pwd`
 DEM_NAME=`basename $1`
 DEM="$DEM_DIR/$DEM_NAME"
 
-STEP=$2
-LINKE_VALUE=$3
-ALBEDO_VALUE=$4
+START_YEAR=$2
+END_YEAR=$3
+STEP=$4
+LINKE_VALUE=$5
+ALBEDO_VALUE=$6
 
 # default values
+if [ "x$START_YEAR" = "x" ]; then
+    START_YEAR="1980"
+fi
+if [ "x$END_YEAR" = "x" ]; then
+    END_YEAR="2016"
+fi
 if [ "x$STEP" = "x" ]; then
     STEP="0.5"
 fi
@@ -86,6 +94,8 @@ singularity exec \
   $WORK_DIR/eemt-current.simg \
   /srv/run-workflow \
     --name ${PROJECT_NAME}-${PW_HASH} \
+    --start-year $START_YEAR \
+    --end-year $END_YEAR \
     --step $STEP \
     --linke_value $LINKE_VALUE \
     --albedo_value $ALBEDO_VALUE \
