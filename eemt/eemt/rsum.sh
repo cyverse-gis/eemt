@@ -114,16 +114,21 @@ done
 rm -f temp
 
 g.region -s rast=$NAME
-g.region -s rast=$NAME
 
 #compute Sum
+echo "Calculating sum for global/monthly/total_sun_${MONTH}_sum.tif"
 r.series -n input="`g.list type=raster pattern='total_sun_day_*' separator=,`" output=total_sun_${MONTH}_sum method=sum
+echo "Calculating sum for insol/monthly/hours_sun_${MONTH}_sum.tif"
 r.series -n input="`g.list type=raster pattern='hours_sun_day_*' separator=,`" output=hours_sun_${MONTH}_sum method=sum
+echo "Calculating sum for global/monthly/flat_total_sun_${MONTH}_sum.tif"
 r.series -n input="`g.list type=raster pattern='flat_total_sun_day_*' separator=,`" output=flat_total_sun_${MONTH}_sum method=sum
 
 # Compute average 
+echo "Calculating average for global/monthly/total_sun_${MONTH}_sum.tif"
 r.series -n input="`g.list type=raster pattern='total_sun_day_*' sep=,`" output=total_sun_${MONTH}_average method=average
+echo "Calculating average for insol/monthly/hours_sun_${MONTH}_sum.tif"
 r.series -n input="`g.list type=raster pattern='hours_sun_day_*' sep=,`" output=hours_sun_${MONTH}_average method=average
+echo "Calculating average for global/monthly/flat_total_sun_${MONTH}_sum.tif"
 r.series -n input="`g.list type=raster pattern='flat_total_sun_day_*' sep=,`" output=flat_total_sun_${MONTH}_average method=average
 
 # Compute median
@@ -141,13 +146,17 @@ r.series -n input="`g.list type=raster pattern='flat_total_sun_day_*' sep=,`" ou
 # Sum Maps
 echo "Printing out Sum maps: global/monthly/total_sun_${MONTH}_sum.tif"
 r.out.gdal -c input=total_sun_${MONTH}_sum output=${DIRECTORY}/global/monthly/total_sun_${MONTH}_sum.tif
+echo "Printing out Sum maps: global/monthly/hours_sun_${MONTH}_sum.tif"
 r.out.gdal -c input=hours_sun_${MONTH}_sum output=${DIRECTORY}/insol/monthly/hours_sun_${MONTH}_sum.tif
+echo "Printing out Sum maps: global/monthly/flat_total_sun_${MONTH}_sum.tif"
 r.out.gdal -c input=flat_total_sun_${MONTH}_sum output=${DIRECTORY}/global/monthly/flat_total_sun_${MONTH}_sum.tif
 
 # Average Maps
-echo "Printing out Average maps: global/monthly/flat_total_sun_${MONTH}_sum.tif"
+echo "Printing out Average maps: global/monthly/total_sun_${MONTH}_average.tif"
 r.out.gdal -c input=total_sun_${MONTH}_average output=${DIRECTORY}/global/monthly/total_sun_${MONTH}_average.tif
+echo "Printing out Average maps: global/monthly/hours_sun_${MONTH}_average.tif"
 r.out.gdal -c input=hours_sun_${MONTH}_average output=${DIRECTORY}/insol/monthly/hours_sun_${MONTH}_average.tif
+echo "Printing out Average maps: global/monthly/flat_total_sun_${MONTH}_average.tif"
 r.out.gdal -c input=flat_total_sun_${MONTH}_average output=${DIRECTORY}/global/monthly/flat_total_sun_${MONTH}_average.tif
 
 # Median Maps
