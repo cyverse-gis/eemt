@@ -117,19 +117,19 @@ g.region -s rast=$NAME
 
 #compute Sum
 echo "Calculating sum for global/monthly/total_sun_${MONTH}_sum.tif"
-r.series -n input="`g.list type=raster pattern='total_sun_day_*' separator=,`" output=total_sun_${MONTH}_sum method=sum
+r.series -n input="`g.list rast pattern='total_sun_day_*' separator=,`" output=total_sun_${MONTH}_sum method=sum
 echo "Calculating sum for insol/monthly/hours_sun_${MONTH}_sum.tif"
-r.series -n input="`g.list type=raster pattern='hours_sun_day_*' separator=,`" output=hours_sun_${MONTH}_sum method=sum
+r.series -n input="`g.list rast pattern='hours_sun_day_*' separator=,`" output=hours_sun_${MONTH}_sum method=sum
 echo "Calculating sum for global/monthly/flat_total_sun_${MONTH}_sum.tif"
-r.series -n input="`g.list type=raster pattern='flat_total_sun_day_*' separator=,`" output=flat_total_sun_${MONTH}_sum method=sum
+r.series -n input="`g.list rast pattern='flat_total_sun_day_*' separator=,`" output=flat_total_sun_${MONTH}_sum method=sum
 
 # Compute average 
 echo "Calculating average for global/monthly/total_sun_${MONTH}_sum.tif"
-r.series -n input="`g.list type=raster pattern='total_sun_day_*' sep=,`" output=total_sun_${MONTH}_average method=average
+r.series -n input="`g.list rast pattern='total_sun_day_*' sep=,`" output=total_sun_${MONTH}_average method=average
 echo "Calculating average for insol/monthly/hours_sun_${MONTH}_sum.tif"
-r.series -n input="`g.list type=raster pattern='hours_sun_day_*' sep=,`" output=hours_sun_${MONTH}_average method=average
+r.series -n input="`g.list rast pattern='hours_sun_day_*' sep=,`" output=hours_sun_${MONTH}_average method=average
 echo "Calculating average for global/monthly/flat_total_sun_${MONTH}_sum.tif"
-r.series -n input="`g.list type=raster pattern='flat_total_sun_day_*' sep=,`" output=flat_total_sun_${MONTH}_average method=average
+r.series -n input="`g.list rast pattern='flat_total_sun_day_*' sep=,`" output=flat_total_sun_${MONTH}_average method=average
 
 # Compute median
 # r.series -n input="`g.list pattern='total_sun_day_*' sep=,`" output=total_sun_${MONTH}_median method=median
