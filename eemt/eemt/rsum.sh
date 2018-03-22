@@ -114,16 +114,17 @@ done
 rm -f temp
 
 g.region -s rast=$NAME
+g.region -s rast=$NAME
 
-# Compute Sum
-r.series -n input="`g.list pattern='total_sun_day_*' sep=,`" output=total_sun_${MONTH}_sum method=sum
-r.series -n input="`g.list pattern='hours_sun_day_*' sep=,`" output=hours_sun_${MONTH}_sum method=sum
-r.series -n input="`g.list pattern='flat_total_sun_day_*' sep=,`" output=flat_total_sun_${MONTH}_sum method=sum
+#compute Sum
+r.series -n input="`g.list type=raster pattern='total_sun_day_*' separator=,`" output=total_sun_${MONTH}_sum method=sum
+r.series -n input="`g.list type=raster pattern='hours_sun_day_*' separator=,`" output=hours_sun_${MONTH}_sum method=sum
+r.series -n input="`g.list type=raster pattern='flat_total_sun_day_*' separator=,`" output=flat_total_sun_${MONTH}_sum method=sum
 
 # Compute average 
-r.series -n input="`g.list pattern='total_sun_day_*' sep=,`" output=total_sun_${MONTH}_average method=average
-r.series -n input="`g.list pattern='hours_sun_day_*' sep=,`" output=hours_sun_${MONTH}_average method=average
-r.series -n input="`g.list pattern='flat_total_sun_day_*' sep=,`" output=flat_total_sun_${MONTH}_average method=average
+r.series -n input="`g.list type=raster pattern='total_sun_day_*' sep=,`" output=total_sun_${MONTH}_average method=average
+r.series -n input="`g.list type=raster pattern='hours_sun_day_*' sep=,`" output=hours_sun_${MONTH}_average method=average
+r.series -n input="`g.list type=raster pattern='flat_total_sun_day_*' sep=,`" output=flat_total_sun_${MONTH}_average method=average
 
 # Compute median
 # r.series -n input="`g.list pattern='total_sun_day_*' sep=,`" output=total_sun_${MONTH}_median method=median
@@ -137,9 +138,8 @@ r.series -n input="`g.list pattern='flat_total_sun_day_*' sep=,`" output=flat_to
 # r.series -n input="`g.list pattern='total_sun_day_*' sep=,`" output=total_sun_${MONTH}_variance method=variance
 # r.series -n input="`g.list pattern='hours_sun_day_*' sep=,`" output=hours_sun_${MONTH}_variance method=variance
 
-
-echo "Printing out Sum maps: global/monthly/total_sun_${MONTH}_sum.tif"
 # Sum Maps
+echo "Printing out Sum maps: global/monthly/total_sun_${MONTH}_sum.tif"
 r.out.gdal -c input=total_sun_${MONTH}_sum output=${DIRECTORY}/global/monthly/total_sun_${MONTH}_sum.tif
 r.out.gdal -c input=hours_sun_${MONTH}_sum output=${DIRECTORY}/insol/monthly/hours_sun_${MONTH}_sum.tif
 r.out.gdal -c input=flat_total_sun_${MONTH}_sum output=${DIRECTORY}/global/monthly/flat_total_sun_${MONTH}_sum.tif
