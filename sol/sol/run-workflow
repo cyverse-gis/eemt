@@ -37,6 +37,18 @@ quiet=True
 
 script_location = os.path.abspath(os.path.dirname(sys.argv[0]))
 
+# Create project directories for the input and output data
+
+def create_project_directories(proj_dir):
+    if not os.path.exists(os.path.join(proj_dir,"global")):
+        os.makedirs(os.path.join(proj_dir,"global","daily"))
+        os.makedirs(os.path.join(proj_dir,"global","monthly"))
+    if not os.path.exists(os.path.join(proj_dir,"insol")):
+        os.makedirs(os.path.join(proj_dir,"insol","daily"))
+        os.makedirs(os.path.join(proj_dir,"insol","monthly"))
+
+# Run r.sun.mp to generate global irradiation and hourly sunlight
+
 def rsun_tasks(args, makeflow, proj_dir, days, dem):
     tasks=0
 
@@ -54,6 +66,8 @@ def rsun_tasks(args, makeflow, proj_dir, days, dem):
         makeflow += "\t/bin/bash rsun.sh %s %s %s -d %d -D . -s %s -l %s -a %s -n %d\n" % (dem, slope, aspect, day, args.step, args.linke_value, args.albedo_value, args.num_threads)
         tasks=tasks+1
     return makeflow, tasks
+
+# Run r.series and summate the r.sun output
 
 def monthly_sum(makeflow, proj_dir, dem):
 
@@ -84,14 +98,6 @@ def monthly_sum(makeflow, proj_dir, dem):
         i = i+1
     return makeflow, i 
 
-def create_project_directories(proj_dir):
-    if not os.path.exists(os.path.join(proj_dir,"global")):
-        os.makedirs(os.path.join(proj_dir,"global","daily"))
-        os.makedirs(os.path.join(proj_dir,"global","monthly"))
-    if not os.path.exists(os.path.join(proj_dir,"insol")):
-        os.makedirs(os.path.join(proj_dir,"insol","daily"))
-        os.makedirs(os.path.join(proj_dir,"insol","monthly"))
-    
 def main():
 ##--Argument Parser
     parser = argparse.ArgumentParser()
