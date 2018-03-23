@@ -74,8 +74,8 @@ fi
 DEM=$1
 
 # Plan to depreciate SAGA-GIS derived slope and aspect layers, switch to GRASS r.slope.aspect
-SLOPE=$2
-ASPECT=$3
+# SLOPE=$2
+# ASPECT=$3
 
 # Set Working Directory
 WORKING_DIR=$RANDOM
