@@ -66,8 +66,7 @@ fi
 cd $WORK_DIR
 
 # download the container
-wget -nv -O eemt-current.img \
-     http://xd-login.opensciencegrid.org/scratch/eemt/singularity/eemt-current.img
+singularity pull --name eemt-current.simg shub://tyson-swetnam/osgeo-singularity
 
 cp $TOP_DIR/sol/* ./
 
@@ -81,7 +80,7 @@ singularity exec \
   --scratch /var/tmp \
   --scratch /tmp \
   --contain --ipc --pid \
-  eemt-current.img \
+  eemt-current.simg \
   work_queue_worker -P .eemt-makeflow-password \
                     -M ${PROJECT_NAME}-${PW_HASH} \
                     -s /srv \
