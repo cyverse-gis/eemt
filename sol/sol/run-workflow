@@ -10,7 +10,7 @@ import urllib
 import imp
 from Tiff import Tiff
 
-# tiffparser = imp.load_source("tiffparser","./parser.py")
+tiffparser = imp.load_source("tiffparser","./parser.py")
 quiet=True
 script_location = os.path.abspath(os.path.dirname(sys.argv[0]))
 
