@@ -5,43 +5,40 @@ from __future__ import print_function
 import sys
 import shutil
 from subprocess import Popen, STDOUT, PIPE
-
-
-MONTHS=["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"]
-MONTH_DAYS=[[1,31],[32,59],[60,90],[91,120],[121,150],[152,181],[182,212],[213,243],[244,273],[274,304],[305,334],[335,365]]
-PARAMS=["tmin","tmax","vp","prcp"]
-
-
-def error(*objs):
-    print("ERROR: ", *objs, file=sys.stderr)
-    exit(1)
-
-def warning(*objs):
-    print("WARNING: ", *objs, file=sys.stderr)
-
-def log(*objs):
-    log_file = open("task_output.log","a")
-    print(*objs,file=log_file)
-    log_file.close()
-
-def error_log(proj_dir,*objs):
-    error_file = open(os.path.join(proj_dir,"sys.err"),"a")
-    print(*objs,file=error_file)
-    error_file.close()
-
 import argparse, getpass
 import sys, os, datetime
 import urllib
 import imp
 from Tiff import Tiff
 
+# Parse the tiff files for projection and reprojection to match the climate data
 tiffparser = imp.load_source("tiffparser","./parser.py")
 quiet=True
 
 script_location = os.path.abspath(os.path.dirname(sys.argv[0]))
 na_dem_location = script_location + "/DAYMET/NA_DEM/na_dem.tif"
 
-# Create project directories for the input and output data
+# Create variables for months and days of the month 
+MONTHS=["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"]
+MONTH_DAYS=[[1,31],[32,59],[60,90],[91,120],[121,150],[152,181],[182,212],[213,243],[244,273],[274,304],[305,334],[335,365]]
+PARAMS=["tmin","tmax","vp","prcp"]
+
+# Print error messages 
+def error(*objs):
+    print("ERROR: ", *objs, file=sys.stderr)
+    exit(1)
+def warning(*objs):
+    print("WARNING: ", *objs, file=sys.stderr)
+def log(*objs):
+    log_file = open("task_output.log","a")
+    print(*objs,file=log_file)
+    log_file.close() 
+def error_log(proj_dir,*objs):
+    error_file = open(os.path.join(proj_dir,"sys.err"),"a")
+    print(*objs,file=error_file)
+    error_file.close()
+
+# Create project directories for both the input (DAYMET climate) and output result data
 def create_project_directories(proj_dir):
     if not os.path.exists(os.path.join(proj_dir,"global")):
         os.makedirs(os.path.join(proj_dir,"global","daily"))
@@ -65,7 +62,7 @@ def create_project_directories(proj_dir):
         os.makedirs(os.path.join(proj_dir,"daymet/tmax"))
         os.makedirs(os.path.join(proj_dir,"daymet/prcp"))
         os.makedirs(os.path.join(proj_dir,"daymet/vp"))
-        #Currently we are not using DAYMET SWE, DAYL, or SRAD data but we are maintaining these for future incorporation.
+        # Currently we are not using DAYMET SWE, DAYL, or SRAD data but we are maintaining these for future incorporation.
         #os.makedirs(os.path.join(proj_dir,"daymet/swe"))
         #os.makedirs(os.path.join(proj_dir,"daymet/dayl"))
         #os.makedirs(os.path.join(proj_dir,"daymet/srad"))
@@ -123,7 +120,7 @@ def monthly_sum(makeflow, proj_dir, dem):
         i = i+1
     return makeflow, i 
 
-# Calculate EEMT!
+# Calculate the EEMT!
 def eemt_tasks(makeflow,proj_dir,syear,eyear,dem):
     tasks = 0
     reemt = os.path.join(script_location,"reemt.sh")
