@@ -149,12 +149,12 @@ def main():
     #test_coords = test.getProjCoords()
     #dem_path = test.convert_opentopo(proj_dir,dem)
     dem_tif = tiffparser.TiffParser()
-    #dem_tif.loadTiff(dem_path)
-    dem_coords = dem_tif.getProjCoords()
-    lrx = float(dem_coords[0][0].split(',')[0])+4000 # we are adding a 4km buffer to the DEM to ensure we avoid edge effects in the reprojection
-    lry = float(dem_coords[0][0].split(',')[1])-4000
-    ulx = float(dem_coords[0][1].split(',')[0])-4000
-    uly = float(dem_coords[0][1].split(',')[1])+4000
+    dem_tif.loadTiff(dem)
+    #dem_coords = dem_tif.getProjCoords()
+    #lrx = float(dem_coords[0][0].split(',')[0])+4000 # we are adding a 4km buffer to the DEM to ensure we avoid edge effects in the reprojection
+    #lry = float(dem_coords[0][0].split(',')[1])-4000
+    #ulx = float(dem_coords[0][1].split(',')[0])-4000
+    #uly = float(dem_coords[0][1].split(',')[1])+4000
 
     sys.stdout.flush()
 
