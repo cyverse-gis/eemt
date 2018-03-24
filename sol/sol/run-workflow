@@ -10,7 +10,7 @@ import urllib
 import imp
 from Tiff import Tiff
 
-tiffparser = imp.load_source("tiffparser","./parser.py")
+# tiffparser = imp.load_source("tiffparser","./parser.py")
 quiet=True
 script_location = os.path.abspath(os.path.dirname(sys.argv[0]))
 
@@ -143,28 +143,28 @@ def main():
     makeflow += "MEMORY=4000\n" # increased ram to 3GB from 2.5GB
     makeflow += "DISK=2000\n" # increased disk from 1GB to 2GB
 
-    test=tiffparser.TiffParser()
-    test.loadTiff(dem)
-    test.read_meta(dem)
-    test_coords = test.getProjCoords()
-    warped_path = test.convert_opentopo(proj_dir,dem)
-    warped_tif = tiffparser.TiffParser()
-    warped_tif.loadTiff(warped_path)
-    warped_coords = warped_tif.getProjCoords()
-    lrx = float(warped_coords[0][0].split(',')[0])+4000 # we are adding a 4km buffer to the DEM to ensure we avoid edge effects in the reprojection
-    lry = float(warped_coords[0][0].split(',')[1])-4000
-    ulx = float(warped_coords[0][1].split(',')[0])-4000
-    uly = float(warped_coords[0][1].split(',')[1])+4000
+    # test=tiffparser.TiffParser()
+    # test.loadTiff(dem)
+    # test.read_meta(dem)
+    # test_coords = test.getProjCoords()
+    # warped_path = test.convert_opentopo(proj_dir,dem)
+    # warped_tif = tiffparser.TiffParser()
+    # warped_tif.loadTiff(warped_path)
+    # warped_coords = warped_tif.getProjCoords()
+    # lrx = float(warped_coords[0][0].split(',')[0])+4000 # we are adding a 4km buffer to the DEM to ensure we avoid edge effects in the reprojection
+    # lry = float(warped_coords[0][0].split(',')[1])-4000
+    # ulx = float(warped_coords[0][1].split(',')[0])-4000
+    # uly = float(warped_coords[0][1].split(',')[1])+4000
 
     sys.stdout.flush()
 
     # Create the full workflow - this means makeflow rules for all the compute steps
       
     # Call GRASS r.sun and calculate for days 1-365 of the year
-    makeflow,tasks_sun = rsun_tasks(args, makeflow,proj_dir,range(1,366),warped_tif.getName()+".tif")
+    makeflow,tasks_sun = rsun_tasks(args, makeflow, proj_dir, range(1,366), dem.getName()+".tif")
     
     # Call GRASS and calculate sum global radiation and hours of insolation
-    makeflow,tasks_avg = monthly_sum(makeflow, proj_dir, warped_tif.getName()+".tif")
+    makeflow,tasks_avg = monthly_sum(makeflow, proj_dir, dem.getName()+".tif")
 
     # Copies of binaries
     for binary in ["rsum.sh", "rsun.sh"]:
