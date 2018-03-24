@@ -75,11 +75,11 @@ def monthly_sum(makeflow, proj_dir, dem):
         outputs = ""
 
         for day in range(start_day,end_day+1):
-            global_inputs=global_inputs + "global/daily/total_sun_day_%d.tif " % (day)
-            insol_inputs=insol_inputs + "insol/daily/hours_sun_day_%d.tif " % (day)
+            global_inputs=global_inputs + "global/daily/total_sun_day_%d.tif " %(day)
+            insol_inputs=insol_inputs + "insol/daily/hours_sun_day_%d.tif " %(day)
 
-        outputs = "global/monthly/total_sun_%s_sum.tif " % month \
-                + "insol/monthly/hours_sun_%s_sum.tif " % month \
+        outputs = "global/monthly/total_sun_%s_sum.tif " %(month) \
+                + "insol/monthly/hours_sun_%s_sum.tif " %(month) \
 
         makeflow += "\n"
         makeflow += "%s: rsum.sh %s %s %s \n" %(outputs, dem, global_inputs, insol_inputs)
@@ -145,10 +145,10 @@ def main():
     # Create the full workflow - this means makeflow rules for all the compute steps
       
     # Call GRASS r.sun and calculate for days 1-365 of the year
-    makeflow,tasks_sun = rsun_tasks(args, makeflow, proj_dir, range(1,366))
+    makeflow,tasks_sun = rsun_tasks(args, makeflow, proj_dir, range(1,366), "%s" % dem) 
     
     # Call GRASS and calculate sum global radiation and hours of insolation
-    makeflow,tasks_avg = monthly_sum(makeflow, proj_dir)
+    makeflow,tasks_avg = monthly_sum(makeflow, proj_dir, "%s" % dem) 
 
     # Copies of binaries
     for binary in ["rsum.sh", "rsun.sh"]:
