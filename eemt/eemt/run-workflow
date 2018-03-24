@@ -252,6 +252,7 @@ def main():
     # Create the full workflow - this means makeflow rules for all the compute steps
       
     # Call GRASS r.sun and calculate for days 1-365 of the year
+    print("running:" + warped_tif.getName() + ".tif")
     makeflow,tasks_sun = rsun_tasks(args, makeflow,proj_dir,range(1,366),warped_tif.getName()+".tif")
     
     # Call GRASS and calculate sum global radiation and hours of insolation
