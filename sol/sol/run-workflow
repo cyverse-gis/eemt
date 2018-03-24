@@ -145,10 +145,10 @@ def main():
     # Create the full workflow - this means makeflow rules for all the compute steps
       
     # Call GRASS r.sun and calculate for days 1-365 of the year
-    makeflow,tasks_sun = rsun_tasks(args, makeflow, proj_dir, range(1,366), "%s") %(dem)
+    makeflow,tasks_sun = rsun_tasks(args, makeflow, proj_dir, range(1,366), "\t %s\n") %(dem)
     
     # Call GRASS and calculate sum global radiation and hours of insolation
-    makeflow,tasks_avg = monthly_sum(makeflow, proj_dir, "%s") %(dem)
+    makeflow,tasks_avg = monthly_sum(makeflow, proj_dir, "\t %s\n") %(dem)
 
     # Copies of binaries
     for binary in ["rsum.sh", "rsun.sh"]:
