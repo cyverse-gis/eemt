@@ -67,9 +67,8 @@ if [ $DEM_SIZE -gt 200000 ]; then
 fi
 
 # download the container if we do not already have it
-if [ ! -e "$WORK_DIR/eemt-current.img" ]; then
-    wget -nv -O $WORK_DIR/eemt-current.img \
-         http://xd-login.opensciencegrid.org/scratch/eemt/singularity/eemt-current.img 2>&1
+if [ ! -e "$WORK_DIR/eemt-current.simg" ]; then
+    singularity pull --name eemt-current.simg shub://tyson-swetnam/osgeo-singularity
 fi
 
 # we also need the password file
@@ -82,7 +81,7 @@ singularity exec \
   --scratch /var/tmp \
   --scratch /tmp \
   --contain --ipc --pid \
-  $WORK_DIR/eemt-current.img \
+  $WORK_DIR/eemt-current.simg \
   /srv/run-workflow \
     --name ${PROJECT_NAME}-${PW_HASH} \
     --step $STEP \
