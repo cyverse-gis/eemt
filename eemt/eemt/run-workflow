@@ -214,12 +214,8 @@ def main():
     makeflow += "CORES=1\n"
     makeflow += "MEMORY=3000\n" # increased ram to 3GB from 2.5GB
     makeflow += "DISK=2000\n" # increased disk from 1GB to 2GB
-
-    test=tiffparser.TiffParser()
-    test.loadTiff(dem)
-    test.read_meta(dem)
-    test_coords = test.getProjCoords()
-    warped_path = test.convert_opentopo(proj_dir,dem)
+    
+    # warp DEM to match Daymet Projection
     warped_tif = tiffparser.TiffParser()
     warped_tif.loadTiff(warped_path)
     warped_coords = warped_tif.getProjCoords()
