@@ -216,6 +216,11 @@ def main():
     makeflow += "DISK=2000\n" # increased disk from 1GB to 2GB
     
     # warp DEM to match Daymet Projection
+    test=tiffparser.TiffParser()
+    test.loadTiff(dem)
+    test.read_meta(dem)
+    test_coords = test.getProjCoords()
+    warped_path = test.convert_opentopo(proj_dir,dem)
     warped_tif = tiffparser.TiffParser()
     warped_tif.loadTiff(warped_path)
     warped_coords = warped_tif.getProjCoords()
@@ -245,13 +250,7 @@ def main():
                 makeflow += "\t/bin/bash metget.sh %s %f %f %f %f daymet/%s/%s_%d_%s_local.tif\n" %(url, ulx, uly, lrx, lry, param, param, year, month)
 
     # Create the full workflow - this means makeflow rules for all the compute steps
-
-    # Call SAGA slope and aspect calculation done in input_rasters.sh
-    # this is marked for removal from input_rasters.sh - depreciating SAGA-GIS from this stage of the workflow
-    # makeflow += "\n"
-    # makeflow += "aspect_dec.tif slope_dec.tif: input_rasters.sh %s.tif\n" %(warped_tif.getName())
-    # makeflow += "\t/bin/bash input_rasters.sh %s.tif\n" %(warped_tif.getName())
-        
+      
     # Call GRASS r.sun and calculate for days 1-365 of the year
     makeflow,tasks_sun = rsun_tasks(args, makeflow,proj_dir,range(1,366),warped_tif.getName()+".tif")
     
