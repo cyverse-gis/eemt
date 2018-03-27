@@ -1,12 +1,5 @@
 #!/bin/bash
 
-# looking to depreciate this text - no longer needed with the Singularity container.
-if [ -e /unsupported/czo/czorc ]; then
-    module load unsupported
-    module load czo/sol/0.0.1
-    source /unsuported/czo/czorc
-fi
-
 #Read options
 ARGS=`getopt -o D: --long directory: -n 'rsum.sh' -- "$@"`
 
@@ -56,7 +49,6 @@ export GISRC=${GRASSRC}
     mkdir -p insol/monthly
     mkdir -p insol/annual
 #fi
-
 
 #Create location directory structure
 if [ ! -e $LOCATION ]; then
