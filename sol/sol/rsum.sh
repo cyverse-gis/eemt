@@ -103,7 +103,7 @@ echo "Computing Series for $MONTH"
 g.proj -c georef=$1
 
 #Import Dems
-g.mremove -f "*"
+g.remove -f "*"
 echo "IMPORTING"
 #Need to grab and import every tif
 while (( "$#" )); do
