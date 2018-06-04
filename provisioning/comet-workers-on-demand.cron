@@ -1,7 +1,7 @@
 #!/bin/bash
 
-COMET_USER=tswetnam
-COMET_PROJECT=uoa112
+COMET_USER= $USER #tswetnam
+COMET_PROJECT= $ACCOUNT #uoa112
 
 # Script for submitting workers to SDSC Comet
 
