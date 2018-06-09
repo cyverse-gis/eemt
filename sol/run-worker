@@ -56,7 +56,7 @@ export TCP_HIGH_PORT=60000
 module load singularity >/dev/null 2>&1 || true
 
 # should be in the container
-export PYTHONPATH=/opt/eemt/lib/python2.6/site-packages:/opt/eemt/lib64/python2.6/site-packages
+export PYTHONPATH=/opt/osgeo/lib/python2.7/site-packages:/opt/osgeo/lib64/python2.7/site-packages
 
 # we need a temporary directory to run from
 if ! find_work_dir; then
