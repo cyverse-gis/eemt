@@ -68,7 +68,8 @@ fi
 
 # download the container if we do not already have it
 if [ ! -e "$WORK_DIR/eemt-current.simg" ]; then
-    singularity pull --name eemt-current.simg shub://tyson-swetnam/osgeo-singularity
+    #singularity pull --name eemt-current.simg shub://tyson-swetnam/osgeo-singularity
+    wget -nv -O $WORK_DIR/eemt-current.simg http://xd-login.opensciencegrid.org/scratch/eemt/singularity/eemt-current.img
 fi
 
 # we also need the password file
@@ -78,8 +79,6 @@ cp ~/.eemt-makeflow-password ./
 singularity exec \
   --home $PWD:/srv \
   --pwd /srv \
-  --scratch /var/tmp \
-  --scratch /tmp \
   --contain --ipc --pid \
   $WORK_DIR/eemt-current.simg \
   /srv/run-workflow \

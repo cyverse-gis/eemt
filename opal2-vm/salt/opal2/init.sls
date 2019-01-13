@@ -1,4 +1,17 @@
 
+/srv/opal2-services:
+  file.directory:
+    - user: eemt
+    - group: eemt
+    - mode: 755
+
+/srv/opal2-services/solot.xml:
+  file.managed:
+    - user: eemt
+    - group: eemt
+    - mode: 644
+    - source: salt://opal2/solot.xml
+
 /usr/sbin/redeploy-opal2:
   file.managed:
     - user: root
@@ -29,4 +42,14 @@ tomcat:
     - reload: True
     - watch:
       - file: /srv/tomcat/conf/web.xml
+
+/vol_c/eemtws-jobs:
+  file.directory:
+    - user: eemt
+    - group: eemt
+    - mode: 755
+
+/srv/tomcat/webapps/eemtws-jobs:
+  file.symlink:
+    - target: /vol_c/eemtws-jobs
 

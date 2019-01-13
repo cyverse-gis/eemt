@@ -28,3 +28,11 @@ ant:
   pkg:
     - installed
 
+singularity:
+  pkg:
+    - installed
+
+zip:
+  pkg:
+    - installed
+

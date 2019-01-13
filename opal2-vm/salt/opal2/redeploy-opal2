@@ -16,10 +16,10 @@ cd /srv/
 rm -rf tomcat tomcat-deployer opal-ws apache-tomcat-*.tar.gz opal*.tar.gz
 
 # tomcat
-wget -nv https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.15/bin/apache-tomcat-8.5.15.tar.gz
-tar xfz apache-tomcat-8.5.15.tar.gz
-mv apache-tomcat-8.5.15 tomcat
-rm -f apache-tomcat-8.5.15.tar.gz
+wget -nv http://mirror.reverse.net/pub/apache/tomcat/tomcat-7/v7.0.92/bin/apache-tomcat-7.0.92.tar.gz
+tar xfz apache-tomcat-7.0.92.tar.gz
+mv apache-tomcat-7.0.92 tomcat
+rm -f apache-tomcat-7.0.92.tar.gz
 
 # tomcat deployer
 #wget -nv https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.15/bin/apache-tomcat-8.5.15-deployer.tar.gz

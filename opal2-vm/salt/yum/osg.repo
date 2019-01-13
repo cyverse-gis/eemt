@@ -1,6 +1,6 @@
 [osg]
-name=OSG Software for Enterprise Linux 6 - $basearch
-mirrorlist=http://repo.grid.iu.edu/mirror/osg/3.3/el6/release/$basearch
+name=OSG Software for Enterprise Linux 7 - $basearch
+mirrorlist=https://repo.opensciencegrid.org/mirror/osg/3.4/el7/release/$basearch
 failovermethod=priority
 priority=98
 enabled=1
