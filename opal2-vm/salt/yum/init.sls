@@ -36,3 +36,7 @@ zip:
   pkg:
     - installed
 
+tmpwatch:
+  pkg:
+    - installed
+
