@@ -31,9 +31,9 @@ yanliu:
 
 eemt:
   group.present:
-    - gid: 5050
+    - gid: 1000
   user.present:
-    - uid: 5050
+    - uid: 1000
     - shell: /bin/bash
     - home: /home/eemt
     - remove_groups: False
@@ -91,6 +91,13 @@ eemt:
     - mode: 644
     - template: jinja
     - source: salt://users/authorized_keys.yanliu
+
+/home/eemt/.bashrc:
+  file.append:
+    - text:
+      - "export JAVA_OPTS=\"-Djava.security.egd=file:/dev/urandom\""
+      - "export CATALINA_HOME=/srv/tomcat"
+      - "export OPAL_HOME=/srv/opal-ws"
 
 /home/eemt/.ssh:
   file.directory:

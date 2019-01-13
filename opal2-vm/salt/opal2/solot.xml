@@ -1,0 +1,52 @@
+<appConfig xmlns="http://nbcr.sdsc.edu/opal/types"
+           xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata  appName="solot">
+    <usage><![CDATA[Compute Sol model using online DEM e.g. from OpenTopo ]]></usage>
+    <info xsd:type="xsd:string"> <![CDATA[ /srv/eemt/sol/opal2-wrapper-urldem [options] ]]> </info>
+
+    <types>
+        <taggedParams>
+            <separator> </separator>
+            <param>
+                <id>demurl</id>
+                <tag>--demurl</tag>
+                <paramType>STRING</paramType>
+                <ioType>INPUT</ioType>
+                <required>true</required>
+                <textDesc><![CDATA[Input DEM URL to Sol model.]]></textDesc>
+            </param>
+            <param>
+                <id>step</id>
+                <tag>--step</tag>
+                <paramType>STRING</paramType>
+                <ioType>INPUT</ioType>
+                <required>false</required>
+                <default>0.5</default>
+                <textDesc><![CDATA[Step size]]></textDesc>
+            </param>
+            <param>
+                <id>linke_value</id>
+                <tag>--linke_value</tag>
+                <paramType>STRING</paramType>
+                <ioType>INPUT</ioType>
+                <required>false</required>
+                <default>3.0</default>
+                <textDesc><![CDATA[linke value]]></textDesc>
+            </param>
+            <param>
+                <id>albedo_value</id>
+                <tag>--albedo_value</tag>
+                <paramType>STRING</paramType>
+                <ioType>INPUT</ioType>
+                <required>false</required>
+                <default>0.2</default>
+                <textDesc><![CDATA[Albedo value.]]></textDesc>
+            </param>
+        </taggedParams>
+    </types>
+
+  </metadata>
+  <binaryLocation>/srv/eemt/sol/opal2-wrapper-urldem</binaryLocation>
+  <parallel>false</parallel>
+</appConfig>
+
