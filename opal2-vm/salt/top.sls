@@ -6,4 +6,5 @@ base:
     - cvmfs
     - fw
     - opal2
+    - tmpwatch
 
