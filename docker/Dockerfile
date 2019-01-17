@@ -5,7 +5,7 @@ LABEL maintainer="tswetnam@cyverse.org"
 
 # Dont forget to copy the gis_dependency.makefile into the directory
 USER root
-COPY gis_dependency.makefile /tmp/
+COPY /docker/gis_dependency.makefile /tmp/
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV GISBASE=/opt/osgeo/grass-7.2.2
