@@ -92,9 +92,9 @@ $(TARGET)/lib/gdalplugins/gdal_GRASS.so: $(TARGET)/bin/grass72 $(TARGET)/bin/gda
  ##Saga 3.0.0
  $(TARGET)/bin/saga-gis: $(TARGET)/bin/grass72 $(TARGET)/lib/gdalplugins/gdal_GRASS.so
         (cd build-dir \
-        && wget $(WGET_FLAGS) 'https://superb-sea2.dl.sourceforge.net/project/saga-gis/SAGA%20-%207/SAGA%20-%203.0.0/saga-3.0.0.tar.gz' \
+        && wget $(WGET_FLAGS) 'https://superb-sea2.dl.sourceforge.net/project/saga-gis/SAGA%20-%203/SAGA%20-%203.0.0/saga-3.0.0.tar.gz' \
         && tar xzf saga-3.0.0.tar.gz \
-        && cd saga-3.0.0 \
+        && cd saga-3.0.0/saga-gis \
         && ./configure --prefix=$(TARGET) --disable-odbc \
         && make -j 12 \
         && make install)
