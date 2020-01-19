@@ -31,9 +31,9 @@ yanliu:
 
 eemt:
   group.present:
-    - gid: 1000
+    - gid: 1004
   user.present:
-    - uid: 1000
+    - uid: 1004
     - shell: /bin/bash
     - home: /home/eemt
     - remove_groups: False

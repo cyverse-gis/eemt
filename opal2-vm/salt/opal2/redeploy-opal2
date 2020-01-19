@@ -16,10 +16,10 @@ cd /srv/
 rm -rf tomcat tomcat-deployer opal-ws apache-tomcat-*.tar.gz opal*.tar.gz
 
 # tomcat
-wget -nv http://mirror.reverse.net/pub/apache/tomcat/tomcat-7/v7.0.92/bin/apache-tomcat-7.0.92.tar.gz
-tar xfz apache-tomcat-7.0.92.tar.gz
-mv apache-tomcat-7.0.92 tomcat
-rm -f apache-tomcat-7.0.92.tar.gz
+wget -nv http://mirrors.ocf.berkeley.edu/apache/tomcat/tomcat-7/v7.0.99/bin/apache-tomcat-7.0.99.tar.gz
+tar xfz apache-tomcat-7.0.99.tar.gz
+mv apache-tomcat-7.0.99 tomcat
+rm -f apache-tomcat-7.0.99.tar.gz
 
 # tomcat deployer
 #wget -nv https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.15/bin/apache-tomcat-8.5.15-deployer.tar.gz
@@ -29,7 +29,7 @@ rm -f apache-tomcat-7.0.92.tar.gz
 
 # opal2
 wget -nv https://sourceforge.net/projects/opaltoolkit/files/opal2-core-java/2.5/opal-ws-2.5.tar.gz
-tar xfz /srv/software/opal-ws-2.5.tar.gz
+tar xfz opal-ws-2.5.tar.gz
 mv opal-ws-2.5 opal-ws
 rm -f opal-ws-2.5.tar.gz
 
