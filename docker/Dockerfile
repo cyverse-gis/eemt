@@ -135,3 +135,17 @@ RUN export LC_ALL=en_US.UTF-8 && \
     	grass72 -text -c epsg:3857 ${PWD}/mytmp_wgs84 -e && \
     	echo "g.extension -s extension=r.sun.mp ; g.extension -s extension=r.sun.hourly ; g.extension -s extension=r.sun.daily" | grass72 -text ${PWD}/mytmp_wgs84/PERMANENT
 
+# add /cvmfs and /work directory for OSG integration
+RUN mkdir /cvmfs /work 
+
+# Add a few dependecies for installing iCommands
+RUN apt-get update \
+    && apt-get install -y lsb libfuse2 libssl1.0 wget
+
+# Install iCommands
+RUN wget https://files.renci.org/pub/irods/releases/4.1.12/ubuntu14/irods-icommands-4.1.12-ubuntu14-x86_64.deb && \
+    dpkg -i irods-icommands-4.1.12-ubuntu14-x86_64.deb && \
+    rm irods-icommands-4.1.12-ubuntu14-x86_64.deb
+# Add the iRODS environment
+RUN mkdir -p /home/${USER}/.irods
+ADD irods_environment.json /home/${USER}/.irods/irods_environment.json
