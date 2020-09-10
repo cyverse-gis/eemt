@@ -6,5 +6,5 @@ TS=`date +'%Y%m%d'`
 BASENAME="eemt-v$TS"
 
 rm -f $BASENAME.img
-singularity build $BASENAME.img Singularity
+singularity build $BASENAME.simg Singularity
 
