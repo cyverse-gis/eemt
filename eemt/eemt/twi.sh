@@ -24,7 +24,5 @@ saga_cmd -f=q --cores=4 io_gdal 2 -GRIDS slope_grid_rad.sgrd -FILE slope_rad.tif
 saga_cmd -f=q --cores=4 io_gdal 2 -GRIDS aspect_grid_rad.sgrd -FILE aspect_rad.tif
 saga_cmd -f=q --cores=4 io_gdal 2 -GRIDS slope_grid_dec.sgrd -FILE slope_dec.tif
 saga_cmd -f=q --cores=4 io_gdal 2 -GRIDS aspect_grid_dec.sgrd -FILE aspect_dec.tif
-
 saga_cmd -f=q --cores=4 io_gdal 2 -GRIDS catchment_grid.sgrd -FILE catchment.tif
-
 saga_cmd -f=q --cores=4 io_gdal 2 -GRIDS twi_grid.sgrd -FILE twi.tif
