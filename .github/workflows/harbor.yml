@@ -2,7 +2,7 @@ name: harbor
 
 on:
   push:
-    branches: main
+    branches: 2022
 
 jobs:
   
