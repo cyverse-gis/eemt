@@ -7,7 +7,7 @@ site_description: 'Effective Energy to Mass Transfer (EEMT)'
 site_author: 'T.L. Swetnam'
 site_url: 'https://tyson-swetnam.github.io/eemt'
 
-edit_uri: edit/mkdocs/docs
+edit_uri: edit/2022/docs
 
 # Copyright
 copyright: 'Copyright &copy; 2022 T.L. Swetnam'
