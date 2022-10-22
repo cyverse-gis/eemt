@@ -1,13 +1,36 @@
-FROM ubuntu:18.04
+FROM harbor.cyverse.org/vice/jupyter/datascience:latest
 
-LABEL authors="Tyson L Swetnam, Mats Rynge"
-LABEL maintainer="tswetnam@cyverse.org"
+# Build-time metadata as defined at http://label-schema.org
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.name="EEMT Jupyter" \
+      org.label-schema.description="PROJ GDAL SAGA-GIS with Makeflow" \
+      org.label-schema.url="https://tyson-swetnam.github.io/eemt" \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.vcs-url="e.g. https://github.com/tyson-swetnam/eemt" \
+      org.label-schema.vendor="CyVerse" \
+      org.label-schema.version=$VERSION \
+      org.label-schema.schema-version="1.0.0"
 
-# Dont forget to copy the gis_dependency.makefile into the directory
 USER root
+ENV DEBIAN_FRONTEND noninteractive
+
+# Install CCTOOLS from GitHub
+RUN apt-get install -y git libperl-dev ca-certificates
+RUN cd /tmp && git clone https://github.com/cooperative-computing-lab/cctools.git -v
+RUN cd /tmp/cctools && \
+    ./configure --prefix=/opt/eemt --with-zlib-path=/usr/lib/x86_64-linux-gnu && \
+    make clean && \
+    make install && \
+    export PATH=$PATH:/opt/eemt
+
+#remove build to reduce contianer size
+RUN rm -rf /tmp/cctools
+
 COPY /docker/gis_dependency.makefile /tmp/
 
-ENV DEBIAN_FRONTEND noninteractive
 ENV GISBASE=/opt/osgeo/grass-7.2.2
 ENV LOCATION=/usr/local/share/grassdata/eemt/PERMANENT
 ENV GRASS_PROJSHARE=/usr/share/proj
@@ -18,67 +41,6 @@ ENV export GISBASE LOCATION GRASS_PROJSHARE LD_LIBRARY_PATH PATH PYTHONPATH
 
 # data directory - not using the base images volume because then the permissions cannot be adapted
 ENV DATA_DIR /data
-
-CMD echo 'deb http://us.archive.ubuntu.com/ubuntu/ bionic main restricted universe multiverse' >> /etc/apt/sources.list
-
-# GRASS GIS compile dependencies
-RUN apt-get update \
-	&& apt-get install -y --no-install-recommends --no-install-suggests \
-	apt-utils \
-	bash-completion \
-	build-essential \
-	libblas-dev \
-	libbz2-dev \
-	libcairo2-dev \
-	libfftw3-dev \
-	libfreetype6-dev \
-	libgdal-dev \
-	libgeos-dev \
-	libglu1-mesa-dev \
-	libgsl0-dev \
-	libjpeg-dev \
-	liblapack-dev \
-	liblas-dev \
-	liblas-c-dev \
-	libncurses5-dev \
-	libnetcdf-dev \
-	libopenjp2-7 \
-	libopenjp2-7-dev \
-	libpdal-dev pdal \
-	libpdal-plugin-python \
-	libpng-dev \
-	libpq-dev \
-	libproj-dev \
-	libreadline-dev \
-	libsqlite3-dev \
-	libtiff-dev \
-	libxmu-dev \
-	libzstd-dev \
-	bison \
-	flex \
-	g++ \
-	gettext \
-	gdal-bin \
-	libfftw3-bin \
-	make \
-	ncurses-bin \
-	netcdf-bin \
-	postgresql \
-	proj-bin \
-	proj-data \
-	python \
-	python-dev \
-	python-numpy \
-	python-pil \
-	python-ply \
-	sqlite3 \
-	subversion \
-	swig \
-	unixodbc-dev \
-	wget \
-	zlib1g-dev \
-	&& apt-get autoremove \
-	&& apt-get clean
 
 RUN echo LANG="en_US.UTF-8" > /etc/default/locale
 ENV LANG C.UTF-8
@@ -101,7 +63,8 @@ RUN echo "Updating library paths" && \
     echo "/opt/osgeo/grass-7.2.2/lib" >> grass.conf && \
     ldconfig
 
-# Run the Makefile for GEOS, GDAL, GRASS, SAGA-GIS - this will take a long time
+# Run the Makefile for PROJ GEOS, GDAL-OGR, GRASS, SAGA-GIS - this will take a long time
+# https://github.com/OSGeo/grass/blob/main/INSTALL.md 
 RUN cd /tmp && make -f gis_dependency.makefile
 
 # Reduce the image size
@@ -115,17 +78,6 @@ ENV SHELL /bin/bash
 VOLUME $DATA_DIR
 WORKDIR $DATA_DIR
 
-# Install CCTOOLS from Github
-RUN apt-get install -y git libperl-dev ca-certificates
-RUN cd /tmp && git clone https://github.com/cooperative-computing-lab/cctools.git -v
-RUN cd /tmp/cctools && \
-    ./configure --prefix=/opt/eemt --with-zlib-path=/usr/lib/x86_64-linux-gnu && \
-    make clean && \
-    make install && \
-    export PATH=$PATH:/opt/eemt
-#remove build to reduce contianer size
-RUN rm -rf /tmp/cctools
-
 # once everything is built, we can install the GRASS extensions
 RUN export LC_ALL=en_US.UTF-8 && \
     	export LANG=en_US.UTF-8 && \
@@ -137,15 +89,3 @@ RUN export LC_ALL=en_US.UTF-8 && \
 
 # add /cvmfs and /work directory for OSG integration
 RUN mkdir /cvmfs /work 
-
-# Add a few dependecies for installing iCommands
-RUN apt-get update \
-    && apt-get install -y lsb libfuse2 libssl1.0 wget
-
-# Install iCommands
-RUN wget https://files.renci.org/pub/irods/releases/4.1.12/ubuntu14/irods-icommands-4.1.12-ubuntu14-x86_64.deb && \
-    dpkg -i irods-icommands-4.1.12-ubuntu14-x86_64.deb && \
-    rm irods-icommands-4.1.12-ubuntu14-x86_64.deb
-# Add the iRODS environment
-RUN mkdir -p /home/${USER}/.irods
-ADD irods_environment.json /home/${USER}/.irods/irods_environment.json
