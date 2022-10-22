@@ -78,5 +78,3 @@ echo
 echo "[`date`] Finished, workflow returned exit code $retcode. Output files in $WORK_DIR . Output archive in $WORK_DIR/$zipfile ."
 echo "Time in sec: download `expr $t1 \- $t0` ; workflow `expr $t2 \- $t1`"
 niceexit $retcode $DEMURL $zipfile "Input from $DEMURL. Output in $WORK_DIR/$zipfile . Execution time: `expr $t2 \- $t0` seconds"
-
-
