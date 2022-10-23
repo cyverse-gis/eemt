@@ -15,12 +15,11 @@ copyright: 'Copyright &copy; 2022 T.L. Swetnam'
 # Navigation Page
 
 nav:
-  - Home: 
-    - 'Home': index.md
-    - 'Installation': installation.md
-    - 'Background': background.md
-    - 'Instructions': instructions.md
-    - 'Citation': citation.md
+  - 'Home': index.md
+  - 'Installation': installation.md
+  - 'Background': background.md
+  - 'Instructions': instructions.md
+  - 'Citation': citation.md
 
 
 # JavaScript for Intercom Widget
@@ -73,7 +72,7 @@ theme:
     - navigation.top
   favicon: assets/favicon.png
   icon:
-    logo: material/rocket
+    logo: material/sun-angle
 
 # Options
 extra:
@@ -90,9 +89,7 @@ extra:
       link: https://harbor.cyverse.org/
     - icon: fontawesome/brands/youtube
       link: https://www.youtube.com/c/CyverseOrgProject
-  analytics:
-    provider: google
-    property: UA-72224033-6
+
 
 extra_css:
   - stylesheets/extra.css
