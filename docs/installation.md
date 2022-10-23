@@ -1,6 +1,4 @@
-## Installation
-
-Installation of the software environment for calculating the models can be done locally, using the `conda` or `mamba` package managers, or with Docker, or by using a `makefile`
+Installation of the required GIS software environment for calculating the models can be done locally, using `conda` or `mamba` package managers, or with Docker, or by using a `makefile`
 
 ## Docker
 
@@ -30,6 +28,8 @@ conda activate eemt
 
 ## Developer Notes
 
+### GIS
+
 https://grasswiki.osgeo.org/wiki/Compile_and_Install
 
 https://github.com/OSGeo/grass/blob/main/INSTALL.md 
@@ -41,4 +41,6 @@ Installation order for building GRASS-GIS must be done sequentially:
 3. PostgreSQL, MySQL, sqlite (optional)
 4. GRASS GIS
 5. GDAL-OGR-GRASS plugin (optional)
+
+### Makeflow & WorkQueue
 

@@ -9,7 +9,7 @@ export CPPFLAGS := -I$(TARGET)/include
 export CFLAGS := -fPIC
 export CXXFLAGS := -fPIC
 export LDFLAGS := -L$(TARGET)/lib
-export LD_LIBRARY_PATH := $(TARGET)/lib:$(TARGET)/grass-7.2.2/lib
+export LD_LIBRARY_PATH := $(TARGET)/lib:$(TARGET)/grass/lib
 
 WGET_FLAGS := -nv --no-check-certificate
 
@@ -22,7 +22,11 @@ setup:
 	@rm -rf build-dir
 	@mkdir build-dir
 
-##geos 3.6.3
+##proj
+
+
+##geos 
+
 $(TARGET)/lib/libgeos.so:
 	(cd build-dir \
 	 && wget $(WGET_FLAGS) http://download.osgeo.org/geos/geos-3.6.3.tar.bz2 \
@@ -32,7 +36,7 @@ $(TARGET)/lib/libgeos.so:
 	 && make -j 12 \
 	 && make install)
 
-##gdal 2.2.1
+##gdal
 $(TARGET)/bin/gdalinfo: $(TARGET)/lib/libgeos.so
 	(cd build-dir \
 	 && wget $(WGET_FLAGS) http://download.osgeo.org/gdal/2.2.1/gdal-2.2.1.tar.gz \
@@ -42,7 +46,7 @@ $(TARGET)/bin/gdalinfo: $(TARGET)/lib/libgeos.so
 	 && make -j 12 \
 	 && make install)
 
-##GRASS 7.2.2
+##GRASS
 $(TARGET)/bin/grass72: $(TARGET)/bin/gdalinfo
 	(cd build-dir \
 	 && wget $(WGET_FLAGS) https://grass.osgeo.org/grass72/source/grass-7.2.2.tar.gz \
@@ -78,7 +82,7 @@ $(TARGET)/bin/grass72: $(TARGET)/bin/gdalinfo
 	 && (make -j 12 || make -j 12 || make -j 12) \
 	 && make install && ldconfig)
 
-##GDAL_GRASS 2.2.1
+##GDAL_GRASS 
 $(TARGET)/lib/gdalplugins/gdal_GRASS.so: $(TARGET)/bin/grass72 $(TARGET)/bin/gdalinfo
         (cd build-dir \
          && wget $(WGET_FLAGS) http://download.osgeo.org/gdal/2.2.1/gdal-grass-2.2.1.tar.gz \
@@ -89,7 +93,7 @@ $(TARGET)/lib/gdalplugins/gdal_GRASS.so: $(TARGET)/bin/grass72 $(TARGET)/bin/gda
          && make -j 12 \
          && make install)
 
- ##Saga 3.0.0
+ ##SAGA-GIS
  $(TARGET)/bin/saga-gis: $(TARGET)/bin/grass72 $(TARGET)/lib/gdalplugins/gdal_GRASS.so
         (cd build-dir \
         && wget $(WGET_FLAGS) 'https://superb-sea2.dl.sourceforge.net/project/saga-gis/SAGA%20-%207/SAGA%20-%203.0.0/saga-3.0.0.tar.gz' \

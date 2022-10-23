@@ -93,4 +93,3 @@ singularity exec \
 echo
 echo "Output files in $WORK_DIR/work"
 echo
-
