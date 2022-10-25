@@ -69,6 +69,10 @@ RUN apt-get update && \
 RUN apt update && \
     apt install -y lsb-release apt-transport-https curl libfreetype6-dev pkg-config libx11-dev gcc less software-properties-common apt-utils glances htop nano rclone
 
+# Fix libssl1.1 error
+RUN wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1-1ubuntu2.1~18.04.20_amd64.deb && \
+    dpkg -i libssl1.1_1.1.1-1ubuntu2.1~18.04.20_amd64.deb
+
 RUN wget -qO - https://packages.irods.org/irods-signing-key.asc | apt-key add - && \
     echo "deb [arch=amd64] https://packages.irods.org/apt/ focal main" >> /etc/apt/sources.list.d/renci-irods.list && \
     apt-get update && \
@@ -78,8 +82,8 @@ RUN wget -qO - https://packages.irods.org/irods-signing-key.asc | apt-key add - 
 RUN mkdir /home/jovyan/.irods     
 
 # Create Conda environment for CCTOOLS & Jupyter Notebooks
+USER jovyan
 RUN conda update conda 
-RUN conda config --remove channels conda-forge
 RUN conda config --add channels conda-forge
 RUN conda config --set channel_priority strict
 RUN conda install -c conda-forge mamba
@@ -87,8 +91,8 @@ COPY environment.yml /home/jovyan/
 RUN mamba env create -f /home/jovyan/environment.yml
 RUN echo ". /opt/conda/etc/profile.d/conda.sh" >> /home/jovyan/.bashrc && \
     echo "conda deactivate" >> /home/jovyan/.bashrc && \
-    echo "conda activate EEMT" >> /home/jovyan/.bashrc
-RUN . /opt/conda/etc/profile.d/conda.sh && conda activate EEMT && python -m ipykernel install --user --name EEMT  
+    echo "conda activate eemt" >> /home/jovyan/.bashrc
+RUN . /opt/conda/etc/profile.d/conda.sh && conda activate eemt && python -m ipykernel install --user --name eemt 
 RUN source /home/jovyan/.bashrc
 
 # Install JupyterLab widget extensions
@@ -104,8 +108,8 @@ RUN jupyter labextension install \
 RUN jupyter lab build
 
 ############## Getting ready to build GIS packages ##############
-
-COPY /docker/gis_dependency.makefile /tmp/
+USER root
+COPY gis_dependency.makefile /tmp/
 
 ENV GISBASE=/opt/osgeo/grass-8.2.0
 ENV LOCATION=/usr/local/share/grassdata/eemt/PERMANENT
