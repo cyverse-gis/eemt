@@ -1,5 +1,7 @@
 ##!/usr/bin/make
 
+## Latest update 2022-10-25
+
 TARGET := /opt/osgeo
 
 SHELL := /bin/bash
@@ -23,35 +25,41 @@ setup:
 	@mkdir build-dir
 
 ##proj
-
+$(TARGET)/lib/libproj.so:
+	(cd build-dir \
+	 && wget $(WGET_FLAGS) http://download.osgeo.org/proj/proj-9.1.0.tar.gz \
+	 && tar -xjf proj-9.1.0.tar.gz \
+	 && cd proj-9.1.0 \
+	 && ./configure --prefix=$(TARGET) --enable-python \
+	 && make -j 2 \
+	 && make install)
 
 ##geos 
-
 $(TARGET)/lib/libgeos.so:
 	(cd build-dir \
-	 && wget $(WGET_FLAGS) http://download.osgeo.org/geos/geos-3.6.3.tar.bz2 \
-	 && tar -xjf geos-3.6.3.tar.bz2 \
-	 && cd geos-3.6.3 \
+	 && wget $(WGET_FLAGS) http://download.osgeo.org/geos/geos-3.9.3.tar.bz2 \
+	 && tar -xjf geos-3.9.3.tar.bz2 \
+	 && cd geos-3.9.3 \
 	 && ./configure --prefix=$(TARGET) --enable-python \
-	 && make -j 12 \
+	 && make -j 2 \
 	 && make install)
 
 ##gdal
 $(TARGET)/bin/gdalinfo: $(TARGET)/lib/libgeos.so
 	(cd build-dir \
-	 && wget $(WGET_FLAGS) http://download.osgeo.org/gdal/2.2.1/gdal-2.2.1.tar.gz \
-	 && tar xzf gdal-2.2.1.tar.gz \
-	 && cd gdal-2.2.1 \
+	 && wget $(WGET_FLAGS) http://download.osgeo.org/gdal/3.4.3/gdal-3.4.3.tar.gz \
+	 && tar xzf gdal-3.4.3.tar.gz \
+	 && cd gdal-3.4.3 \
 	 && ./configure --prefix=$(TARGET) --without-grass --with-netcdf --with-python --with-hdf5 --with-geos=$(TARGET)/bin/geos-config \
-	 && make -j 12 \
+	 && make -j 2 \
 	 && make install)
 
-##GRASS
-$(TARGET)/bin/grass72: $(TARGET)/bin/gdalinfo
+##GRASS-GIS
+$(TARGET)/bin/grass82: $(TARGET)/bin/gdalinfo
 	(cd build-dir \
-	 && wget $(WGET_FLAGS) https://grass.osgeo.org/grass72/source/grass-7.2.2.tar.gz \
-	 && tar xzf grass-7.2.2.tar.gz \
-	 && cd grass-7.2.2 \
+	 && wget $(WGET_FLAGS) https://grass.osgeo.org/grass82/source/grass-8.2.0.tar.gz \
+	 && tar xzf grass-8.2.0.tar.gz \
+	 && cd grass-8.2.0 \
 	 && export LDFLAGS="-Wl,-rpath,$(TARGET)/lib -lpthread" \
 	 && ./configure --enable-64bit \
 	 --enable-largefile \
@@ -79,26 +87,26 @@ $(TARGET)/bin/grass72: $(TARGET)/bin/gdalinfo
 	 --with-sqlite \
 	 --with-freetype --with-freetype-includes="/usr/include/freetype2/" \
 	 --with-openmp \
-	 && (make -j 12 || make -j 12 || make -j 12) \
+	 && (make -j 2 || make -j 2 || make -j 2) \
 	 && make install && ldconfig)
 
 ##GDAL_GRASS 
-$(TARGET)/lib/gdalplugins/gdal_GRASS.so: $(TARGET)/bin/grass72 $(TARGET)/bin/gdalinfo
+$(TARGET)/lib/gdalplugins/gdal_GRASS.so: $(TARGET)/bin/grass82 $(TARGET)/bin/gdalinfo
         (cd build-dir \
-         && wget $(WGET_FLAGS) http://download.osgeo.org/gdal/2.2.1/gdal-grass-2.2.1.tar.gz \
-         && tar xzf gdal-grass-2.2.1.tar.gz \
-         && cd gdal-grass-2.2.1 \
-         && export LDFLAGS="-L$(TARGET)/grass-7.2.2/lib" \
-         && ./configure --with-gdal=$(TARGET)/bin/gdal-config --with-grass=$(TARGET)/grass-7.2.2 --prefix=$(TARGET) \
-         && make -j 12 \
+         && wget $(WGET_FLAGS) http://download.osgeo.org/gdal/3.4.3/gdal-grass-3.4.3.tar.gz \
+         && tar xzf gdal-grass-3.4.3.tar.gz \
+         && cd gdal-grass-3.4.3 \
+         && export LDFLAGS="-L$(TARGET)/grass-8.2.0/lib" \
+         && ./configure --with-gdal=$(TARGET)/bin/gdal-config --with-grass=$(TARGET)/grass-8.2.0 --prefix=$(TARGET) \
+         && make -j 2 \
          && make install)
 
  ##SAGA-GIS
- $(TARGET)/bin/saga-gis: $(TARGET)/bin/grass72 $(TARGET)/lib/gdalplugins/gdal_GRASS.so
+ $(TARGET)/bin/saga-gis: $(TARGET)/bin/grass82 $(TARGET)/lib/gdalplugins/gdal_GRASS.so
         (cd build-dir \
-        && wget $(WGET_FLAGS) 'https://superb-sea2.dl.sourceforge.net/project/saga-gis/SAGA%20-%207/SAGA%20-%203.0.0/saga-3.0.0.tar.gz' \
-        && tar xzf saga-3.0.0.tar.gz \
-        && cd saga-3.0.0 \
+        && wget $(WGET_FLAGS) 'https://master.dl.sourceforge.net/project/saga-gis/SAGA%20-%208/SAGA%20-%208.4.0/saga-8.4.0.tar.gz' \
+        && tar xzf saga-8.4.0.tar.gz \
+        && cd saga-8.4.0 \
         && ./configure --prefix=$(TARGET) --disable-odbc \
-        && make -j 12 \
+        && make -j 2 \
         && make install)
