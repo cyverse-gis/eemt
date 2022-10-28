@@ -4,7 +4,37 @@ To calculate EEMT we use a digital elevation model (DEM) and monthly averaged pr
 
 Summary statistics are generated for each climate variable.
 
+# Input Data
+
+## Climatic data
+
+### PRISM
+
+[PRISM Climate Group](https://prism.oregonstate.edu/){target=_blank} data are available from 1980-2020.
+
+PRISM are avaiable at 800m resolution for a $ fee, or 4KM for free.
+
+### DAYMET
+
+[DAYMET v4.3](https://daymet.ornl.gov/) are 1KM resolution. The data were recently released as Cloud Optimized Geotiff.
+
+I downloaded the latest COG .tif format using a simple `wget` script
+
+```bash
+wget --verbose --no-parent --random-wait -r -nd --user=<username> ---password=<password> --accept tif --reject html,nc https://daac.ornl.gov/daacdata/daymet/Daymet_V4_Monthly_Climatology/data
+```
+
+There are ~ 240 GB of .tif data for Daymet
+
 # Calculations for conventional EEMT
+
+## Monthly Precipitation
+
+$$
+\operatorname{P}
+$$
+
+Units are in centimeters (cm) per month
 
 ## Local temperature correction 
 

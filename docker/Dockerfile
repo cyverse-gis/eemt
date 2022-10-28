@@ -1,4 +1,9 @@
-FROM ubuntu:22.04
+FROM mundialis/grass-py3-pdal:releasebranch_8_2-ubuntu
+# image from https://github.com/OSGeo/grass/tree/main/docker
+# THANK YOU 4 EVER OSGEO!
+
+# Set the SH shell to use BASH
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # Build-time metadata as defined at http://label-schema.org
 ARG BUILD_DATE
@@ -6,7 +11,7 @@ ARG VCS_REF
 ARG VERSION
 LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.name="EEMT" \
-      org.label-schema.description="Conda CCTOOLS Python PROJ GDAL GRASS SAGA-GIS" \
+      org.label-schema.description="GRASS PY3 with PDAL CCTOOLS Conda" \
       org.label-schema.url="https://tyson-swetnam.github.io/eemt" \
       org.label-schema.vcs-ref=$VCS_REF \
       org.label-schema.vcs-url="e.g. https://github.com/tyson-swetnam/eemt" \
@@ -16,6 +21,9 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 
 USER root
 ENV DEBIAN_FRONTEND noninteractive
+
+# data directory - not using the base images volume because then the permissions cannot be adapted
+ENV DATA_DIR /data
 
 # Add sudo
 RUN apt-get update && \
@@ -35,6 +43,9 @@ ENV TZ America/Phoenix
 ENV LANG=C.UTF-8 
 ENV LC_ALL "en_US.UTF-8"
 RUN echo LANG="en_US.UTF-8" > /etc/default/locale
+RUN apt update && apt install locales && \
+    locale-gen en_US.UTF-8 && \
+    dpkg-reconfigure locales
 ENV PATH /opt/conda/bin:$PATH
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
@@ -63,30 +74,35 @@ RUN apt-get update && \
     dpkg -i tini.deb && \
     rm tini.deb && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/*   
 
-# Install a few dependencies for iCommands, text editing, and monitoring instances
-RUN apt update && \
-    apt install -y lsb-release apt-transport-https curl libfreetype6-dev pkg-config libx11-dev gcc less software-properties-common apt-utils glances htop nano rclone
+# Reduce the image size
+RUN apt-get autoremove -y
+RUN apt-get clean -y
 
-# Fix libssl1.1 error
-RUN wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1-1ubuntu2.1~18.04.20_amd64.deb && \
-    dpkg -i libssl1.1_1.1.1-1ubuntu2.1~18.04.20_amd64.deb
+# set SHELL var to avoid /bin/sh fallback in interactive GRASS GIS sessions in docker
+ENV SHELL /bin/bash
 
-RUN wget -qO - https://packages.irods.org/irods-signing-key.asc | apt-key add - && \
-    echo "deb [arch=amd64] https://packages.irods.org/apt/ focal main" >> /etc/apt/sources.list.d/renci-irods.list && \
-    apt-get update && \
-    apt install -y irods-icommands 
+# declare data volume late so permissions apply
+VOLUME $DATA_DIR
+WORKDIR $DATA_DIR
 
-# add iRODS iCommands to user profile as JSON
-RUN mkdir /home/jovyan/.irods     
+# once everything is built, we can install the GRASS extensions
+RUN grass --text -c epsg:3857 /home/jovyan/mytmp_wgs84 -e && \
+    	echo "g.extension -s extension=r.sun.mp ; g.extension -s extension=r.sun.hourly ; g.extension -s extension=r.sun.daily" | grass --text /home/jovyan/mytmp_wgs84/PERMANENT
+
+############## GIS Build Finished ##############
+
+RUN usermod -aG jovyan jovyan
 
 # Create Conda environment for CCTOOLS & Jupyter Notebooks
 USER jovyan
 RUN conda update conda 
 RUN conda config --add channels conda-forge
 RUN conda config --set channel_priority strict
-RUN conda install -c conda-forge mamba
+RUN conda install mamba
+RUN mamba install -c conda-forge jupyterlab
+
 COPY environment.yml /home/jovyan/ 
 RUN mamba env create -f /home/jovyan/environment.yml
 RUN echo ". /opt/conda/etc/profile.d/conda.sh" >> /home/jovyan/.bashrc && \
@@ -107,72 +123,8 @@ RUN jupyter labextension install \
 
 RUN jupyter lab build
 
-############## Getting ready to build GIS packages ##############
-USER root
-COPY gis_dependency.makefile /tmp/
-
-ENV GISBASE=/opt/osgeo/grass-8.2.0
-ENV LOCATION=/usr/local/share/grassdata/eemt/PERMANENT
-ENV GRASS_PROJSHARE=/usr/share/proj
-ENV LD_LIBRARY_PATH=/opt/osgeo/lib:/opt/osgeo/grass-8.2.0/lib
-ENV PATH=/opt/osgeo/bin:/opt/osgeo/grass-8.2.0/bin:$PATH
-ENV PYTHONPATH=/opt/osgeo/lib/python3.7/site-packages
-ENV export GISBASE LOCATION GRASS_PROJSHARE LD_LIBRARY_PATH PATH PYTHONPATH
-
-# data directory - not using the base images volume because then the permissions cannot be adapted
-ENV DATA_DIR /data
-
-# Set gcc/g++ environmental variables for GRASS GIS compilation, without debug symbols
-ENV MYCFLAGS "-O2 -std=gnu99 -m64"
-ENV MYLDFLAGS "-s"
-# CXX stuff:
-ENV LD_LIBRARY_PATH "/usr/local/lib"
-ENV LDFLAGS "$MYLDFLAGS"
-ENV CFLAGS "$MYCFLAGS"
-ENV CXXFLAGS "$MYCXXFLAGS"
-
-# Update library paths
-RUN echo "Updating library paths" && \
-    cd /etc/ld.so.conf.d && \
-    echo "/opt/osgeo/lib" >> osgeo.conf && \
-    echo "/opt/osgeo/lib64" >> osgeo.conf && \
-    echo "/opt/osgeo/grass-8.2.0/lib" >> grass.conf && \
-    ldconfig
-
-# SAGA-GIS dependencies
-RUN apt-get install ibwxgtk3.0-gtk3-dev libtiff5-dev \
-    libexpat1-dev wx-common libogdi-dev unixodbc-dev
-
-# Run the Makefile for PROJ GEOS, GDAL-OGR, GRASS, SAGA-GIS - this will take a long time
-RUN cd /tmp && make -f gis_dependency.makefile
-
-# Reduce the image size
-RUN apt-get autoremove -y
-RUN apt-get clean -y
-
-# set SHELL var to avoid /bin/sh fallback in interactive GRASS GIS sessions in docker
-ENV SHELL /bin/bash
-
-# declare data volume late so permissions apply
-VOLUME $DATA_DIR
-WORKDIR $DATA_DIR
-
-# once everything is built, we can install the GRASS extensions
-RUN export LC_ALL=en_US.UTF-8 && \
-    	export LANG=en_US.UTF-8 && \
-    	export PATH=/opt/osgeo/bin:/opt/osgeo/grass-8.2.0/bin:/opt/osgeo/grass-8.2.0/scripts/:$PATH && \
-    	export GISBASE=/opt/osgeo/grass-8.2.0 && \
-    	rm -rf mytmp_wgs84 && \
-    	grass72 -text -c epsg:3857 ${PWD}/mytmp_wgs84 -e && \
-    	echo "g.extension -s extension=r.sun.mp ; g.extension -s extension=r.sun.hourly ; g.extension -s extension=r.sun.daily" | grass72 -text ${PWD}/mytmp_wgs84/PERMANENT
-
-############## GIS Build Finished ##############
-
 # add /cvmfs and /work directory for later OSG reintegration
 RUN mkdir /cvmfs /work 
-
-RUN addgroup jovyan
-RUN usermod -aG jovyan jovyan
 
 USER jovyan
 WORKDIR /home/jovyan

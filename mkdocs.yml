@@ -18,6 +18,7 @@ nav:
   - 'Home': index.md
   - 'Installation': installation.md
   - 'Background': background.md
+  - 'Calculation': eemt.md
   - 'Instructions': instructions.md
   - 'Citation': citation.md
 
@@ -25,6 +26,9 @@ nav:
 # JavaScript for Intercom Widget
 extra_javascript:
   - javascripts/intercom-learning.js
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
 # Set theme to `readthedocs`
 # must also set Action to use `@nomaterial` branch instead of `@master` for material
