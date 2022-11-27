@@ -1,13 +1,21 @@
-# Docker file for building GIS dependencies
+# Development
 
-Build from this file:
+Build from the Dockerfile in this folder:
 
 ```
-sudo docker build -t tswetnam/eemt:0.0.9 . 
+sudo docker build --network=host -t tswetnam/eemt:latest .
 ```
+
+# Usage
 
 Pull from DockerHub:
 
 ```
-docker pull tswetnam/eemt:0.0.9 .
+docker pull tswetnam/eemt:latest .
+```
+
+Run as a Jupyter Lab
+
+```
+docker run -it --rm -p 8888:8888 tswetnam/eemt:latest 
 ```

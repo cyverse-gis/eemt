@@ -96,6 +96,7 @@ RUN grass --text -c epsg:3857 /home/jovyan/mytmp_wgs84 -e && \
 RUN usermod -aG jovyan jovyan
 
 # Create Conda environment for CCTOOLS & Jupyter Notebooks
+RUN apt-get update && apt-get install -y nodejs npm
 USER jovyan
 RUN conda update conda 
 RUN conda config --add channels conda-forge
@@ -124,7 +125,9 @@ RUN jupyter labextension install \
 RUN jupyter lab build
 
 # add /cvmfs and /work directory for later OSG reintegration
-RUN mkdir /cvmfs /work 
+RUN sudo mkdir /cvmfs /work 
+RUN sudo chown -R jovyan:jovyan /cvmfs
+RUN sudo chown -R jovyan:jovyan /work
 
 USER jovyan
 WORKDIR /home/jovyan
