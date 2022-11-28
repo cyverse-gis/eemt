@@ -136,4 +136,5 @@ EXPOSE 8888
 COPY entry.sh /bin
 RUN mkdir -p /home/jovyan/.irods
 
-ENTRYPOINT ["bash", "/bin/entry.sh"]
+ENTRYPOINT ["tini", "--"]
+CMD ["jupyter", "lab", "--port=8888", "--no-browser", "--ip=0.0.0.0", "--allow-root", "--ServerApp.token=''", "--ServerApp.password=''"]
