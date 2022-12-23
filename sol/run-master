@@ -58,18 +58,12 @@ fi
 
 # large input files get special project name so we can
 # map them to an large resource
-PROJECT_NAME="EEMT"
+PROJECT_NAME="SOL"
 DEM_SIZE=`du -s $DEM | awk '{print $1}'`
 NUM_THREADS=4
 if [ $DEM_SIZE -gt 200000 ]; then
-    PROJECT_NAME="EEMT_LARGE"
-    NUM_THREADS=24
-fi
-
-# download the container if we do not already have it
-if [ ! -e "$WORK_DIR/eemt-current.simg" ]; then
-    #singularity pull --name eemt-current.simg shub://tyson-swetnam/osgeo-singularity
-    wget -nv -O $WORK_DIR/eemt-current.simg http://xd-login.opensciencegrid.org/scratch/eemt/singularity/eemt-current.img
+    PROJECT_NAME="SOL_LARGE"
+    NUM_THREADS=32
 fi
 
 # we also need the password file

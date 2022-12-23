@@ -1,6 +1,6 @@
 Installation of the required GIS software environment for calculating the models can be done locally, using `conda` or `mamba` package managers, or with Docker, or by using a `makefile`
 
-## Docker
+## :simple-docker: Docker
 
 Our cached Docker Image is maintained on this GitHub repository, and uses an Action to build and cache the container on CyVerse Harbor.
 
@@ -12,9 +12,7 @@ docker pull harbor.cyverse.org/vice/jupyter/eemt:latest
 docker run -it --rm -p 8888:8888 harbor.cyverse.org/vice/jupyter/eemt:latest
 ```
 
-## Makefile
-
-## Conda
+## :simple-anaconda: Conda
 
 We recommend installing `mamba` and then installing the `environment.yml` for the geospatial environment
 
@@ -28,7 +26,11 @@ conda activate eemt
 
 ## Developer Notes
 
-### GIS
+### GIS installation
+
+![osgeo](https://www.osgeo.org/wp-content/themes/roots/assets/img/logo-osgeo.svg){width="300"}
+
+![grassgis](https://www.osgeo.org/wp-content/uploads/grassgis_logo_colorlogo_text_whitebg_square-250x250.png){width="300"}
 
 https://grasswiki.osgeo.org/wiki/Compile_and_Install
 
@@ -44,3 +46,8 @@ Installation order for building GRASS-GIS must be done sequentially:
 
 ### Makeflow & WorkQueue
 
+The [Cooperative Computing Lab (CCL)](http://ccl.cse.nd.edu/){target=_blank} at Notre Dame are the creators of `makeflow` and `workqueue` 
+
+[![makeflow](http://ccl.cse.nd.edu/software/makeflow/MakeflowLogo3.png){width="300"}](http://ccl.cse.nd.edu/software/makeflow/){target=_blank}
+
+[![workqueue](http://ccl.cse.nd.edu/software/workqueue/WorkQueueLogo2.png){width="300"}](http://ccl.cse.nd.edu/software/workqueue/){target=_blank}

@@ -4,12 +4,12 @@ The purpose of these documents are to help enable Reproducible Research, as part
 
 ## Contents
 
-[Project History & Background](background.md)
+[:material-history: Project History & Background](background.md)
 
-[Software Installation](installation.md)
+[:simple-python: Software Installation](installation.md)
 
-[Description of Calculations within the EEMT](eemt.md)
+[:material-sun-angle: Calculation of EEMT](eemt.md)
 
-[Instructions for running the workflows](instructions.md)
+[:octicons-workflow-24: Instructions for Workflows](instructions.md)
 
-[Citation & Acknowledgements](citation.md)
+[:material-file-document-outline: Citation & Acknowledgements](citation.md)

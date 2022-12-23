@@ -65,23 +65,13 @@ if ! find_work_dir; then
 fi
 cd $WORK_DIR
 
-# download the container
-singularity pull --name eemt-current.simg shub://tyson-swetnam/osgeo-singularity
-
 cp $TOP_DIR/sol/* ./
 
 # we also need the password file
 cp ~/.eemt-makeflow-password ./
 
 # run the workflow
-singularity exec \
-  --home $PWD:/srv \
-  --pwd /srv \
-  --scratch /var/tmp \
-  --scratch /tmp \
-  --contain --ipc --pid \
-  eemt-current.simg \
-  work_queue_worker -P .eemt-makeflow-password \
+work_queue_worker -P .eemt-makeflow-password \
                     -M ${PROJECT_NAME}-${PW_HASH} \
                     -s /srv \
                     -t 600 \

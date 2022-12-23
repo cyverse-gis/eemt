@@ -1,6 +1,0 @@
-## Citation
-
-### Publications
-
-### GitHub
-

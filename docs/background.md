@@ -1,18 +1,16 @@
 ## History of this Project
 
-This workflow tool was originally developed in 2014 at the University Arizona by undergraduate and graduate students of [Applied Concepts in Cyberinfrastructure (ACIC)](https://pods.iplantcollaborative.org/wiki/display/ACIC/Input+from+End+User+%28Customer%29+for+product). 
+This workflow was originally developed in 2014 at the University Arizona by undergraduate and graduate students of the [Applied Concepts in Cyberinfrastructure (ACIC)](https://pods.iplantcollaborative.org/wiki/display/ACIC/Input+from+End+User+%28Customer%29+for+product) project-based class. 
 
-The students worked with a project client, Dr. Tyson Lee Swetnam, then a post-doc, who had conceived the idea as related to a research paper he was collaborating on at the time: [Rasmussen et al. 2015](https://swes.cals.arizona.edu/chorover_lab/pdf_papers/Rasmussen_etal_2015.pdf){target=_blank}. 
+The students worked with a postdoctoral researcher ([Swetnam](https://tysonswetnam.com){target=_blank}) who had conceived the idea of distributing the calculations of solar irradiation using GRASS-GIS `r.sun` which the student's named `sol`. The output can be applied as the base energy input for a thermodynamic model called "effective energy to mass transfer" or EEMT ([Rasmussen et al. 2015](https://swes.cals.arizona.edu/chorover_lab/pdf_papers/Rasmussen_etal_2015.pdf){target=_blank}). 
 
-The semester long project resulted in a parallel workflow tool run on the University's high performance computing (HPC) system. 
+The semester-long research project resulted in a parallelizable workflow tool which ran on the UArizona high performance computing (HPC) cluster. The student group also worked with [CyVerse](https://cyverse.org) (formerly iPlantCollaborative) to host the code and class wiki.
 
-The group also worked with [CyVerse](https://cyverse.org) (formerly iPlantCollaborative) to host the code and class wiki.
+In 2015 Swetnam and his postdoctoral mentor (Pelletier) requested and were awarded an Extreme Science and Engineering Discovery Environment ([XSEDE](https://www.xsede.org/){target=_blank}) Extended Collaborative Support Service (ECSS) start-up allocation to continue the work. The result of that effort was described in [Swetnam et al. (2016)](http://dl.acm.org/citation.cfm?id=2949573){target=_blank}. 
 
-In 2015 the project received an Extreme Science and Engineering Discovery Environment ([XSEDE](https://www.xsede.org/){target=_blank}) Extended Collaborative Support (ECS) start-up allocation. That effort was described in [Swetnam et al. (2016)](http://dl.acm.org/citation.cfm?id=2949573){target=_blank}. 
+The XSEDE ECSS was supported by a research allocation on [SDSC Comet](http://www.sdsc.edu/support/user_guides/comet.html){target=_blank} and the [Open Science Grid](http://opensciencegrid.org/). The resulting workflow was briefly made available as a tool deployed on [OpenTopography.org](http://opentopo.sdsc.edu/). That tool is now deprecated. 
 
-The XSEDE start-up allocation was followed by a research allocation on [SDSC Comet](http://www.sdsc.edu/support/user_guides/comet.html){target=_blank} and the [Open Science Grid](http://opensciencegrid.org/).The result was a publically available tool using a containerized workflow,which was deployed on [OpenTopography.org](http://opentopo.sdsc.edu/) as an experimental tool (now deprecated). 
-
-The workflow was containerized and could be run on local machines (laptops, desktops, clusters), cloud, or HPC/HTC using [Singularity](http://singularity.lbl.gov/) and [Docker](http://docker.com).
+The `sol` and `eemt` workflows are containerized and can be run on local machines (laptops, desktops, clusters), cloud, or HPC/HTC using [Singularity](http://singularity.lbl.gov/) and [Docker](http://docker.com).
 
 ## Sol
 
