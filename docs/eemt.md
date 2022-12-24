@@ -14,9 +14,27 @@ Digital Elevation Models (DEM) are available from a variety of public data repos
 
 [:simple-microsoft: Microsoft Planetary Computer STAC](https://planetarycomputer.microsoft.com/catalog#DEMs){target=_blank}
 
+#### Slope Aspect
+
+Slope and Aspect are calculated from the DEM using [GRASS `r.slope.aspect`](https://grass.osgeo.org/grass82/manuals/r.slope.aspect.html){target=_blank}
+
+#### Topographic Wetness Index
+
+Topographic Wetness Index ($TWI_i$) ([Beven and Kirkby 1979](https://doi.org/10.1080/02626667909491834){target=_blank}) is computed for each pixel as
+
+$$ TWI_i = ln( \frac{a_i}{tan{\beta_i}}) $$
+
+where $a_i$ is the upslope contributing area in square meters ($m^2) and $\beta_i$ is the local slope. The contributing area was calculated using the [D-Infinity multiple flow direction approach](){target=_blank} as described by [Tarboton (1997)](){target=_blank}.
+
+Normalized wetness index αi is computed as
+
+$$ \alpha_i = \frac{TWI_i}{\Sigma_{i=1}^N{TWI_i}} $$
+
+where N is number of pixels in catchment or study area. The normalization ensures conservation of mass of the effective precipitation term for a given catchment or area.
+
 ### :material-image-filter-black-white: Surface Albedo & Reflectance
 
-Albedo and reflectance are calculated using XXXX
+Albedo and reflectance use existing data products. 
 
 ## :material-weather-sunny: Insolation
 
@@ -37,6 +55,14 @@ Both solar radiation datasets were calculated at an hourly time step, and summat
 Net radiation ($R_n$) was calculated for each month in mega joules ($MJ  m^2  {month^{-1}}$) as
 
 $$R_n = S_{topo} (1 - a) + L_n$$
+
+where $S_{topo}$ is , $a$ is albedo over the study area extracted from the [MODIS MCD43A3 data product](https://lpdaac.usgs.gov/products/mcd43a3v061/){target=_blank}, $L_n$ is the net longwave radiation. 
+
+[Durcik and Rasmussen](/docs/assets/EEMT_topo_description.pdf){target=_blank} calculated $L_n$ based on air temperature following [Allen et al. (1998)](https://www.scscourt.org/complexcivil/105cv049053/volume3/172618e_5xagwax8.pdf){target=_blank} as
+
+$$ L_n = \alpha {T_i}^4 (0.34−0.14 \sqrt{e_a})(1.35 \frac{R_s}{R_{so}} - 0.35)$$
+
+where $\alpha$ is Stefan-Boltzmann constant ($4.903 10-9 MJ K^{-4} m^{-2} d^{-1}$), $Ti$ is locally modified temperature, $e_a$ (VP) is actual vapor pressure, $R_s$ is solar radiation and $R_{so}$ is clear-sky solar radiation. In computation, we assumed that $R_s = R_{so}$
 
 ### :material-pine-tree: Normalized Difference Vegetation Index (NDVI)
 
@@ -103,8 +129,36 @@ Correcting temperature for local conditions
 
 Estimating PET from local conditions
 
-## :material-water-opacity: Mean saturated vapor pressure
+## Local PET using Penman-Monteith
 
+Potential evapotranspiration was computed using the [Penman-Montieth](http://www.agraria.unirc.it/documentazione/materiale_didattico/1462_2016_412_24509.pdf) equation from [Shuttleworth 1991](https://doi.org/10.1007/978-1-4612-3032-8_5){target=_blank}) and simplified for calculating potential evapotranspiration from a pan surface such that the surface resistance term (rs) in the denominator is assumed equal to zero
+
+$$ PET_{PM} = \frac{\Delta (R_n - G) + \rho_a c_p \frac{VP_d}{r_a}  }{\lambda (\Delta + \gamma)} $$
+
+where the first term in the numerator is the radiation balance with net radiation $R_n$ and ground heat flux is $G$. The second term in the numerator is the ventilation term that includes vapor pressure deficit $VP_d$ and aerodynamic resistance $r_a$ computed as 
+
+$$ r_a = \frac{ 4.72 ( ln\frac{z_m}{z_o})^2 }{1+0.536 U_z}$$
+
+where $z_m$ is the height of meteorological measurements at 2 m above ground level, $z_o$ is the aerodynamic roughness of an open water surface set equal to $0.00137 m$ following [Thom and Oliver (1977)](https://doi.org/10.1002/qj.49710343610){target=_blank}, and $U_z$ is wind speed. The remaining terms include the slope of the saturated vapor pressure-temperature relationship $\Delta$ calculated using mean air temperature as
+
+$$ \Delta = 0.04145 e^{0.06088T} $$
+
+the psychrometric constant γ determined as
+
+$$ \gamma = c_p P / \epsilon \lambda $$
+
+where $c_p$ is specific heat of moist air at constant pressure $1.013 10^{-3} MJ kg^{-1} \degree C-^{1} $, $\epsilon$ is the ratio of molar mass of water to that of dry air, $P$ is atmospheric pressure computed from measured values at the base station using elevation $z$ locally estimated lapse rate $\nu$ determined as
+
+$$ P = 101.3 (\frac{293 - \nu z}{ 293})^5.26 $$
+
+mean air density ρa , and λ the latent heat of evaporation of water.
+
+Actual evapotranspiration $AET$ was estimated using a Budyko curve (Budyko, 1974) describing the partitioning of potential and actual evapotranspiration relative to the aridity index (ratio of annual PET to annual rainfall). Potential evapotranspiration $PET_{PM}$ and precipitation $PPT$ were converted to monthly values of $AET$ using a Zhang– Budyko curve as (Zhang et al., 2001)
+
+$$ AET = PPT \begin{cases} 1 + \frac{ PET_{PM} }{ PPT } - [1 + \frac{PET_PM}{PPT}^w ]^{-1/w}\end{cases}$$
+
+
+## :material-water-opacity: Mean saturated vapor pressure
 
 Vapor pressure data are calculated on daily to monthly time scale.
 
