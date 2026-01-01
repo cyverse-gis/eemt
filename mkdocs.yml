@@ -1,0 +1,195 @@
+site_name: Effective Energy and Mass Transfer (EEMT)
+site_description: 'EEMT: An open source framework for quantifying energy and mass flux in Earth''s Critical Zone'
+site_author: 'Tyson L. Swetnam'
+site_url: 'https://tyson-swetnam.github.io/eemt/'
+
+repo_name: 'tyson-swetnam/eemt'
+repo_url: 'https://github.com/tyson-swetnam/eemt'
+edit_uri: 'edit/2020_update/docs/'
+
+copyright: 'Copyright &copy; 2025 Tyson L. Swetnam'
+
+theme:
+  name: 'material'
+  palette:
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: 'green'
+      accent: 'light green'
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: 'green'
+      accent: 'light green'
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+  
+  font:
+    text: 'Open Sans'
+    code: 'Roboto Mono'
+  
+  favicon: 'assets/favicon.ico'
+  logo: 'assets/eemt-logo.svg'
+  
+  features:
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.instant.progress
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - search.share
+    - header.autohide
+    - content.code.copy
+    - content.code.select
+    - content.code.annotate
+    - content.tabs.link
+
+plugins:
+  - search:
+      separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+  - minify:
+      minify_html: true
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+      title: Page contents
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      normalize_issue_symbols: true
+      repo_url_shorthand: true
+      user: tyson-swetnam
+      repo: eemt
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+      combine_header_slug: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+extra:
+  analytics:
+    provider: google
+    property: !ENV GOOGLE_ANALYTICS_KEY
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/tyson-swetnam
+    - icon: fontawesome/brands/docker
+      link: https://hub.docker.com/u/tswetnam/
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/tswetnam
+    - icon: fontawesome/solid/globe
+      link: https://tysonswetnam.com/
+  generator: false
+
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+nav:
+  - Home: 
+    - index.md
+    - 'License': license.md
+    - 'Code of Conduct': code_of_conduct.md
+  
+  - Getting Started:
+    - 'Overview': 'getting-started/index.md'
+    - 'Docker Deployment': 'getting-started/docker-deployment.md'
+  
+  - Infrastructure:
+    - 'Overview': 'infrastructure/index.md'
+    - 'Container Architecture': 'infrastructure/container-architecture.md'
+  
+  - Scientific Background:
+    - 'background/index.md'
+  
+  - Algorithms:
+    - 'Solar Radiation': 'algorithms/solar-radiation.md'
+    - 'Climate Integration': 'algorithms/climate-integration.md'
+    - 'Topographic Analysis': 'algorithms/topographic-analysis.md'
+    - 'EEMT Calculations': 'algorithms/eemt-calculations.md'
+  
+  - Data Sources:
+    - 'data-sources/index.md'
+  
+  - GRASS GIS:
+    - 'grass-gis/index.md'
+  
+  - Workflows:
+    - 'Overview': 'workflows/index.md'
+    - 'Quick Start': 'workflows/quick-start.md'
+    - 'Data Preparation': 'workflows/data-preparation.md'
+  
+  - Examples:
+    - 'examples/index.md'
+  
+  - API:
+    - 'Web Interface': 'web-interface/index.md'
+    - 'Web Architecture': 'web-interface/architecture.md'
+    - 'REST API': 'web-interface/api-reference.md'
+    - 'Workflow Parameters': 'api-reference/workflow-parameters.md'
+    - 'Legacy CLI': 'api-reference/index.md'
+  
+  - Distributed Deployment:
+    - 'distributed-deployment/index.md'
+  
+  - Development:
+    - 'development/index.md'
+    - 'Modernization Plan': 'PLAN.md'
+  
+  - About:
+    - 'about/index.md'
+    - 'Publications': 'about/publications.md'

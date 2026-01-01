@@ -1,0 +1,10 @@
+2026-01-01 08:26:57,783 - cleanup_jobs - INFO - Cleanup manager initialized:
+2026-01-01 08:26:57,783 - cleanup_jobs - INFO -   Base directory: web-interface
+2026-01-01 08:26:57,783 - cleanup_jobs - INFO -   Success retention: 7 days
+2026-01-01 08:26:57,783 - cleanup_jobs - INFO -   Failed retention: 12 hours
+2026-01-01 08:26:57,783 - cleanup_jobs - INFO -   Dry run mode: True
+2026-01-01 08:26:57,784 - cleanup_jobs - INFO - Cleanup cutoff times:
+2026-01-01 08:26:57,784 - cleanup_jobs - INFO -   Successful jobs completed before: 2025-12-25 08:26:57.784129
+2026-01-01 08:26:57,784 - cleanup_jobs - INFO -   Failed jobs completed before: 2025-12-31 20:26:57.784129
+2026-01-01 08:26:57,784 - cleanup_jobs - INFO - Found 0 successful jobs for data cleanup
+2026-01-01 08:26:57,784 - cleanup_jobs - INFO - Found 0 failed jobs for complete deletion

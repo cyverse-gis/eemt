@@ -1,0 +1,9 @@
+Mock sol result file
+Job ID: 8e1e3026-7901-4a88-bd6c-599ed86bfb55
+DEM: mcn_10m.tif
+Parameters: {
+  "step": 15.0,
+  "linke_value": 3.0,
+  "albedo_value": 0.2,
+  "num_threads": 2
+}

@@ -1,0 +1,79 @@
+name: eemt-gis
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  # Core Python
+  - python>=3.12
+  - pip
+  
+  # Geospatial Core Stack
+  - gdal=3.11.*
+  - proj>=9.0
+  - pdal>=2.8
+  - geos>=3.13  # Updated for GDAL 3.11 compatibility
+  - libspatialite>=5.1
+  - spatialindex>=1.9
+  # Note: GRASS GIS and QGIS installed separately via install_grass.sh and install_qgis.sh
+  
+  # Python Scientific Stack
+  - numpy>=1.26
+  - pandas>=2.1
+  - xarray>=2024.1
+  - rasterio>=1.4  # Updated for GDAL 3.11 compatibility
+  - geopandas>=0.14
+  - fiona>=1.9
+  - shapely>=2.0
+  - pyproj>=3.6
+  - cartopy>=0.22
+  
+  # Visualization
+  - matplotlib>=3.8
+  - plotly>=5.17
+  - bokeh>=3.3
+  - contextily>=1.4
+  - folium>=0.15
+  
+  # Analysis and Processing
+  - scipy>=1.11
+  - scikit-image>=0.22
+  - scikit-learn>=1.3
+  - dask>=2024.1
+  - dask-distributed>=2024.1
+  
+  # Workflow and HPC
+  - nextflow>=23.10
+  - snakemake>=7.32
+  
+  # Jupyter and Notebook Tools
+  - jupyter>=1.0
+  - jupyterlab>=4.0
+  - ipywidgets>=8.1
+  - ipyleaflet>=0.17
+  - voila>=0.5
+  
+  # Climate and Earth System Data
+  - netcdf4>=1.6
+  - h5py>=3.10
+  - zarr>=2.16
+  - cfgrib>=0.9
+  - ecmwf-api-client>=1.6
+  
+  # Additional Utilities
+  - requests>=2.31
+  - tqdm>=4.66
+  - pyyaml>=6.0
+  - click>=8.1
+  - rich>=13.7
+  
+  # Development Tools (optional)
+  - pytest>=7.4
+  - black>=23.9
+  - flake8>=6.1
+  - mypy>=1.6
+  
+  # Pip-only dependencies
+  - pip:
+    - grass-session>=0.5  # Python GRASS interface
+    - daymetpy>=1.1  # DAYMET API client
+    - elevation>=1.1  # DEM download utilities

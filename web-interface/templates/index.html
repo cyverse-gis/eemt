@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EEMT Local Workflow Service</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/static/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header -->
+        <header class="bg-primary text-white py-3 mb-4">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <i class="bi bi-geo-alt-fill fs-2"></i>
+                    </div>
+                    <div class="col">
+                        <h1 class="h3 mb-0">EEMT Local Workflow Service</h1>
+                        <p class="mb-0 small">Effective Energy and Mass Transfer Algorithm Suite</p>
+                    </div>
+                    <div class="col-auto">
+                        <a href="/monitor" class="btn btn-outline-light">
+                            <i class="bi bi-activity"></i> Monitor Jobs
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="row">
+                <!-- Job Submission Form -->
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4><i class="bi bi-plus-circle"></i> Submit New Workflow</h4>
+                        </div>
+                        <div class="card-body">
+                            <form id="jobForm" enctype="multipart/form-data">
+                                <!-- Workflow Type Selection -->
+                                <div class="mb-3">
+                                    <label class="form-label">Workflow Type</label>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="card workflow-card" data-workflow="sol">
+                                                <div class="card-body text-center">
+                                                    <i class="bi bi-sun fs-1 text-warning"></i>
+                                                    <h5 class="card-title">Solar Radiation</h5>
+                                                    <p class="card-text small">Calculate daily and monthly solar irradiation using GRASS r.sun</p>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="workflow_type" value="sol" id="workflow_sol" checked>
+                                                        <label class="form-check-label" for="workflow_sol">Select Solar</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="card workflow-card" data-workflow="eemt">
+                                                <div class="card-body text-center">
+                                                    <i class="bi bi-globe fs-1 text-success"></i>
+                                                    <h5 class="card-title">Full EEMT</h5>
+                                                    <p class="card-text small">Complete EEMT calculation with climate data integration</p>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="workflow_type" value="eemt" id="workflow_eemt">
+                                                        <label class="form-check-label" for="workflow_eemt">Select EEMT</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- DEM Upload -->
+                                <div class="mb-4">
+                                    <label for="dem_file" class="form-label mb-3">
+                                        <i class="bi bi-file-earmark-arrow-up"></i> Digital Elevation Model (DEM)
+                                    </label>
+                                    <input class="form-control form-control-lg mb-3" type="file" id="dem_file" name="dem_file" accept=".tif,.tiff" required style="padding: 12px;">
+                                    <div class="mt-2">
+                                        <div id="upload_status" class="text-muted small">No file selected</div>
+                                        <div id="upload_progress" class="progress mt-2" style="display: none;">
+                                            <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-text mt-2">Upload a GeoTIFF (.tif) file containing elevation data. File will upload immediately when selected.</div>
+                                </div>
+
+                                <!-- Solar Parameters -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="step" class="form-label">Time Step (minutes)</label>
+                                            <input type="number" class="form-control" id="step" name="step" value="15" min="3" max="60" step="0.5">
+                                            <div class="form-text">Solar calculation time interval (3-15 minutes recommended)</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="num_threads" class="form-label">CPU Threads</label>
+                                            <input type="number" class="form-control" id="num_threads" name="num_threads" value="4" min="1" max="32">
+                                            <div class="form-text">Number of parallel processing threads</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="linke_value" class="form-label">Linke Turbidity</label>
+                                            <input type="number" class="form-control" id="linke_value" name="linke_value" value="3.0" min="1.0" max="8.0" step="0.1">
+                                            <div class="form-text">Atmospheric turbidity factor (1.0-8.0)</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="albedo_value" class="form-label">Surface Albedo</label>
+                                            <input type="number" class="form-control" id="albedo_value" name="albedo_value" value="0.2" min="0.0" max="1.0" step="0.01">
+                                            <div class="form-text">Surface reflectance (0.0-1.0)</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- EEMT-specific Parameters (hidden by default) -->
+                                <div id="eemt_params" style="display: none;">
+                                    <h5><i class="bi bi-calendar3"></i> Climate Data Range</h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="start_year" class="form-label">Start Year</label>
+                                                <input type="number" class="form-control" id="start_year" name="start_year" value="2020" min="1980" max="2024">
+                                                <div class="form-text">DAYMET data available 1980-2024</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="end_year" class="form-label">End Year</label>
+                                                <input type="number" class="form-control" id="end_year" name="end_year" value="2020" min="1980" max="2024">
+                                                <div class="form-text">Multi-year analysis supported</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                                        <i class="bi bi-play-circle"></i> Submit Workflow
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Information Sidebar -->
+                <div class="col-lg-4">
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h5><i class="bi bi-info-circle"></i> Workflow Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="workflow_info">
+                                <h6>Solar Radiation Workflow</h6>
+                                <ul class="small">
+                                    <li>Calculates daily solar irradiation for entire year (365 days)</li>
+                                    <li>Uses GRASS GIS r.sun.mp for topographic solar modeling</li>
+                                    <li>Generates monthly aggregated products</li>
+                                    <li>Output: Global and direct solar radiation maps</li>
+                                </ul>
+                                <div class="alert alert-info">
+                                    <strong>Typical runtime:</strong> 5-30 minutes depending on DEM resolution and CPU threads
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="bi bi-gear"></i> System Status</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="system_status">
+                                <div class="text-center text-muted">
+                                    <i class="bi bi-hourglass-split fs-1"></i>
+                                    <p>Checking system status...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Jobs -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="bi bi-clock-history"></i> Recent Jobs</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="recent_jobs">
+                                <div class="text-center text-muted">
+                                    <i class="bi bi-hourglass-split fs-1"></i>
+                                    <p>No jobs submitted yet</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Modal -->
+    <div class="modal fade" id="progressModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Job Submitted Successfully</h5>
+                </div>
+                <div class="modal-body">
+                    <p>Your workflow has been submitted and is being processed.</p>
+                    <div class="mb-2">
+                        <strong>Job ID:</strong> <span id="job_id_display"></span>
+                    </div>
+                    <div class="progress mb-3">
+                        <div class="progress-bar" id="progress_bar" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <div id="job_status">Initializing...</div>
+                </div>
+                <div class="modal-footer">
+                    <a href="/monitor" class="btn btn-primary">View in Monitor</a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continue</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/app.js"></script>
+</body>
+</html>

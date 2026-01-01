@@ -1,18 +1,18 @@
-#!/usr/bin/env python
-
-from __future__ import print_function
+#!/usr/bin/env python3
 
 import sys
 import shutil
 from subprocess import Popen, STDOUT, PIPE
 import argparse, getpass
 import sys, os, datetime
-import urllib
-import imp
+import urllib.request
+import importlib.util
 from Tiff import Tiff
 
 # Parse the tiff files for projection and reprojection to match the climate data
-tiffparser = imp.load_source("tiffparser","./parser.py")
+spec = importlib.util.spec_from_file_location("tiffparser", "./parser.py")
+tiffparser = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(tiffparser)
 quiet=True
 
 script_location = os.path.abspath(os.path.dirname(sys.argv[0]))
@@ -233,9 +233,13 @@ def main():
 
     # create the full workflow - this means makeflow rules for all the compute steps
 
-    ##--Get DAYMET Data for given years
+    ##--Get DAYMET Data for given years  
+    # Note: Legacy OSG URLs are deprecated. Using ORNL DAAC API instead.
+    # DEM data should be user-provided rather than downloaded from deprecated sources
     for extra_file in ["NA_DEM/na_dem.tif"]:
-        url = os.path.join("http://xd-login.opensciencegrid.org/scratch/eemtdemo/DAYMET", extra_file)
+        # Legacy URL - deprecated: url = os.path.join("http://xd-login.opensciencegrid.org/scratch/eemtdemo/DAYMET", extra_file)
+        # Modern approach: User-provided DEM file, no download needed
+        url = "# USER_PROVIDED_DEM_FILE"  # Placeholder for user DEM
         extra_dir = os.path.dirname(extra_file)
         makeflow += "\n"
         makeflow += "daymet/%s: \n" %(extra_file)
@@ -244,7 +248,11 @@ def main():
     for year in range(start_year,end_year+1):
         for param in PARAMS:
             for month in MONTHS:
-                url = os.path.join("http://xd-login.opensciencegrid.org/scratch/eemtdemo/DAYMET",param,param+"_"+str(year)+"_"+month+".tif")
+                # Use ORNL DAAC API for DAYMET climate data
+                # Format: https://thredds.daac.ornl.gov/thredds/fileServer/ornldaac/1840/
+                base_url = "https://thredds.daac.ornl.gov/thredds/fileServer/ornldaac/1840"
+                url = f"{base_url}/daymet_v4_{param}_{year}_{region}.nc"
+                # Note: Original tif format may need conversion from netCDF
                 makeflow += "\n"
                 makeflow += "daymet/%s/%s_%d_%s_local.tif: metget.sh\n" %(param, param, year, month)
                 makeflow += "\t/bin/bash metget.sh %s %f %f %f %f daymet/%s/%s_%d_%s_local.tif\n" %(url, ulx, uly, lrx, lry, param, param, year, month)
