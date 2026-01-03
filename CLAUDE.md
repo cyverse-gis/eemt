@@ -11,6 +11,95 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Secondary Languages**: Bash, R (for analysis)  
 **Domain**: Earth System Science, Geomorphology, Hydrology  
 
+## Specialized Agent Configuration
+
+This project utilizes specialized Claude Code agents located in `.claude/agents/` to handle domain-specific tasks with expert knowledge. These agents provide specialized assistance for different aspects of EEMT development and deployment.
+
+### Available Specialized Agents
+
+#### 1. **python-gis-expert** (`.claude/agents/python-gis-expert.md`)
+**Use for**: Geospatial data processing, GIS workflows, and spatial analysis tasks
+- **Expertise**: GDAL, PDAL, PROJ, GRASS GIS, PyQGIS, raster/vector processing
+- **EEMT Applications**: DEM processing, coordinate transformations, spatial data validation
+- **When to use**: Working with GeoTIFF files, projection handling, topographic analysis
+
+#### 2. **workflow-debug-agent** (`.claude/agents/workflow-debug-agent.md`)
+**Use for**: Makeflow/Work Queue debugging and distributed computing optimization
+- **Expertise**: CCTools, foreman-worker architectures, task distribution, performance tuning
+- **EEMT Applications**: Solar radiation workflow optimization, distributed EEMT calculations
+- **When to use**: Workflow execution failures, task timeout issues, resource allocation problems
+
+#### 3. **container-orchestrator** (`.claude/agents/container-orchestrator.md`)
+**Use for**: Docker, Kubernetes, and container deployment management
+- **Expertise**: Container orchestration, Docker Compose, deployment strategies
+- **EEMT Applications**: EEMT container builds, web interface deployment, scaling strategies
+- **When to use**: Container configuration, deployment issues, scaling requirements
+
+#### 4. **fastapi-html-frontend** (`.claude/agents/fastapi-html-frontend.md`)
+**Use for**: Web interface development and FastAPI backend integration
+- **Expertise**: FastAPI development, HTML frontends, REST API design, job management
+- **EEMT Applications**: Web-based workflow submission, job monitoring, results visualization
+- **When to use**: Web interface issues, API endpoints, frontend-backend integration
+
+#### 5. **mkdocs-documentation-writer** (`.claude/agents/mkdocs-documentation-writer.md`)
+**Use for**: Documentation creation and maintenance using MkDocs
+- **Expertise**: Technical writing, MkDocs configuration, documentation workflows
+- **EEMT Applications**: User guides, API documentation, algorithm explanations, tutorials
+- **When to use**: Creating documentation, updating guides, writing technical content
+
+#### 6. **agent-architect** (`.claude/agents/agent-architect.md`)
+**Use for**: Complex multi-domain tasks requiring coordination between specialized agents
+- **Expertise**: Task orchestration, agent coordination, workflow planning
+- **EEMT Applications**: Large-scale refactoring, multi-component feature development
+- **When to use**: Complex tasks spanning multiple domains (GIS + containers + docs)
+
+### Agent Usage Guidelines
+
+#### Automatic Agent Selection
+Claude Code will automatically select appropriate specialized agents based on task context:
+
+```python
+# GIS data processing task → python-gis-expert
+"I need to reproject this DEM and calculate slope"
+
+# Workflow performance issue → workflow-debug-agent  
+"My Makeflow is timing out on large datasets"
+
+# Container deployment → container-orchestrator
+"Help me scale the EEMT containers across multiple nodes"
+
+# Web interface bug → fastapi-html-frontend
+"The job submission form isn't validating parameters correctly"
+
+# Documentation request → mkdocs-documentation-writer
+"Create user documentation for the new GPU acceleration feature"
+
+# Multi-domain task → agent-architect
+"Refactor the entire workflow system to use Nextflow instead of Makeflow"
+```
+
+#### Manual Agent Invocation
+You can explicitly request specific agents when needed:
+
+```bash
+# Request specific agent for specialized knowledge
+"Use the python-gis-expert agent to help optimize this raster processing pipeline"
+
+# Coordinate multiple agents for complex tasks
+"Use the agent-architect to plan refactoring the web interface and container system"
+```
+
+### Agent Integration with EEMT Workflows
+
+The specialized agents are pre-configured with EEMT domain knowledge:
+
+- **python-gis-expert**: Understands DEM processing, GRASS GIS integration, DAYMET data handling
+- **workflow-debug-agent**: Familiar with solar radiation task distribution, EEMT pipeline optimization
+- **container-orchestrator**: Configured for EEMT Docker builds, web interface deployment
+- **fastapi-html-frontend**: Knows EEMT job submission patterns, monitoring requirements
+- **mkdocs-documentation-writer**: Understands EEMT algorithms, usage patterns, scientific context
+- **agent-architect**: Coordinates complex EEMT modernization tasks across domains
+
 ## Software Dependencies
 
 ### Core Geospatial Stack
@@ -237,6 +326,49 @@ python run-workflow --start-year 2020 --end-year 2020 --step 15 ../examples/mcn_
 ### Git Workflow Requirements
 **CRITICAL**: After every successful prompt completion that modifies code, you MUST commit changes using detailed commit messages to enable future rollbacks.
 
+#### Docker Container Rebuild Requirements
+**MANDATORY**: Rebuild Docker containers after major changes to ensure consistency between codebase and deployed environments.
+
+**Rebuild containers when changes affect:**
+- Core workflow scripts (`sol/sol/`, `eemt/eemt/`)
+- Docker configuration files (`docker/*/Dockerfile`, `docker-compose.yml`)
+- System dependencies or GRASS GIS integration
+- Web interface components (`web-interface/`)
+- Python requirements or dependency changes
+- Container entry points or workflow orchestration
+
+**Container Rebuild Commands:**
+```bash
+# After major changes, rebuild base container
+cd docker/ubuntu/24.04/
+./build.sh
+
+# Verify container build success
+docker images | grep eemt:ubuntu24.04
+
+# Rebuild web interface container if web components changed
+docker build -t eemt-web -f docker/web-interface/Dockerfile .
+
+# Test container functionality after rebuild
+docker run --rm eemt:ubuntu24.04 grass --version
+docker run --rm eemt:ubuntu24.04 makeflow --version
+docker run --rm eemt:ubuntu24.04 python /opt/eemt/bin/run-solar-workflow.py --help
+
+# For Docker Compose deployments, rebuild and restart services
+docker-compose down
+docker-compose build
+docker-compose up -d
+
+# Verify web interface is accessible
+curl -f http://127.0.0.1:5000/health || echo "Web interface rebuild required"
+```
+
+**When NOT to rebuild:**
+- Documentation-only changes (`docs/`, `*.md` files)
+- Configuration file updates that don't affect container internals
+- Minor bug fixes that don't change dependencies or system integration
+- Git workflow or project management file changes
+
 #### Required Git Commands After Each Successful Change
 ```bash
 # Stage all modified files
@@ -258,6 +390,7 @@ Files affected:
 
 Testing: [describe any testing performed]
 Impact: [describe potential impact on system]
+Container Status: [REBUILT/NO_REBUILD_NEEDED - specify if containers were rebuilt]
 
 🤖 Generated with Claude Code (claude.ai/code)
 
@@ -281,6 +414,7 @@ Files affected:
 
 Testing: Tested with 10GB DEM file, memory usage stable
 Impact: Prevents crashes on large datasets, improves stability
+Container Status: REBUILT - Core workflow scripts modified, containers rebuilt and tested
 
 🤖 Generated with Claude Code (claude.ai/code)
 
@@ -303,6 +437,7 @@ Files affected:
 
 Testing: Validated 5x speedup on RTX 4090, fallback tested
 Impact: Significant performance improvement for large-scale analyses
+Container Status: REBUILT - CUDA dependencies added, containers rebuilt with NVIDIA runtime
 
 🤖 Generated with Claude Code (claude.ai/code)
 
@@ -326,6 +461,32 @@ Files affected:
 
 Testing: All existing tests pass, no functional changes
 Impact: Improved maintainability, reduced technical debt
+Container Status: NO_REBUILD_NEEDED - Code refactoring only, no container changes required
+
+🤖 Generated with Claude Code (claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>"
+
+# Example 4: Container rebuild scenario
+git commit -m "UPDATE: Upgrade GRASS GIS to version 8.4 with enhanced r.sun performance
+
+Detailed changes:
+- Updated Docker base image to Ubuntu 24.04 LTS
+- Upgraded GRASS GIS from 8.2 to 8.4 for improved GPU support
+- Modified workflow scripts to use new GRASS API features
+- Updated container entry points for compatibility
+- Enhanced error handling for GRASS session management
+
+Files affected:
+- docker/ubuntu/24.04/Dockerfile: Updated GRASS GIS installation
+- docker/ubuntu/24.04/build.sh: Modified build process
+- sol/sol/rsun.sh: Updated GRASS API calls
+- eemt/eemt/reemt.sh: Updated GRASS session handling
+- web-interface/containers/workflow_manager.py: Updated container configuration
+
+Testing: Rebuilt containers successfully, validated solar workflow execution
+Impact: Improved performance and GPU acceleration compatibility
+Container Status: REBUILT - Major GRASS GIS upgrade, full container rebuild completed
 
 🤖 Generated with Claude Code (claude.ai/code)
 
@@ -339,6 +500,8 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 - **FILE LISTING**: Always list specific files and their changes
 - **TESTING NOTES**: Document any validation or testing performed
 - **IMPACT ASSESSMENT**: Describe potential system impact
+- **CONTAINER STATUS**: Always specify if containers were rebuilt or why rebuild was not needed
+- **CONTAINER TESTING**: If containers were rebuilt, verify functionality before committing
 
 #### Rollback Strategy
 When issues are discovered:

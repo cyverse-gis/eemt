@@ -1,0 +1,216 @@
+{{- if .Values.workers.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "eemt.fullname" . }}-worker
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "eemt.worker.labels" . | nindent 4 }}
+  {{- with .Values.workers.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if not .Values.workers.autoscaling.enabled }}
+  replicas: {{ .Values.workers.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "eemt.worker.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "eemt.worker.selectorLabels" . | nindent 8 }}
+        {{- with .Values.workers.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.workers.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "eemt.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.workers.securityContext | nindent 8 }}
+      containers:
+      - name: worker
+        image: {{ include "eemt.worker.image" . }}
+        imagePullPolicy: {{ .Values.image.worker.pullPolicy }}
+        
+        # Command and args for worker
+        command:
+        - /bin/bash
+        - -c
+        - |
+          echo "Starting EEMT worker node..."
+          echo "Configuration:"
+          echo "  Master host: ${MASTER_HOST}"
+          echo "  Master port: ${MASTER_PORT}"
+          echo "  Worker cores: ${WORKER_CORES}"
+          echo "  Worker memory: ${WORKER_MEMORY}"
+          echo "  Work directory: ${WORK_DIR}"
+          
+          # Activate conda environment
+          source /opt/conda/etc/profile.d/conda.sh
+          conda activate eemt-gis
+          
+          # Set GRASS environment
+          export GISBASE=/usr/lib/grass84
+          export PYTHONPATH=/usr/lib/grass84/etc/python:$PYTHONPATH
+          export LD_LIBRARY_PATH=/usr/lib/grass84/lib:$LD_LIBRARY_PATH
+          
+          # Create work directory
+          mkdir -p ${WORK_DIR}
+          cd ${WORK_DIR}
+          
+          # Start Work Queue worker
+          work_queue_worker \
+            --master-name ${WORK_QUEUE_PROJECT} \
+            --cores ${WORKER_CORES} \
+            --memory ${WORKER_MEMORY} \
+            --disk ${WORKER_DISK} \
+            --timeout 3600 \
+            --single-shot \
+            --debug all \
+            ${MASTER_HOST}:${MASTER_PORT}
+        
+        # Environment variables
+        env:
+        {{- include "eemt.envVars" . | nindent 8 }}
+        - name: MASTER_HOST
+          value: {{ include "eemt.fullname" . }}-web
+        - name: MASTER_PORT
+          value: {{ .Values.config.cctools.workQueuePort | quote }}
+        - name: WORKER_CORES
+          value: "4"
+        - name: WORKER_MEMORY
+          value: "8192"  # MB
+        - name: WORKER_DISK
+          value: "50000"  # MB
+        - name: WORK_DIR
+          value: "/tmp/eemt-worker"
+        - name: WORK_QUEUE_PROJECT
+          value: {{ .Values.config.cctools.projectName | quote }}
+        
+        # Resource limits
+        resources:
+          {{- toYaml .Values.workers.resources | nindent 10 }}
+          {{- if .Values.workers.gpu.enabled }}
+          limits:
+            {{ .Values.workers.gpu.type }}: {{ .Values.workers.gpu.count }}
+          {{- end }}
+        
+        # Volume mounts for shared data
+        volumeMounts:
+        {{- include "eemt.volumeMounts" . | nindent 8 }}
+        - name: shared-data
+          mountPath: /data/shared
+        - name: worker-temp
+          mountPath: /tmp/eemt-worker
+        
+        # Security context
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: true
+          capabilities:
+            drop:
+            - ALL
+            # Add capabilities needed for GRASS GIS and geospatial processing
+            add:
+            - SETUID
+            - SETGID
+        
+        # Lifecycle hooks for graceful shutdown
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - /bin/bash
+              - -c
+              - |
+                echo "Gracefully shutting down worker..."
+                # Kill any running GRASS sessions
+                pkill -f grass || true
+                # Clean up temporary files
+                rm -rf /tmp/eemt-worker/* || true
+                echo "Worker shutdown complete"
+      
+      # Init containers for setup
+      initContainers:
+      - name: worker-init
+        image: {{ include "eemt.worker.image" . }}
+        command:
+        - /bin/bash
+        - -c
+        - |
+          echo "Initializing EEMT worker..."
+          
+          # Test GRASS GIS installation
+          source /opt/conda/etc/profile.d/conda.sh
+          conda activate eemt-gis
+          export GISBASE=/usr/lib/grass84
+          export PYTHONPATH=/usr/lib/grass84/etc/python:$PYTHONPATH
+          
+          grass --version
+          echo "GRASS GIS OK"
+          
+          # Test CCTools installation  
+          work_queue_worker --version
+          echo "Work Queue OK"
+          
+          # Test Python GRASS interface
+          python -c "import grass.script as gs; print('Python GRASS interface OK')"
+          
+          # Create necessary directories
+          mkdir -p /tmp/eemt-worker
+          mkdir -p /data/shared
+          
+          echo "Worker initialization complete"
+        volumeMounts:
+        - name: worker-temp
+          mountPath: /tmp/eemt-worker
+        - name: shared-data
+          mountPath: /data/shared
+      
+      # Volumes
+      volumes:
+      {{- include "eemt.volumes" . | nindent 6 }}
+      - name: shared-data
+        {{- if .Values.persistence.data.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ include "eemt.fullname" . }}-data
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
+      - name: worker-temp
+        emptyDir:
+          sizeLimit: 20Gi
+      
+      # Node selection and affinity
+      {{- with .Values.workers.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.workers.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.workers.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      
+      # Restart policy
+      restartPolicy: Always
+      
+      # DNS policy
+      dnsPolicy: ClusterFirst
+      
+      # Termination grace period for cleanup
+      terminationGracePeriodSeconds: 60
+{{- end }}

@@ -15,7 +15,9 @@ services:
       - ./data/results:/app/results
       - ./data/temp:/app/temp
       - ./data/cache:/app/cache
+      - ./data/logs:/app/logs  # Mount logs directory to fix permission issues
       - /var/run/docker.sock:/var/run/docker.sock  # For container management
+      - ./web-interface/containers:/app/containers:rw  # Mount workflow manager for development
       - ./sol:/opt/eemt/sol:ro  # Mount workflow scripts
       - ./eemt:/opt/eemt/eemt:ro  # Mount workflow scripts
     environment:
@@ -23,8 +25,8 @@ services:
       - EEMT_HOST=0.0.0.0
       - EEMT_PORT=5000
       - REAL_WORKFLOWS=true  # Enable real workflow execution
-      # Cleanup configuration
-      - EEMT_CLEANUP_ENABLED=true
+      # Cleanup configuration (disabled due to cron user issues)
+      - EEMT_CLEANUP_ENABLED=false
       - EEMT_SUCCESS_RETENTION_DAYS=7
       - EEMT_FAILED_RETENTION_HOURS=12
     networks:

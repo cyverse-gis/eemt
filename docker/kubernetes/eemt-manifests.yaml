@@ -1,0 +1,885 @@
+---
+# Source: eemt/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: eemt-service-account
+  namespace: "default"
+  labels:
+    helm.sh/chart: eemt-2.0.0
+    app.kubernetes.io/name: eemt
+    app.kubernetes.io/instance: eemt
+    app.kubernetes.io/version: "2.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/managed-by: helm
+    app.kubernetes.io/part-of: eemt-suite
+automountServiceAccountToken: true
+---
+# Source: eemt/templates/cleanup-cronjob.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eemt-cleanup-config
+  namespace: "default"
+  labels:
+    helm.sh/chart: eemt-2.0.0
+    app.kubernetes.io/name: eemt
+    app.kubernetes.io/instance: eemt
+    app.kubernetes.io/version: "2.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/managed-by: helm
+    app.kubernetes.io/part-of: eemt-suite
+    app.kubernetes.io/component: cleanup
+data:
+  success-retention-days: "7"
+  failed-retention-hours: "12"
+  cleanup-schedule: "0 2 * * *"
+  cleanup-enabled: "true"
+---
+# Source: eemt/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eemt-config
+  namespace: "default"
+  labels:
+    helm.sh/chart: eemt-2.0.0
+    app.kubernetes.io/name: eemt
+    app.kubernetes.io/instance: eemt
+    app.kubernetes.io/version: "2.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/managed-by: helm
+    app.kubernetes.io/part-of: eemt-suite
+    app.kubernetes.io/component: configuration
+data:
+  # EEMT Algorithm Configuration
+  eemt-linke-value: "2"
+  eemt-albedo-value: "0.2"
+  eemt-time-step: "15"
+  eemt-num-threads: "4"
+  
+  # GRASS GIS Configuration
+  grass-gisbase: "/usr/lib/grass84"
+  grass-addon-path: "/opt/eemt/grass-addons"
+  
+  # CCTools Configuration
+  cctools-work-queue-port: "9123"
+  cctools-project-name: "EEMT-K8s"
+  cctools-max-workers: "100"
+  
+  # Deployment Configuration
+  deployment-mode: "distributed"
+  resource-strategy: 
+  
+  # External Services Configuration
+  daymet-enabled: "true"
+  daymet-base-url: "https://daymet.ornl.gov/data"
+  daymet-timeout: "300"
+  
+  # Monitoring Configuration
+  prometheus-enabled: "false"
+  
+  logging-level: "INFO"
+  logging-format: "json"
+  
+  # Development Configuration
+  debug-mode: "false"
+  mock-services: "false"
+  reduced-resources: "false"
+---
+# Source: eemt/templates/persistentvolumes.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: eemt-data
+  namespace: "default"
+  labels:
+    helm.sh/chart: eemt-2.0.0
+    app.kubernetes.io/name: eemt
+    app.kubernetes.io/instance: eemt
+    app.kubernetes.io/version: "2.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/managed-by: helm
+    app.kubernetes.io/part-of: eemt-suite
+    app.kubernetes.io/component: storage
+    eemt.io/storage-type: data
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+---
+# Source: eemt/templates/persistentvolumes.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: eemt-database
+  namespace: "default"
+  labels:
+    helm.sh/chart: eemt-2.0.0
+    app.kubernetes.io/name: eemt
+    app.kubernetes.io/instance: eemt
+    app.kubernetes.io/version: "2.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/managed-by: helm
+    app.kubernetes.io/part-of: eemt-suite
+    app.kubernetes.io/component: storage
+    eemt.io/storage-type: database
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+# Source: eemt/templates/persistentvolumes.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: eemt-cache
+  namespace: "default"
+  labels:
+    helm.sh/chart: eemt-2.0.0
+    app.kubernetes.io/name: eemt
+    app.kubernetes.io/instance: eemt
+    app.kubernetes.io/version: "2.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/managed-by: helm
+    app.kubernetes.io/part-of: eemt-suite
+    app.kubernetes.io/component: storage
+    eemt.io/storage-type: cache
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+---
+# Source: eemt/templates/persistentvolumes.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: eemt-logs
+  namespace: "default"
+  labels:
+    helm.sh/chart: eemt-2.0.0
+    app.kubernetes.io/name: eemt
+    app.kubernetes.io/instance: eemt
+    app.kubernetes.io/version: "2.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/managed-by: helm
+    app.kubernetes.io/part-of: eemt-suite
+    app.kubernetes.io/component: storage
+    eemt.io/storage-type: logs
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 20Gi
+---
+# Source: eemt/templates/web-interface-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: eemt-web
+  namespace: "default"
+  labels:
+    helm.sh/chart: eemt-2.0.0
+    app.kubernetes.io/name: eemt
+    app.kubernetes.io/instance: eemt
+    app.kubernetes.io/version: "2.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/managed-by: helm
+    app.kubernetes.io/part-of: eemt-suite
+    app.kubernetes.io/component: web-interface
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5000
+    targetPort: 5000
+    protocol: TCP
+    name: http
+  selector:
+    app.kubernetes.io/name: eemt
+    app.kubernetes.io/instance: eemt
+    app.kubernetes.io/component: web-interface
+---
+# Source: eemt/templates/web-interface-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eemt-web
+  namespace: "default"
+  labels:
+    helm.sh/chart: eemt-2.0.0
+    app.kubernetes.io/name: eemt
+    app.kubernetes.io/instance: eemt
+    app.kubernetes.io/version: "2.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/managed-by: helm
+    app.kubernetes.io/part-of: eemt-suite
+    app.kubernetes.io/component: web-interface
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: eemt
+      app.kubernetes.io/instance: eemt
+      app.kubernetes.io/component: web-interface
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: eemt
+        app.kubernetes.io/instance: eemt
+        app.kubernetes.io/component: web-interface
+    spec:
+      serviceAccountName: eemt-service-account
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+      - name: web-interface
+        image: eemt-web:2.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 5000
+          protocol: TCP
+        
+        # Environment variables
+        env:
+        - name: EEMT_MODE
+          value: "distributed"
+        - name: EEMT_CLEANUP_ENABLED
+          value: "true"
+        - name: EEMT_SUCCESS_RETENTION_DAYS
+          value: "7"
+        - name: EEMT_FAILED_RETENTION_HOURS
+          value: "12"
+        - name: EEMT_NUM_THREADS
+          value: "4"
+        - name: EEMT_LINKE_VALUE
+          value: "2"
+        - name: EEMT_ALBEDO_VALUE
+          value: "0.2"
+        - name: GRASS_GISBASE
+          value: "/usr/lib/grass84"
+        - name: WORK_QUEUE_PORT
+          value: "9123"
+        - name: WORK_QUEUE_PROJECT
+          value: "EEMT-K8s"
+        - name: PYTHONPATH
+          value: "/app:/opt/eemt"
+        - name: EEMT_HOST
+          value: "0.0.0.0"
+        - name: EEMT_PORT
+          value: "5000"
+        - name: REAL_WORKFLOWS
+          value: "true"
+        - name: DAYMET_BASE_URL
+          value: "https://daymet.ornl.gov/data"
+        - name: DAYMET_TIMEOUT
+          value: "300"
+        
+        # Health checks
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+        
+        # Resource limits
+        resources:
+          limits:
+            cpu: 2000m
+            ephemeral-storage: 10Gi
+            memory: 4Gi
+          requests:
+            cpu: 500m
+            ephemeral-storage: 5Gi
+            memory: 1Gi
+        
+        # Volume mounts
+        volumeMounts:
+        
+        - name: data-storage
+          mountPath: /app/data
+        - name: database-storage
+          mountPath: /app/database
+        - name: cache-storage
+          mountPath: /app/cache
+        - name: logs-storage
+          mountPath: /app/logs
+        - name: uploads
+          mountPath: /app/uploads
+        - name: results
+          mountPath: /app/results
+        - name: temp
+          mountPath: /app/temp
+        
+        # Security context
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: true
+          capabilities:
+            drop:
+            - ALL
+      
+      # Volumes
+      volumes:
+      
+      - name: data-storage
+        persistentVolumeClaim:
+          claimName: eemt-data
+      - name: database-storage
+        persistentVolumeClaim:
+          claimName: eemt-database
+      - name: cache-storage
+        persistentVolumeClaim:
+          claimName: eemt-cache
+      - name: logs-storage
+        persistentVolumeClaim:
+          claimName: eemt-logs
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: eemt-data
+      - name: results
+        persistentVolumeClaim:
+          claimName: eemt-data
+      - name: temp
+        emptyDir:
+          sizeLimit: 10Gi
+      
+      # Node selection and affinity
+      
+      # Restart policy
+      restartPolicy: Always
+      
+      # DNS policy
+      dnsPolicy: ClusterFirst
+---
+# Source: eemt/templates/worker-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eemt-worker
+  namespace: "default"
+  labels:
+    helm.sh/chart: eemt-2.0.0
+    app.kubernetes.io/name: eemt
+    app.kubernetes.io/instance: eemt
+    app.kubernetes.io/version: "2.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/managed-by: helm
+    app.kubernetes.io/part-of: eemt-suite
+    app.kubernetes.io/component: worker
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: eemt
+      app.kubernetes.io/instance: eemt
+      app.kubernetes.io/component: worker
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: eemt
+        app.kubernetes.io/instance: eemt
+        app.kubernetes.io/component: worker
+    spec:
+      serviceAccountName: eemt-service-account
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+      - name: worker
+        image: eemt:ubuntu24.04
+        imagePullPolicy: IfNotPresent
+        
+        # Command and args for worker
+        command:
+        - /bin/bash
+        - -c
+        - |
+          echo "Starting EEMT worker node..."
+          echo "Configuration:"
+          echo "  Master host: ${MASTER_HOST}"
+          echo "  Master port: ${MASTER_PORT}"
+          echo "  Worker cores: ${WORKER_CORES}"
+          echo "  Worker memory: ${WORKER_MEMORY}"
+          echo "  Work directory: ${WORK_DIR}"
+          
+          # Activate conda environment
+          source /opt/conda/etc/profile.d/conda.sh
+          conda activate eemt-gis
+          
+          # Set GRASS environment
+          export GISBASE=/usr/lib/grass84
+          export PYTHONPATH=/usr/lib/grass84/etc/python:$PYTHONPATH
+          export LD_LIBRARY_PATH=/usr/lib/grass84/lib:$LD_LIBRARY_PATH
+          
+          # Create work directory
+          mkdir -p ${WORK_DIR}
+          cd ${WORK_DIR}
+          
+          # Start Work Queue worker
+          work_queue_worker \
+            --master-name ${WORK_QUEUE_PROJECT} \
+            --cores ${WORKER_CORES} \
+            --memory ${WORKER_MEMORY} \
+            --disk ${WORKER_DISK} \
+            --timeout 3600 \
+            --single-shot \
+            --debug all \
+            ${MASTER_HOST}:${MASTER_PORT}
+        
+        # Environment variables
+        env:
+        - name: EEMT_MODE
+          value: "distributed"
+        - name: EEMT_CLEANUP_ENABLED
+          value: "true"
+        - name: EEMT_SUCCESS_RETENTION_DAYS
+          value: "7"
+        - name: EEMT_FAILED_RETENTION_HOURS
+          value: "12"
+        - name: EEMT_NUM_THREADS
+          value: "4"
+        - name: EEMT_LINKE_VALUE
+          value: "2"
+        - name: EEMT_ALBEDO_VALUE
+          value: "0.2"
+        - name: GRASS_GISBASE
+          value: "/usr/lib/grass84"
+        - name: WORK_QUEUE_PORT
+          value: "9123"
+        - name: WORK_QUEUE_PROJECT
+          value: "EEMT-K8s"
+        - name: PYTHONPATH
+          value: "/app:/opt/eemt"
+        - name: MASTER_HOST
+          value: eemt-web
+        - name: MASTER_PORT
+          value: "9123"
+        - name: WORKER_CORES
+          value: "4"
+        - name: WORKER_MEMORY
+          value: "8192"  # MB
+        - name: WORKER_DISK
+          value: "50000"  # MB
+        - name: WORK_DIR
+          value: "/tmp/eemt-worker"
+        - name: WORK_QUEUE_PROJECT
+          value: "EEMT-K8s"
+        
+        # Resource limits
+        resources:
+          limits:
+            cpu: 8000m
+            ephemeral-storage: 50Gi
+            memory: 16Gi
+          requests:
+            cpu: 2000m
+            ephemeral-storage: 20Gi
+            memory: 4Gi
+        
+        # Volume mounts for shared data
+        volumeMounts:
+        
+        - name: data-storage
+          mountPath: /app/data
+        - name: database-storage
+          mountPath: /app/database
+        - name: cache-storage
+          mountPath: /app/cache
+        - name: logs-storage
+          mountPath: /app/logs
+        - name: shared-data
+          mountPath: /data/shared
+        - name: worker-temp
+          mountPath: /tmp/eemt-worker
+        
+        # Security context
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: true
+          capabilities:
+            drop:
+            - ALL
+            # Add capabilities needed for GRASS GIS and geospatial processing
+            add:
+            - SETUID
+            - SETGID
+        
+        # Lifecycle hooks for graceful shutdown
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - /bin/bash
+              - -c
+              - |
+                echo "Gracefully shutting down worker..."
+                # Kill any running GRASS sessions
+                pkill -f grass || true
+                # Clean up temporary files
+                rm -rf /tmp/eemt-worker/* || true
+                echo "Worker shutdown complete"
+      
+      # Init containers for setup
+      initContainers:
+      - name: worker-init
+        image: eemt:ubuntu24.04
+        command:
+        - /bin/bash
+        - -c
+        - |
+          echo "Initializing EEMT worker..."
+          
+          # Test GRASS GIS installation
+          source /opt/conda/etc/profile.d/conda.sh
+          conda activate eemt-gis
+          export GISBASE=/usr/lib/grass84
+          export PYTHONPATH=/usr/lib/grass84/etc/python:$PYTHONPATH
+          
+          grass --version
+          echo "GRASS GIS OK"
+          
+          # Test CCTools installation  
+          work_queue_worker --version
+          echo "Work Queue OK"
+          
+          # Test Python GRASS interface
+          python -c "import grass.script as gs; print('Python GRASS interface OK')"
+          
+          # Create necessary directories
+          mkdir -p /tmp/eemt-worker
+          mkdir -p /data/shared
+          
+          echo "Worker initialization complete"
+        volumeMounts:
+        - name: worker-temp
+          mountPath: /tmp/eemt-worker
+        - name: shared-data
+          mountPath: /data/shared
+      
+      # Volumes
+      volumes:
+      
+      - name: data-storage
+        persistentVolumeClaim:
+          claimName: eemt-data
+      - name: database-storage
+        persistentVolumeClaim:
+          claimName: eemt-database
+      - name: cache-storage
+        persistentVolumeClaim:
+          claimName: eemt-cache
+      - name: logs-storage
+        persistentVolumeClaim:
+          claimName: eemt-logs
+      - name: shared-data
+        persistentVolumeClaim:
+          claimName: eemt-data
+      - name: worker-temp
+        emptyDir:
+          sizeLimit: 20Gi
+      
+      # Node selection and affinity
+      nodeSelector:
+        node-type: compute
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/component
+                  operator: In
+                  values:
+                  - worker
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+      tolerations:
+        - effect: NoSchedule
+          key: eemt-worker
+          operator: Equal
+          value: "true"
+      
+      # Restart policy
+      restartPolicy: Always
+      
+      # DNS policy
+      dnsPolicy: ClusterFirst
+      
+      # Termination grace period for cleanup
+      terminationGracePeriodSeconds: 60
+---
+# Source: eemt/templates/worker-hpa.yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: eemt-worker-hpa
+  namespace: "default"
+  labels:
+    helm.sh/chart: eemt-2.0.0
+    app.kubernetes.io/name: eemt
+    app.kubernetes.io/instance: eemt
+    app.kubernetes.io/version: "2.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/managed-by: helm
+    app.kubernetes.io/part-of: eemt-suite
+    app.kubernetes.io/component: worker
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: eemt-worker
+  minReplicas: 2
+  maxReplicas: 20
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 10
+        periodSeconds: 60
+      - type: Pods
+        value: 2
+        periodSeconds: 60
+      selectPolicy: Min
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+      - type: Pods
+        value: 4
+        periodSeconds: 15
+      selectPolicy: Max
+---
+# Source: eemt/templates/cleanup-cronjob.yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: eemt-cleanup
+  namespace: "default"
+  labels:
+    helm.sh/chart: eemt-2.0.0
+    app.kubernetes.io/name: eemt
+    app.kubernetes.io/instance: eemt
+    app.kubernetes.io/version: "2.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/managed-by: helm
+    app.kubernetes.io/part-of: eemt-suite
+    app.kubernetes.io/component: cleanup
+  annotations:
+    description: "EEMT job data cleanup - removes old job data based on retention policies"
+spec:
+  schedule: "0 2 * * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 600
+  
+  jobTemplate:
+    metadata:
+      labels:
+        helm.sh/chart: eemt-2.0.0
+        app.kubernetes.io/name: eemt
+        app.kubernetes.io/instance: eemt
+        app.kubernetes.io/version: "2.0"
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/managed-by: helm
+        app.kubernetes.io/part-of: eemt-suite
+        app.kubernetes.io/component: cleanup
+        batch-job: cleanup
+    spec:
+      activeDeadlineSeconds: 7200  # 2 hours max
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: eemt
+            app.kubernetes.io/instance: eemt
+            app.kubernetes.io/component: cleanup
+            batch-job: cleanup
+        spec:
+          restartPolicy: OnFailure
+          serviceAccountName: eemt-service-account
+          
+          containers:
+          - name: cleanup
+            image: eemt-web:2.0
+            imagePullPolicy: IfNotPresent
+            
+            command:
+            - /bin/bash
+            - -c
+            - |
+              echo "========================================"
+              echo "EEMT Job Data Cleanup"
+              echo "========================================"
+              echo "Start time: $(date)"
+              echo "Configuration:"
+              echo "  Success retention: ${EEMT_SUCCESS_RETENTION_DAYS} days"
+              echo "  Failed retention: ${EEMT_FAILED_RETENTION_HOURS} hours"
+              echo "  Database path: ${DATABASE_PATH}"
+              echo "  Data directory: ${DATA_DIR}"
+              echo ""
+              
+              # Verify database exists
+              if [[ ! -f "${DATABASE_PATH}" ]]; then
+                echo "WARNING: Database not found at ${DATABASE_PATH}"
+                echo "Creating empty database for testing..."
+                python3 -c "
+              import sqlite3
+              import sys
+              sys.path.append('/app')
+              from app import init_database
+              init_database()
+              print('Database initialized')
+              "
+              fi
+              
+              # Run cleanup with detailed logging
+              cd /app
+              python3 cleanup_jobs.py \
+                --success-retention-days ${EEMT_SUCCESS_RETENTION_DAYS} \
+                --failed-retention-hours ${EEMT_FAILED_RETENTION_HOURS} \
+                --base-dir /app \
+                --verbose 2>&1 | tee -a /app/logs/cleanup-cronjob.log
+              
+              CLEANUP_EXIT_CODE=$?
+              
+              echo ""
+              echo "========================================"
+              echo "Cleanup completed with exit code: ${CLEANUP_EXIT_CODE}"
+              echo "End time: $(date)"
+              echo "========================================"
+              
+              # Archive cleanup summary
+              if [[ -f /app/cleanup_summary_*.json ]]; then
+                SUMMARY_FILE=$(ls -t /app/cleanup_summary_*.json | head -1)
+                cp "${SUMMARY_FILE}" "/app/logs/cleanup-summary-$(date +%Y%m%d-%H%M%S).json"
+                echo "Cleanup summary archived to logs"
+              fi
+              
+              exit ${CLEANUP_EXIT_CODE}
+            
+            env:
+            - name: EEMT_MODE
+              value: "distributed"
+            - name: EEMT_CLEANUP_ENABLED
+              value: "true"
+            - name: EEMT_SUCCESS_RETENTION_DAYS
+              value: "7"
+            - name: EEMT_FAILED_RETENTION_HOURS
+              value: "12"
+            - name: EEMT_NUM_THREADS
+              value: "4"
+            - name: EEMT_LINKE_VALUE
+              value: "2"
+            - name: EEMT_ALBEDO_VALUE
+              value: "0.2"
+            - name: GRASS_GISBASE
+              value: "/usr/lib/grass84"
+            - name: WORK_QUEUE_PORT
+              value: "9123"
+            - name: WORK_QUEUE_PROJECT
+              value: "EEMT-K8s"
+            - name: PYTHONPATH
+              value: "/app:/opt/eemt"
+            - name: EEMT_SUCCESS_RETENTION_DAYS
+              value: "7"
+            - name: EEMT_FAILED_RETENTION_HOURS
+              value: "12"
+            - name: DATABASE_PATH
+              value: "/app/database/jobs.db"
+            - name: DATA_DIR
+              value: "/app/data"
+            - name: PYTHONPATH
+              value: "/app:/opt/eemt"
+            - name: TZ
+              value: "UTC"
+            
+            resources:
+              limits:
+                cpu: 500m
+                memory: 1Gi
+              requests:
+                cpu: 100m
+                memory: 256Mi
+            
+            volumeMounts:
+            # Database access
+            - name: database-storage
+              mountPath: /app/database
+            # Data access for cleanup
+            - name: data-storage
+              mountPath: /app/data
+            # Logs for cleanup history
+            - name: logs-storage
+              mountPath: /app/logs
+            # Cache access for cleanup
+            - name: cache-storage
+              mountPath: /app/cache
+            
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              runAsNonRoot: true
+              runAsUser: 1000
+              runAsGroup: 1000
+              capabilities:
+                drop:
+                - ALL
+          
+          volumes:
+          - name: database-storage
+            persistentVolumeClaim:
+              claimName: eemt-database
+          - name: data-storage
+            persistentVolumeClaim:
+              claimName: eemt-data
+          - name: logs-storage
+            persistentVolumeClaim:
+              claimName: eemt-logs
+          - name: cache-storage
+            persistentVolumeClaim:
+              claimName: eemt-cache
+          
+          # DNS and restart policy
+          dnsPolicy: ClusterFirst
+          restartPolicy: OnFailure

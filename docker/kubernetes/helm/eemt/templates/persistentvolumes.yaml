@@ -1,0 +1,138 @@
+{{/*
+Data storage PVC for uploads, results, and shared data
+*/}}
+{{- if .Values.persistence.data.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "eemt.fullname" . }}-data
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "eemt.labels" . | nindent 4 }}
+    app.kubernetes.io/component: storage
+    eemt.io/storage-type: data
+  {{- with .Values.persistence.data.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.data.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.data.size }}
+  {{- if .Values.persistence.data.storageClass }}
+  {{- if (eq "-" .Values.persistence.data.storageClass) }}
+  storageClassName: ""
+  {{- else }}
+  storageClassName: {{ .Values.persistence.data.storageClass | quote }}
+  {{- end }}
+  {{- else if .Values.global.storageClass }}
+  storageClassName: {{ .Values.global.storageClass | quote }}
+  {{- end }}
+---
+{{- end }}
+
+{{/*
+Database storage PVC for SQLite database and job metadata
+*/}}
+{{- if .Values.persistence.database.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "eemt.fullname" . }}-database
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "eemt.labels" . | nindent 4 }}
+    app.kubernetes.io/component: storage
+    eemt.io/storage-type: database
+  {{- with .Values.persistence.database.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.database.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.database.size }}
+  {{- if .Values.persistence.database.storageClass }}
+  {{- if (eq "-" .Values.persistence.database.storageClass) }}
+  storageClassName: ""
+  {{- else }}
+  storageClassName: {{ .Values.persistence.database.storageClass | quote }}
+  {{- end }}
+  {{- else if .Values.global.storageClass }}
+  storageClassName: {{ .Values.global.storageClass | quote }}
+  {{- end }}
+---
+{{- end }}
+
+{{/*
+Cache storage PVC for temporary files and intermediate results
+*/}}
+{{- if .Values.persistence.cache.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "eemt.fullname" . }}-cache
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "eemt.labels" . | nindent 4 }}
+    app.kubernetes.io/component: storage
+    eemt.io/storage-type: cache
+  {{- with .Values.persistence.cache.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.cache.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.cache.size }}
+  {{- if .Values.persistence.cache.storageClass }}
+  {{- if (eq "-" .Values.persistence.cache.storageClass) }}
+  storageClassName: ""
+  {{- else }}
+  storageClassName: {{ .Values.persistence.cache.storageClass | quote }}
+  {{- end }}
+  {{- else if .Values.global.storageClass }}
+  storageClassName: {{ .Values.global.storageClass | quote }}
+  {{- end }}
+---
+{{- end }}
+
+{{/*
+Logs storage PVC for application and cleanup logs
+*/}}
+{{- if .Values.persistence.logs.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "eemt.fullname" . }}-logs
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "eemt.labels" . | nindent 4 }}
+    app.kubernetes.io/component: storage
+    eemt.io/storage-type: logs
+  {{- with .Values.persistence.logs.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.logs.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.logs.size }}
+  {{- if .Values.persistence.logs.storageClass }}
+  {{- if (eq "-" .Values.persistence.logs.storageClass) }}
+  storageClassName: ""
+  {{- else }}
+  storageClassName: {{ .Values.persistence.logs.storageClass | quote }}
+  {{- end }}
+  {{- else if .Values.global.storageClass }}
+  storageClassName: {{ .Values.global.storageClass | quote }}
+  {{- end }}
+{{- end }}

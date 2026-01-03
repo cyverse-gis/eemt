@@ -1,0 +1,140 @@
+{{- if .Values.webInterface.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "eemt.fullname" . }}-web
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "eemt.webInterface.labels" . | nindent 4 }}
+  {{- with .Values.webInterface.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: {{ .Values.webInterface.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "eemt.webInterface.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "eemt.webInterface.selectorLabels" . | nindent 8 }}
+        {{- with .Values.webInterface.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.webInterface.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "eemt.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.webInterface.securityContext | nindent 8 }}
+      containers:
+      - name: web-interface
+        image: {{ include "eemt.webInterface.image" . }}
+        imagePullPolicy: {{ .Values.image.webInterface.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: 5000
+          protocol: TCP
+        {{- if .Values.monitoring.prometheus.enabled }}
+        - name: metrics
+          containerPort: {{ .Values.monitoring.prometheus.port }}
+          protocol: TCP
+        {{- end }}
+        
+        # Environment variables
+        env:
+        {{- include "eemt.envVars" . | nindent 8 }}
+        - name: EEMT_HOST
+          value: "0.0.0.0"
+        - name: EEMT_PORT
+          value: "5000"
+        - name: REAL_WORKFLOWS
+          value: "true"
+        {{- if .Values.external.daymet.enabled }}
+        - name: DAYMET_BASE_URL
+          value: {{ .Values.external.daymet.baseUrl | quote }}
+        - name: DAYMET_TIMEOUT
+          value: {{ .Values.external.daymet.timeout | quote }}
+        {{- end }}
+        
+        # Health checks
+        {{- with .Values.webInterface.livenessProbe }}
+        livenessProbe:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .Values.webInterface.readinessProbe }}
+        readinessProbe:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        
+        # Resource limits
+        resources:
+          {{- toYaml .Values.webInterface.resources | nindent 10 }}
+        
+        # Volume mounts
+        volumeMounts:
+        {{- include "eemt.volumeMounts" . | nindent 8 }}
+        - name: uploads
+          mountPath: /app/uploads
+        - name: results
+          mountPath: /app/results
+        - name: temp
+          mountPath: /app/temp
+        
+        # Security context
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: true
+          capabilities:
+            drop:
+            - ALL
+      
+      # Volumes
+      volumes:
+      {{- include "eemt.volumes" . | nindent 6 }}
+      - name: uploads
+        {{- if .Values.persistence.data.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ include "eemt.fullname" . }}-data
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
+      - name: results
+        {{- if .Values.persistence.data.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ include "eemt.fullname" . }}-data
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
+      - name: temp
+        emptyDir:
+          sizeLimit: 10Gi
+      
+      # Node selection and affinity
+      {{- with .Values.webInterface.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.webInterface.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.webInterface.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      
+      # Restart policy
+      restartPolicy: Always
+      
+      # DNS policy
+      dnsPolicy: ClusterFirst
+{{- end }}

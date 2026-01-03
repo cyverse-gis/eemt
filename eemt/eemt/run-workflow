@@ -9,13 +9,15 @@ import urllib.request
 import importlib.util
 from Tiff import Tiff
 
+# Get script location first
+script_location = os.path.abspath(os.path.dirname(sys.argv[0]))
+
 # Parse the tiff files for projection and reprojection to match the climate data
-spec = importlib.util.spec_from_file_location("tiffparser", "./parser.py")
+parser_path = os.path.join(script_location, "parser.py")
+spec = importlib.util.spec_from_file_location("tiffparser", parser_path)
 tiffparser = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(tiffparser)
 quiet=True
-
-script_location = os.path.abspath(os.path.dirname(sys.argv[0]))
 na_dem_location = script_location + "/DAYMET/NA_DEM/na_dem.tif"
 
 # Create variables for months and days of the month 

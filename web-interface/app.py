@@ -24,7 +24,7 @@ from fastapi.templating import Jinja2Templates
 import uvicorn
 
 # Import container workflow manager
-from containers.workflow_manager import WorkflowManager, ContainerConfig
+from containers.workflow_manager import WorkflowManager, ContainerConfig, NodeType
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -49,7 +49,7 @@ app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 # Initialize container workflow manager
-workflow_manager = WorkflowManager(BASE_DIR)
+workflow_manager = WorkflowManager(BASE_DIR, NodeType.LOCAL)
 
 # Database initialization
 def init_database():
@@ -187,17 +187,19 @@ class JobManager:
             })
         return jobs
     
-    def delete_job(self, job_id: str) -> bool:
-        """Delete job from database and clean up associated files"""
+    def delete_job(self, job_id: str) -> tuple[bool, str]:
+        """Delete job from database and clean up associated files
+        Returns: (success, error_message)
+        """
         try:
             # First check if job exists
             job = self.get_job(job_id)
             if not job:
-                return False
+                return False, "Job not found"
             
             # Don't allow deletion of running jobs
             if job["status"] == JobStatus.RUNNING:
-                return False
+                return False, "Cannot delete running job"
             
             # Delete from database
             conn = sqlite3.connect(DB_PATH)
@@ -223,11 +225,12 @@ class JobManager:
                 logger.info(f"Deleted upload file: {upload_file}")
             
             logger.info(f"Successfully deleted job {job_id}")
-            return True
+            return True, ""
             
         except Exception as e:
-            logger.error(f"Error deleting job {job_id}: {e}")
-            return False
+            error_msg = str(e)
+            logger.error(f"Error deleting job {job_id}: {error_msg}")
+            return False, f"Database or filesystem error: {error_msg}"
     
     def cancel_job(self, job_id: str) -> bool:
         """Cancel a running job"""
@@ -581,7 +584,7 @@ async def system_status():
 @app.delete("/api/jobs/{job_id}")
 async def delete_job(job_id: str):
     """Delete a job and its associated data"""
-    success = job_manager.delete_job(job_id)
+    success, error_msg = job_manager.delete_job(job_id)
     if success:
         # Also clean up through workflow manager
         try:
@@ -590,13 +593,13 @@ async def delete_job(job_id: str):
             logger.warning(f"Additional cleanup warning: {e}")
         return {"status": "success", "message": "Job deleted successfully"}
     else:
-        job = job_manager.get_job(job_id)
-        if not job:
-            raise HTTPException(status_code=404, detail="Job not found")
-        elif job["status"] == JobStatus.RUNNING:
+        if error_msg == "Job not found":
+            raise HTTPException(status_code=404, detail=error_msg)
+        elif error_msg == "Cannot delete running job":
             raise HTTPException(status_code=400, detail="Cannot delete running job. Please cancel it first.")
         else:
-            raise HTTPException(status_code=500, detail="Failed to delete job")
+            # Return the actual error message instead of generic one
+            raise HTTPException(status_code=500, detail=error_msg)
 
 @app.post("/api/jobs/{job_id}/cancel")
 async def cancel_job(job_id: str):

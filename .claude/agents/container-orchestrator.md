@@ -56,33 +56,29 @@ You maintain awareness of the latest container technologies, orchestration patte
 
 ### Current EEMT Kubernetes Deployment Structure
 
-**Deployment Status (as of analysis):**
-- **Cluster Type**: Kind cluster (eemt-cluster)
-- **Kubernetes Version**: v1.27.3
-- **Namespace**: `eemt` (active)
-- **Architecture**: Single control-plane node deployment
+**Current Deployment Status (Updated Jan 2026):**
 
-**Active Components:**
-1. **eemt-web-simple** (Running)
-   - Status: 1/1 pods running successfully
-   - Service: ClusterIP on port 5000
-   - Simplified web interface without full workflow execution
-   - Successfully serving API endpoints
+**Primary Deployment: Docker Compose (Recommended)**
+- **Status**: ✅ OPERATIONAL
+- **Web Interface**: Running on http://127.0.0.1:5000 with health endpoint active
+- **Container**: eemt-web-local (cb30c8f54cbe)
+- **User Context**: Running as UID 57275:984 with Docker socket access
+- **Issues Resolved**: Permission errors fixed with logs volume mount
 
-2. **eemt-web** (CrashLoopBackOff)
-   - Issue: Permission denied on /app/logs directory
-   - Container: eemt-web:2.0
-   - Root cause: Volume mount permission mismatch with securityContext
+**Previous Kubernetes Deployment (Issues Encountered):**
+- **Cluster Type**: Kind cluster (eemt-cluster) - DEPRECATED due to stability issues
+- **Status**: Abandoned due to etcd timeouts during large image loading
+- **Lessons Learned**: Docker Compose preferred for local development
 
-3. **eemt-worker** (Pending)
-   - Issue: Node selector constraint (node-type: compute)
-   - No matching nodes in single-node cluster
-   - Requires either node label modification or nodeSelector removal
-
-4. **eemt-cleanup** (CronJob)
-   - Schedule: "0 2 * * *" (daily at 2 AM)
-   - Last run: Completed successfully
-   - Manages job data retention policies
+**Active Docker Compose Services:**
+1. **eemt-web** (✅ Running)
+   - Container: eemt-web-local
+   - Ports: 5000:5000
+   - User: 57275:984 (tswetnam:docker)
+   - Health: http://127.0.0.1:5000/health responding
+   - Logs: Mounted to ./data/logs to fix permission issues
+   - Mode: local with real workflow execution enabled
+   - Cleanup: Disabled due to cron user authentication issues
 
 ### Kubernetes Manifest Structure
 
@@ -118,20 +114,34 @@ You maintain awareness of the latest container technologies, orchestration patte
 - Analyzes resource requirements
 - Verifies Docker image availability
 
-### Known Issues and Solutions
+### Issues Encountered and Solutions Applied
 
-1. **Web Interface Permission Issue:**
+1. **✅ RESOLVED: Web Interface Permission Issue**
    ```yaml
-   # Problem: /app/logs permission denied
-   # Solution: Fix volume permissions or adjust securityContext
-   volumeMounts:
-   - name: logs-storage
-     mountPath: /app/logs
-   securityContext:
-     fsGroup: 1000  # Ensure group ownership
+   # Problem: Permission denied on /app/logs/app.log
+   # Root Cause: Container running as UID 57275 without /app/logs volume mount
+   # Solution Applied: Added logs volume mount in docker-compose.yml
+   volumes:
+     - ./data/logs:/app/logs  # Mount logs directory to fix permission issues
    ```
 
-2. **Worker Node Scheduling:**
+2. **✅ RESOLVED: Cron User Authentication Issue**
+   ```yaml
+   # Problem: crontab: your UID isn't in the passwd file
+   # Root Cause: Non-standard UID 57275 not in container's /etc/passwd
+   # Solution Applied: Disabled cleanup cron to prevent container restart loop
+   environment:
+     - EEMT_CLEANUP_ENABLED=false  # Disable cron-based cleanup
+   ```
+
+3. **✅ AVOIDED: Kind Cluster Stability Issues**
+   ```bash
+   # Problem: etcd timeouts during 8.42GB image loading
+   # Root Cause: Kind cluster instability with large images
+   # Solution Applied: Migrated to Docker Compose for better stability
+   ```
+
+4. **🔧 REFERENCE: Kubernetes Worker Scheduling (for future use)**
    ```yaml
    # Problem: nodeSelector prevents scheduling on single-node cluster
    # Solution for development:
@@ -163,40 +173,103 @@ cd docker/ubuntu/24.04 && ./build.sh
 
 ### Deployment Recommendations
 
-**For Development (single-node):**
+**🚀 CURRENT: Docker Compose (Recommended for Local Development)**
 ```bash
-./deploy.sh --dev --strategy minimal --namespace eemt
+# Create required directories
+mkdir -p data/{uploads,results,temp,cache,logs}
+
+# Start the web interface
+docker-compose up -d eemt-web
+
+# Verify deployment
+docker ps | grep eemt
+curl -f http://127.0.0.1:5000/health
 ```
 
-**For Production (multi-node):**
+**🎯 FUTURE: Kubernetes Deployment (for Production)**
 ```bash
+# Once issues are resolved:
+./deploy.sh --dev --strategy minimal --namespace eemt
+
+# For production multi-node:
 ./deploy.sh --mode distributed --strategy performance --gpu --ingress
 ```
 
-**Quick Fixes for Current Issues:**
-1. Remove nodeSelector from worker deployment for single-node
-2. Fix web interface volume permissions
-3. Ensure Docker images are available locally
-4. Use reduced PVC sizes for development
+**✅ Applied Fixes Summary:**
+1. ✅ Added logs volume mount for permission issues
+2. ✅ Disabled cron cleanup to prevent user authentication errors
+3. ✅ Using Docker Compose for stable local deployment
+4. ✅ Verified health endpoint and web interface accessibility
 
 ### Monitoring and Troubleshooting
 
-**Check deployment health:**
+**🐳 Current Docker Compose Monitoring:**
 ```bash
+# Check container status
+docker ps | grep eemt
+docker-compose ps
+
+# Check logs (real-time)
+docker logs -f eemt-web-local
+docker-compose logs -f eemt-web
+
+# Health check
+curl -f http://127.0.0.1:5000/health
+curl -s http://127.0.0.1:5000/ | head -10  # Check main page
+
+# Container resource usage
+docker stats eemt-web-local
+
+# Restart if needed
+docker-compose down && docker-compose up -d eemt-web
+```
+
+**🔍 Troubleshooting Common Issues:**
+
+1. **Permission Denied Errors:**
+   ```bash
+   # Check volume mounts and permissions
+   docker exec eemt-web-local ls -la /app/logs
+   # Ensure data directories exist
+   mkdir -p data/{uploads,results,temp,cache,logs}
+   ```
+
+2. **Container Restart Loops:**
+   ```bash
+   # Check logs for startup errors
+   docker logs eemt-web-local --tail=50
+   # Common causes: cron user issues, permission problems, missing volumes
+   ```
+
+3. **Health Check Failures:**
+   ```bash
+   # Test health endpoint
+   curl -v http://127.0.0.1:5000/health
+   # Check if port is bound
+   netstat -tlnp | grep 5000
+   ```
+
+4. **Docker Socket Issues:**
+   ```bash
+   # Verify docker group membership
+   groups $(id -un 57275)  # Should include docker group (984)
+   ls -la /var/run/docker.sock
+   ```
+
+**☸️ Future Kubernetes Troubleshooting:**
+```bash
+# When Kubernetes deployment is restored:
 kubectl get all -n eemt
 kubectl describe pod <pod-name> -n eemt
 kubectl logs <pod-name> -n eemt --tail=50
-```
-
-**Access web interface:**
-```bash
-kubectl port-forward -n eemt service/eemt-web-simple 5000:5000
-# or for main interface when fixed:
 kubectl port-forward -n eemt service/eemt-web 5000:5000
 ```
 
-**Common debugging:**
-- Permission issues: Check securityContext and volume ownership
-- Image pull errors: Verify local images or registry access
-- Resource constraints: Check node capacity and PVC availability
-- Network issues: Verify service endpoints and DNS resolution
+**🚨 Emergency Recovery:**
+```bash
+# Complete reset if needed
+docker-compose down
+docker system prune -f
+docker-compose build --no-cache eemt-web
+docker-compose up -d eemt-web
+```
