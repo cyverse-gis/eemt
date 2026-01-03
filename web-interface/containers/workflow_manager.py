@@ -361,8 +361,8 @@ class DistributedWorkflowManager:
 class WorkflowManager(DistributedWorkflowManager):
     """Backward compatibility wrapper for local execution"""
     
-    def __init__(self, base_dir: Path, config: Optional[ContainerConfig] = None):
-        super().__init__(base_dir, NodeType.LOCAL, config)
+    def __init__(self, base_dir: Path, node_type: NodeType = NodeType.LOCAL, config: Optional[ContainerConfig] = None):
+        super().__init__(base_dir, node_type, container_config=config)
         self.active_containers = {}  # job_id -> container object mapping
     
     def check_docker_availability(self) -> bool:
@@ -449,17 +449,17 @@ class WorkflowManager(DistributedWorkflowManager):
             
             # Run container
             container = self.docker_client.containers.run(
-                self.config.image,
+                self.container_config.image,
                 command=container_cmd,
                 volumes=volume_mounts,
                 environment=environment,
                 detach=True,
                 stdout=True,
                 stderr=True,
-                remove=self.config.remove_after,
-                network_mode=self.config.network_mode,
-                cpu_quota=int(self.config.cpu_limit) * 100000,  # Convert to microseconds
-                mem_limit=self.config.memory_limit
+                remove=self.container_config.remove_after,
+                network_mode=self.container_config.network_mode,
+                cpu_quota=int(self.container_config.cpu_limit) * 100000,  # Convert to microseconds
+                mem_limit=self.container_config.memory_limit
             )
             
             # Store container reference for potential cancellation
@@ -537,7 +537,7 @@ class WorkflowManager(DistributedWorkflowManager):
         """Build container environment variables"""
         return {
             'EEMT_NUM_THREADS': str(parameters["num_threads"]),
-            'EEMT_MEMORY_LIMIT': self.config.memory_limit,
+            'EEMT_MEMORY_LIMIT': self.container_config.memory_limit,
             'GRASS_BATCH_JOB': 'true',
             'GRASS_MESSAGE_FORMAT': 'plain',
             'GRASS_VERBOSE': '1',
@@ -689,7 +689,7 @@ class WorkflowManager(DistributedWorkflowManager):
             # Handle normal Docker client mode
             # Get running containers
             containers = self.docker_client.containers.list()
-            eemt_containers = [c for c in containers if self.config.image in c.image.tags]
+            eemt_containers = [c for c in containers if self.container_config.image in c.image.tags]
             
             stats = {
                 "total_containers": len(eemt_containers),
@@ -821,7 +821,7 @@ class WorkflowManager(DistributedWorkflowManager):
                 '-e', 'EEMT_STEP=' + str(parameters.get('step', 15)),
                 '-e', 'EEMT_LINKE_VALUE=' + str(parameters.get('linke_value', 2.0)),
                 '-e', 'EEMT_ALBEDO_VALUE=' + str(parameters.get('albedo_value', 0.2)),
-                self.config.image
+                self.container_config.image
             ] + container_cmd
             
             yield f"STATUS: Starting {workflow_type} workflow via subprocess"
