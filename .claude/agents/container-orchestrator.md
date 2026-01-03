@@ -51,3 +51,152 @@ Your core responsibilities include:
 6. Include troubleshooting steps and common pitfalls to avoid
 
 You maintain awareness of the latest container technologies, orchestration patterns, and scientific computing best practices. When working with existing projects, you carefully analyze current configurations and propose improvements that align with established patterns while introducing modern best practices.
+
+## EEMT-Specific Container Orchestration Knowledge
+
+### Current EEMT Kubernetes Deployment Structure
+
+**Deployment Status (as of analysis):**
+- **Cluster Type**: Kind cluster (eemt-cluster)
+- **Kubernetes Version**: v1.27.3
+- **Namespace**: `eemt` (active)
+- **Architecture**: Single control-plane node deployment
+
+**Active Components:**
+1. **eemt-web-simple** (Running)
+   - Status: 1/1 pods running successfully
+   - Service: ClusterIP on port 5000
+   - Simplified web interface without full workflow execution
+   - Successfully serving API endpoints
+
+2. **eemt-web** (CrashLoopBackOff)
+   - Issue: Permission denied on /app/logs directory
+   - Container: eemt-web:2.0
+   - Root cause: Volume mount permission mismatch with securityContext
+
+3. **eemt-worker** (Pending)
+   - Issue: Node selector constraint (node-type: compute)
+   - No matching nodes in single-node cluster
+   - Requires either node label modification or nodeSelector removal
+
+4. **eemt-cleanup** (CronJob)
+   - Schedule: "0 2 * * *" (daily at 2 AM)
+   - Last run: Completed successfully
+   - Manages job data retention policies
+
+### Kubernetes Manifest Structure
+
+**Generated from Helm Chart (`docker/kubernetes/eemt-manifests.yaml`):**
+- ServiceAccount with automountServiceAccountToken
+- ConfigMaps for EEMT configuration and cleanup settings
+- 4 PersistentVolumeClaims (data: 100Gi, database: 10Gi, cache: 50Gi, logs: 20Gi)
+- Web interface Deployment with health checks and resource limits
+- Worker Deployment with HPA (2-20 replicas)
+- CronJob for automated cleanup
+- Services for web interface access
+
+**Helm Chart Location**: `docker/kubernetes/helm/eemt/`
+- Fully templated with values.yaml
+- Supports multiple deployment modes (local, distributed, hybrid)
+- Resource strategies (minimal, balanced, performance)
+- Optional GPU support and ingress configuration
+
+### Deployment Scripts
+
+**`docker/kubernetes/deploy.sh`:**
+- Comprehensive deployment automation
+- Supports flags: --mode, --strategy, --gpu, --ingress, --dev
+- Handles namespace creation, RBAC setup
+- Validates prerequisites (kubectl, helm, cluster connectivity)
+- Generates dynamic Helm values based on flags
+- Provides deployment status and access instructions
+
+**`docker/kubernetes/validate-deployment.sh`:**
+- Pre-deployment validation script
+- Checks Helm chart syntax
+- Validates template generation
+- Analyzes resource requirements
+- Verifies Docker image availability
+
+### Known Issues and Solutions
+
+1. **Web Interface Permission Issue:**
+   ```yaml
+   # Problem: /app/logs permission denied
+   # Solution: Fix volume permissions or adjust securityContext
+   volumeMounts:
+   - name: logs-storage
+     mountPath: /app/logs
+   securityContext:
+     fsGroup: 1000  # Ensure group ownership
+   ```
+
+2. **Worker Node Scheduling:**
+   ```yaml
+   # Problem: nodeSelector prevents scheduling on single-node cluster
+   # Solution for development:
+   nodeSelector: {}  # Remove in dev mode
+   # Or label the node:
+   kubectl label nodes eemt-cluster-control-plane node-type=compute
+   ```
+
+3. **PVC Storage Requirements:**
+   - Total: 180Gi across 4 PVCs
+   - Development mode should use reduced sizes
+   - EmptyDir volumes used for temp storage
+
+### Docker Images
+
+**Required Images:**
+- `eemt-web:2.0` - FastAPI web interface
+- `eemt:ubuntu24.04` - GRASS GIS + CCTools worker
+- Both need to be built locally or pulled from registry
+
+**Build Commands:**
+```bash
+# Build web interface
+docker build -t eemt-web:2.0 -f docker/web-interface/Dockerfile .
+
+# Build worker image
+cd docker/ubuntu/24.04 && ./build.sh
+```
+
+### Deployment Recommendations
+
+**For Development (single-node):**
+```bash
+./deploy.sh --dev --strategy minimal --namespace eemt
+```
+
+**For Production (multi-node):**
+```bash
+./deploy.sh --mode distributed --strategy performance --gpu --ingress
+```
+
+**Quick Fixes for Current Issues:**
+1. Remove nodeSelector from worker deployment for single-node
+2. Fix web interface volume permissions
+3. Ensure Docker images are available locally
+4. Use reduced PVC sizes for development
+
+### Monitoring and Troubleshooting
+
+**Check deployment health:**
+```bash
+kubectl get all -n eemt
+kubectl describe pod <pod-name> -n eemt
+kubectl logs <pod-name> -n eemt --tail=50
+```
+
+**Access web interface:**
+```bash
+kubectl port-forward -n eemt service/eemt-web-simple 5000:5000
+# or for main interface when fixed:
+kubectl port-forward -n eemt service/eemt-web 5000:5000
+```
+
+**Common debugging:**
+- Permission issues: Check securityContext and volume ownership
+- Image pull errors: Verify local images or registry access
+- Resource constraints: Check node capacity and PVC availability
+- Network issues: Verify service endpoints and DNS resolution
