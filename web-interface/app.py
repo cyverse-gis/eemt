@@ -383,17 +383,20 @@ async def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 @app.get("/app.js")
-async def get_app_js():
+@app.head("/app.js")
+async def get_app_js(request: Request):
     """Serve app.js with no-cache headers"""
     js_file = STATIC_DIR / "app.js"
     response = FileResponse(js_file, media_type="application/javascript")
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "0"
+    # For HEAD requests, FastAPI will automatically handle the response body
     return response
 
 @app.get("/style.css")
-async def get_style_css():
+@app.head("/style.css")
+async def get_style_css(request: Request):
     """Serve style.css with no-cache headers"""
     css_file = STATIC_DIR / "style.css"
     response = FileResponse(css_file, media_type="text/css")
