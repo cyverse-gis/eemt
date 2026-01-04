@@ -111,7 +111,6 @@ services:
     build:
       context: .
       dockerfile: docker/ubuntu/24.04/Dockerfile
-    container_name: eemt-worker
     volumes:
       - ./data/shared:/data/shared
       - ./data/cache:/data/cache
@@ -156,19 +155,55 @@ services:
     restart: unless-stopped
 
   # Additional Worker Nodes (Scale as needed)
-  eemt-worker-2:
-    extends: eemt-worker
-    container_name: eemt-worker-2
+  # Note: Use --scale eemt-worker-extra=N to scale workers
+  eemt-worker-extra:
+    image: eemt:ubuntu24.04
+    build:
+      context: .
+      dockerfile: docker/ubuntu/24.04/Dockerfile
+    volumes:
+      - ./data/shared:/data/shared
+      - ./data/cache:/data/cache
+    environment:
+      - MASTER_HOST=eemt-master
+      - MASTER_PORT=9123
+      - WORKER_CORES=4
+      - WORKER_MEMORY=8G
+      - WORKER_DISK=50G
+    command: >
+      bash -c "
+        if [ '${EEMT_MODE:-local}' = 'distributed' ]; then
+          python /scripts/start-worker.py 
+          --master-host $$MASTER_HOST 
+          --master-port $$MASTER_PORT 
+          --cores $$WORKER_CORES 
+          --memory $$WORKER_MEMORY 
+          --disk $$WORKER_DISK 
+          --work-dir /tmp/eemt-worker
+        else
+          sleep infinity
+        fi
+      "
+    networks:
+      - eemt-network
     profiles:
       - distributed
       - scale
-
-  eemt-worker-3:
-    extends: eemt-worker
-    container_name: eemt-worker-3
-    profiles:
-      - distributed
-      - scale
+    deploy:
+      resources:
+        limits:
+          cpus: '8.0'  # High CPU for geospatial processing
+          memory: 16G  # High memory for large DEMs
+        reservations:
+          cpus: '4.0'
+          memory: 8G
+    healthcheck:
+      test: ["CMD", "ps", "aux", "|", "grep", "-v", "grep", "|", "grep", "python"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
 
   # Documentation Server
   eemt-docs:
