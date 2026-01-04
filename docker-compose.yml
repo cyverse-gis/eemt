@@ -3,6 +3,7 @@ version: '3.8'
 services:
   # EEMT Web Interface (Local Mode)
   eemt-web:
+    image: eemt-web:latest
     build:
       context: .
       dockerfile: docker/web-interface/Dockerfile
@@ -49,6 +50,7 @@ services:
 
   # EEMT Master Node (Distributed Mode)
   eemt-master:
+    image: eemt-web:latest
     build:
       context: .
       dockerfile: docker/web-interface/Dockerfile
@@ -105,6 +107,7 @@ services:
 
   # EEMT Worker Node
   eemt-worker:
+    image: eemt:ubuntu24.04
     build:
       context: .
       dockerfile: docker/ubuntu/24.04/Dockerfile
@@ -186,6 +189,7 @@ services:
 
   # Dedicated Cleanup Service (Optional)
   eemt-cleanup:
+    image: eemt-web:latest
     build:
       context: .
       dockerfile: docker/web-interface/Dockerfile
