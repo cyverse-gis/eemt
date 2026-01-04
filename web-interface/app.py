@@ -38,7 +38,8 @@ TEMPLATES_DIR = BASE_DIR / "templates"
 STATIC_DIR = BASE_DIR / "static"
 UPLOADS_DIR = BASE_DIR / "uploads"
 RESULTS_DIR = BASE_DIR / "results"
-DB_PATH = BASE_DIR / "jobs.db"
+# Use a writable location for the database
+DB_PATH = Path("/tmp") / "jobs.db" if os.path.exists("/tmp") else BASE_DIR / "jobs.db"
 
 # Create directories if they don't exist
 for dir_path in [UPLOADS_DIR, RESULTS_DIR, STATIC_DIR, TEMPLATES_DIR]:
@@ -414,15 +415,23 @@ async def submit_job(
     """Submit a new EEMT or solar workflow job"""
     
     # Validate file
-    if not dem_file.filename.endswith('.tif'):
-        raise HTTPException(status_code=400, detail="DEM file must be a GeoTIFF (.tif)")
+    if not dem_file.filename.endswith(('.tif', '.tiff')):
+        raise HTTPException(status_code=400, detail="DEM file must be a GeoTIFF (.tif or .tiff)")
     
-    # Save uploaded file
+    # Generate job ID first
     job_id = str(uuid.uuid4())
-    dem_path = UPLOADS_DIR / f"{job_id}_{dem_file.filename}"
     
-    with open(dem_path, "wb") as buffer:
-        shutil.copyfileobj(dem_file.file, buffer)
+    # Save uploaded file with job ID prefix
+    dem_filename = f"{job_id}_{dem_file.filename}"
+    dem_path = UPLOADS_DIR / dem_filename
+    
+    try:
+        with open(dem_path, "wb") as buffer:
+            shutil.copyfileobj(dem_file.file, buffer)
+        logger.info(f"Saved DEM file: {dem_filename}")
+    except Exception as e:
+        logger.error(f"Failed to save uploaded file: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to save uploaded file: {str(e)}")
     
     # Create job parameters
     parameters = {
@@ -436,25 +445,48 @@ async def submit_job(
         parameters["start_year"] = start_year or 2020
         parameters["end_year"] = end_year or 2020
     
-    # Create job in database
-    job_id = job_manager.create_job(workflow_type, dem_file.filename, parameters)
+    # Create job in database (use the generated job_id)
+    conn = sqlite3.connect(DB_PATH)
+    try:
+        conn.execute(
+            "INSERT INTO jobs (id, workflow_type, status, dem_filename, parameters, progress) VALUES (?, ?, ?, ?, ?, ?)",
+            (job_id, workflow_type, JobStatus.PENDING, dem_filename, json.dumps(parameters), 0)
+        )
+        conn.commit()
+        logger.info(f"Created job {job_id} in database")
+    except Exception as e:
+        logger.error(f"Failed to create job in database: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create job record")
+    finally:
+        conn.close()
     
     # Start containerized job execution asynchronously
-    asyncio.create_task(execute_containerized_workflow(job_id, workflow_type, dem_file.filename, parameters))
+    asyncio.create_task(execute_containerized_workflow(job_id, workflow_type, dem_filename, parameters))
     
     return {"job_id": job_id, "status": "submitted"}
 
 async def execute_containerized_workflow(job_id: str, workflow_type: str, dem_filename: str, parameters: dict):
-    """Execute workflow in Docker container"""
+    """Execute workflow in Docker container with improved progress tracking"""
     try:
         logger.info(f"Starting containerized workflow for job {job_id}")
+        logger.info(f"Workflow type: {workflow_type}, DEM: {dem_filename}")
+        logger.info(f"Parameters: {parameters}")
+        
+        # Update job status to running
         job_manager.update_status(job_id, JobStatus.RUNNING, progress=5)
+        
+        # Check Docker availability first
+        if not workflow_manager.check_docker_availability():
+            logger.error(f"Docker not available for job {job_id}")
+            job_manager.update_status(job_id, JobStatus.FAILED, error="Docker not available or image not found")
+            return
         
         # Execute workflow in container and monitor progress
         progress_stream = workflow_manager.execute_workflow(
             job_id, workflow_type, dem_filename, parameters
         )
         
+        last_progress = 0
         async for progress_update in progress_stream:
             logger.info(f"Job {job_id}: {progress_update}")
             
@@ -464,15 +496,12 @@ async def execute_containerized_workflow(job_id: str, workflow_type: str, dem_fi
                     progress_text = progress_update.replace("PROGRESS:", "").strip()
                     if "%" in progress_text:
                         progress_pct = float(progress_text.split("%")[0])
-                        job_manager.update_status(job_id, JobStatus.RUNNING, progress=int(progress_pct))
-                    else:
-                        # Task-based progress, estimate percentage
-                        if "/" in progress_text:
-                            current, total = progress_text.split("(")[1].split(")")[0].split("/")
-                            progress_pct = (int(current) / int(total)) * 100
+                        # Only update if progress has changed significantly
+                        if progress_pct != last_progress:
                             job_manager.update_status(job_id, JobStatus.RUNNING, progress=int(progress_pct))
-                except:
-                    pass  # Continue if progress parsing fails
+                            last_progress = progress_pct
+                except Exception as e:
+                    logger.warning(f"Failed to parse progress: {e}")
                     
             elif progress_update.startswith("STATUS:"):
                 # Status update without specific progress

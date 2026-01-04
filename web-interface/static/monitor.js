@@ -4,6 +4,14 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeMonitor();
     loadJobs();
     setupAutoRefresh();
+    
+    // Check for job ID in URL hash to highlight specific job
+    const hash = window.location.hash;
+    if (hash && hash.length > 1) {
+        const jobId = hash.substring(1);
+        console.log('Highlighting job:', jobId);
+        setTimeout(() => highlightJob(jobId), 500);
+    }
 });
 
 let autoRefreshInterval = null;
@@ -101,14 +109,14 @@ function createJobRow(job) {
     const statusIcon = getStatusIcon(job.status);
     const progressBar = job.status === 'running' ? 
         `<div class="progress" style="height: 4px;">
-            <div class="progress-bar" style="width: ${job.progress || 0}%"></div>
+            <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: ${job.progress || 0}%"></div>
          </div>` : '';
     
     const shortId = job.id.substring(0, 8);
-    const createdDate = new Date(job.created_at).toLocaleString();
+    const createdDate = job.created_at ? new Date(job.created_at).toLocaleString() : 'Unknown';
     
     return `
-        <tr>
+        <tr id="job-row-${job.id}" class="job-row">
             <td>
                 <code class="small">${shortId}</code>
                 <button class="btn btn-sm btn-outline-secondary ms-1" 
@@ -389,12 +397,53 @@ function showToast(message, type) {
     });
 }
 
+// Helper functions
+function getStatusClass(status) {
+    const classes = {
+        'pending': 'bg-warning',
+        'running': 'bg-info',
+        'completed': 'bg-success',
+        'failed': 'bg-danger'
+    };
+    return classes[status] || 'bg-secondary';
+}
+
+function getStatusIcon(status) {
+    const icons = {
+        'pending': 'bi-hourglass-split',
+        'running': 'bi-play-circle-fill',
+        'completed': 'bi-check-circle-fill',
+        'failed': 'bi-x-circle-fill'
+    };
+    return icons[status] || 'bi-circle';
+}
+
+function highlightJob(jobId) {
+    // Remove existing highlights
+    document.querySelectorAll('.job-row').forEach(row => {
+        row.classList.remove('table-primary', 'highlight-animation');
+    });
+    
+    // Find and highlight the specific job
+    const jobRow = document.getElementById(`job-row-${jobId}`);
+    if (jobRow) {
+        jobRow.classList.add('table-primary', 'highlight-animation');
+        jobRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Remove highlight after animation
+        setTimeout(() => {
+            jobRow.classList.remove('highlight-animation');
+        }, 3000);
+    }
+}
+
 function getOrCreateToastContainer() {
-    let container = document.querySelector('.toast-container');
+    let container = document.getElementById('toast-container');
     if (!container) {
         container = document.createElement('div');
-        container.className = 'toast-container position-fixed top-0 end-0 p-3';
-        container.style.zIndex = '1200';
+        container.id = 'toast-container';
+        container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        container.style.zIndex = '1050';
         document.body.appendChild(container);
     }
     return container;

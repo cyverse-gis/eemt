@@ -568,7 +568,25 @@ async function handleJobSubmission(event) {
             body: formData
         });
         
-        const result = await response.json();
+        // Check content type before parsing as JSON
+        const contentType = response.headers.get('content-type');
+        let result;
+        
+        if (contentType && contentType.includes('application/json')) {
+            result = await response.json();
+        } else {
+            // Handle non-JSON response (like HTML error pages)
+            const textResponse = await response.text();
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.status} - ${textResponse.substring(0, 100)}...`);
+            }
+            // If successful but not JSON, try to parse anyway
+            try {
+                result = JSON.parse(textResponse);
+            } catch (e) {
+                throw new Error(`Invalid response format: ${textResponse.substring(0, 100)}...`);
+            }
+        }
         
         if (response.ok) {
             // Update job ID display
@@ -591,12 +609,26 @@ async function handleJobSubmission(event) {
             progressText.textContent = '50%';
             
             // Wait for workflow to actually start
-            await waitForWorkflowStart(result.job_id);
+            const workflowStarted = await waitForWorkflowStart(result.job_id);
             
-            updateStep('start', 'completed', 'Workflow started successfully!');
-            
-            // Show success message
-            jobStatusDetails.className = 'alert alert-success';
+            if (workflowStarted) {
+                updateStep('start', 'completed', 'Workflow started successfully!');
+                
+                // Show success message
+                jobStatusDetails.className = 'alert alert-success';
+                jobStatusText.innerHTML = `
+                    <i class="bi bi-check-circle"></i> Job submitted successfully!
+                    <br>Job ID: <code>${result.job_id}</code>
+                    <br>The workflow is now running in the background.
+                `;
+                
+                // Start log streaming
+                document.getElementById('job_log_container').style.display = 'block';
+                startLogStreaming(result.job_id);
+            } else {
+                // Job may still be initializing
+                updateStep('start', 'active', 'Workflow is initializing (this may take a moment)...');
+                jobStatusDetails.className = 'alert alert-info';
             jobStatusDetails.innerHTML = `
                 <i class="bi bi-check-circle-fill"></i> <strong>Workflow is now running!</strong><br>
                 <small>Job ID: ${result.job_id}</small><br>
@@ -649,25 +681,55 @@ async function handleJobSubmission(event) {
     }
 }
 
-async function waitForWorkflowStart(jobId, maxAttempts = 10) {
+async function waitForWorkflowStart(jobId, maxAttempts = 30) {
+    // Enhanced workflow start monitoring with better progress tracking
     for (let i = 0; i < maxAttempts; i++) {
         try {
             const response = await fetch(`/api/jobs/${jobId}`);
-            const job = await response.json();
+            if (!response.ok) {
+                console.warn(`Job status check failed: ${response.status}`);
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                continue;
+            }
             
+            const job = await response.json();
+            console.log(`Job ${jobId} status: ${job.status}, progress: ${job.progress}%`);
+            
+            // Update progress display if job is running
             if (job.status === 'running') {
+                // Update progress bar in modal
+                const progressBar = document.getElementById('progress_bar');
+                const progressText = document.getElementById('progress_text');
+                if (progressBar && progressText && job.progress > 50) {
+                    progressBar.style.width = `${job.progress}%`;
+                    progressText.textContent = `${job.progress}%`;
+                }
+                
+                // Update status text
+                const jobStatusText = document.getElementById('job_status_text');
+                if (jobStatusText) {
+                    jobStatusText.textContent = 'Workflow is running...';
+                }
+                
                 return true;
             } else if (job.status === 'failed') {
                 throw new Error(job.error_message || 'Workflow failed to start');
+            } else if (job.status === 'completed') {
+                return true;  // Job completed very quickly
             }
             
-            // Wait before next check
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Wait before next check (increase wait time after first few attempts)
+            const waitTime = i < 5 ? 1000 : 2000;
+            await new Promise(resolve => setTimeout(resolve, waitTime));
             
         } catch (error) {
+            console.error('Error checking job status:', error);
             if (i === maxAttempts - 1) {
-                throw error;
+                // Don't throw on last attempt, just return false
+                console.warn('Timeout waiting for workflow, but job may still be initializing');
+                return false;
             }
+            await new Promise(resolve => setTimeout(resolve, 1000));
         }
     }
     

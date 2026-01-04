@@ -160,3 +160,43 @@
 2026-01-03 02:00:01,655 - __main__ - INFO - Cleanup summary saved to: /home/tswetnam/github/eemt/web-interface/cleanup_summary_20260103_020001.json
 2026-01-03 02:00:01,655 - __main__ - INFO - Cleanup completed successfully
 2026-01-03 02:00:01,655 - __main__ - INFO - Cleanup completed successfully
+2026-01-04 02:00:01,160 - __main__ - INFO - Cleanup manager initialized:
+2026-01-04 02:00:01,160 - __main__ - INFO - Cleanup manager initialized:
+2026-01-04 02:00:01,160 - __main__ - INFO -   Base directory: /home/tswetnam/github/eemt/web-interface
+2026-01-04 02:00:01,160 - __main__ - INFO -   Base directory: /home/tswetnam/github/eemt/web-interface
+2026-01-04 02:00:01,160 - __main__ - INFO -   Success retention: 7 days
+2026-01-04 02:00:01,160 - __main__ - INFO -   Success retention: 7 days
+2026-01-04 02:00:01,160 - __main__ - INFO -   Failed retention: 12 hours
+2026-01-04 02:00:01,160 - __main__ - INFO -   Failed retention: 12 hours
+2026-01-04 02:00:01,160 - __main__ - INFO -   Dry run mode: False
+2026-01-04 02:00:01,160 - __main__ - INFO -   Dry run mode: False
+2026-01-04 02:00:01,160 - __main__ - INFO - Starting EEMT job data cleanup process
+2026-01-04 02:00:01,160 - __main__ - INFO - Starting EEMT job data cleanup process
+2026-01-04 02:00:01,161 - __main__ - INFO - Cleanup cutoff times:
+2026-01-04 02:00:01,161 - __main__ - INFO - Cleanup cutoff times:
+2026-01-04 02:00:01,161 - __main__ - INFO -   Successful jobs completed before: 2025-12-28 02:00:01.160992
+2026-01-04 02:00:01,161 - __main__ - INFO -   Successful jobs completed before: 2025-12-28 02:00:01.160992
+2026-01-04 02:00:01,161 - __main__ - INFO -   Failed jobs completed before: 2026-01-03 14:00:01.160992
+2026-01-04 02:00:01,161 - __main__ - INFO -   Failed jobs completed before: 2026-01-03 14:00:01.160992
+2026-01-04 02:00:01,161 - __main__ - INFO - Found 0 successful jobs for data cleanup
+2026-01-04 02:00:01,161 - __main__ - INFO - Found 0 successful jobs for data cleanup
+2026-01-04 02:00:01,161 - __main__ - INFO - Found 0 failed jobs for complete deletion
+2026-01-04 02:00:01,161 - __main__ - INFO - Found 0 failed jobs for complete deletion
+2026-01-04 02:00:01,161 - __main__ - INFO - === CLEANUP SUMMARY ===
+2026-01-04 02:00:01,161 - __main__ - INFO - === CLEANUP SUMMARY ===
+2026-01-04 02:00:01,161 - __main__ - INFO - Successful jobs processed: 0
+2026-01-04 02:00:01,161 - __main__ - INFO - Successful jobs processed: 0
+2026-01-04 02:00:01,161 - __main__ - INFO - Failed jobs processed: 0
+2026-01-04 02:00:01,161 - __main__ - INFO - Failed jobs processed: 0
+2026-01-04 02:00:01,161 - __main__ - INFO - Total disk space freed: 0.0 MB
+2026-01-04 02:00:01,161 - __main__ - INFO - Total disk space freed: 0.0 MB
+2026-01-04 02:00:01,161 - __main__ - INFO - Job configs preserved: 0
+2026-01-04 02:00:01,161 - __main__ - INFO - Job configs preserved: 0
+2026-01-04 02:00:01,161 - __main__ - INFO - Job configs deleted: 0
+2026-01-04 02:00:01,161 - __main__ - INFO - Job configs deleted: 0
+2026-01-04 02:00:01,161 - __main__ - INFO - Errors encountered: 0
+2026-01-04 02:00:01,161 - __main__ - INFO - Errors encountered: 0
+2026-01-04 02:00:01,161 - __main__ - INFO - Cleanup summary saved to: /home/tswetnam/github/eemt/web-interface/cleanup_summary_20260104_020001.json
+2026-01-04 02:00:01,161 - __main__ - INFO - Cleanup summary saved to: /home/tswetnam/github/eemt/web-interface/cleanup_summary_20260104_020001.json
+2026-01-04 02:00:01,161 - __main__ - INFO - Cleanup completed successfully
+2026-01-04 02:00:01,161 - __main__ - INFO - Cleanup completed successfully

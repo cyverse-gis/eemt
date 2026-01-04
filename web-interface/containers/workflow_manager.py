@@ -95,48 +95,43 @@ class DistributedWorkflowManager:
         self.active_workers = {}
         
         if node_type in [NodeType.LOCAL, NodeType.MASTER]:
+            # Initialize Docker client with proper error handling
+            self.docker_client = None
+            self.docker_available = False
+            
+            # First, try subprocess mode as it's most reliable
             try:
-                # Try to connect to Docker daemon with correct socket URL format
-                self.docker_client = docker.DockerClient(base_url='unix:///var/run/docker.sock')
-                # Test connection
-                self.docker_client.ping()
-                logger.info("Docker client initialized successfully")
-                self.docker_available = True
-            except Exception as e:
-                logger.warning(f"Docker socket connection failed: {e}")
-                try:
-                    # Fallback to from_env without DOCKER_HOST
-                    old_docker_host = os.environ.get('DOCKER_HOST')
-                    if old_docker_host:
-                        del os.environ['DOCKER_HOST']
-                    
-                    self.docker_client = docker.from_env()
-                    self.docker_client.ping()
-                    logger.info("Docker client initialized with from_env fallback")
+                import subprocess
+                logger.info("Testing Docker via subprocess...")
+                result = subprocess.run(['docker', 'version', '--format', 'json'], 
+                                      capture_output=True, text=True, timeout=5)
+                if result.returncode == 0:
+                    logger.info("Docker CLI accessible via subprocess - using subprocess mode")
+                    self.docker_client = "subprocess"  # Mark as subprocess mode
                     self.docker_available = True
-                    
-                    # Restore environment variable if it existed
-                    if old_docker_host:
-                        os.environ['DOCKER_HOST'] = old_docker_host
-                        
-                except Exception as e2:
-                    logger.warning(f"Docker from_env also failed: {e2}")
-                    # Final fallback: test direct subprocess call to Docker
+                else:
+                    raise Exception(f"Docker CLI returned code {result.returncode}")
+            except Exception as e:
+                logger.warning(f"Docker subprocess test failed: {e}")
+                
+                # Try Python Docker SDK as fallback
+                try:
+                    # Try with default environment
+                    self.docker_client = docker.from_env(timeout=10)
+                    self.docker_client.ping()
+                    logger.info("Docker client initialized with Python SDK")
+                    self.docker_available = True
+                except docker.errors.DockerException as de:
+                    logger.warning(f"Docker Python SDK failed: {de}")
+                    # Try direct socket connection
                     try:
-                        import subprocess
-                        logger.info("Testing Docker via subprocess...")
-                        result = subprocess.run(['docker', 'version', '--format', 'json'], 
-                                              capture_output=True, text=True, check=True)
-                        logger.info(f"Subprocess result: returncode={result.returncode}")
-                        if result.returncode == 0:
-                            logger.info("Docker CLI accessible via subprocess - using subprocess mode")
-                            self.docker_client = "subprocess"  # Mark as subprocess mode
-                            self.docker_available = True
-                        else:
-                            raise Exception(f"Docker CLI returned code {result.returncode}")
-                    except Exception as e3:
-                        logger.warning(f"Docker subprocess test also failed: {e3}")
-                        logger.info("Running in mock mode for testing")
+                        self.docker_client = docker.DockerClient(base_url='unix://var/run/docker.sock', timeout=10)
+                        self.docker_client.ping()
+                        logger.info("Docker client initialized with direct socket")
+                        self.docker_available = True
+                    except Exception as e2:
+                        logger.warning(f"Docker socket connection failed: {e2}")
+                        logger.info("Running in mock mode for testing - Docker not available")
                         self.docker_client = None
                         self.docker_available = False
         else:
@@ -370,16 +365,19 @@ class WorkflowManager(DistributedWorkflowManager):
         if self.docker_client is None:
             return False
             
-        # Handle subprocess mode
+        # Handle subprocess mode (most reliable)
         if self.docker_client == "subprocess":
             try:
                 # Test Docker via subprocess
                 import subprocess
                 result = subprocess.run(['docker', 'images', '--format', '{{.Repository}}:{{.Tag}}'], 
-                                      capture_output=True, text=True, check=True)
+                                      capture_output=True, text=True, timeout=5)
                 if result.returncode == 0:
                     images = result.stdout.strip().split('\n')
-                    if self.container_config.image in images:
+                    # Check for the image
+                    image_found = any(self.container_config.image in img for img in images)
+                    if image_found:
+                        logger.debug(f"Docker image {self.container_config.image} found")
                         return True
                     else:
                         logger.warning(f"Docker image {self.container_config.image} not found")
@@ -387,7 +385,11 @@ class WorkflowManager(DistributedWorkflowManager):
                         logger.info(f"cd docker/ubuntu/24.04 && ./build.sh")
                         return False
                 else:
+                    logger.warning(f"Docker command failed with code {result.returncode}")
                     return False
+            except subprocess.TimeoutExpired:
+                logger.error("Docker check timed out")
+                return False
             except Exception as e:
                 logger.error(f"Docker subprocess check failed: {e}")
                 return False
@@ -421,13 +423,14 @@ class WorkflowManager(DistributedWorkflowManager):
         
         if not self.check_docker_availability():
             # Fall back to mock execution for testing
-            logger.info(f"Running mock workflow for job {job_id}")
+            logger.warning(f"Docker not available, running mock workflow for job {job_id}")
             async for update in self._execute_mock_workflow(job_id, workflow_type, dem_filename, parameters):
                 yield update
             return
         
-        # Handle subprocess mode differently
+        # Handle subprocess mode (preferred for reliability)
         if self.docker_client == "subprocess":
+            logger.info(f"Executing workflow {job_id} via subprocess Docker")
             async for update in self._execute_subprocess_workflow(job_id, workflow_type, dem_filename, parameters):
                 yield update
             return
@@ -791,14 +794,27 @@ class WorkflowManager(DistributedWorkflowManager):
         dem_filename: str, 
         parameters: Dict
     ) -> AsyncGenerator[str, None]:
-        """Execute workflow using subprocess Docker calls"""
+        """Execute workflow using subprocess Docker calls with improved progress tracking"""
         
         try:
-            # Prepare volume mounts for subprocess
+            # Prepare paths
             uploads_path = str(self.uploads_dir)
             results_path = str(self.results_dir / job_id)
             temp_path = str(self.temp_dir / job_id)
             cache_path = str(self.cache_dir)
+            
+            # Check if DEM file exists
+            dem_file_path = self.uploads_dir / dem_filename
+            if not dem_file_path.exists():
+                # Check for uploaded files with job_id prefix
+                possible_files = list(self.uploads_dir.glob(f"*_{dem_filename}"))
+                if possible_files:
+                    dem_file_path = possible_files[0]
+                    dem_filename = dem_file_path.name
+                    logger.info(f"Found uploaded DEM file: {dem_filename}")
+                else:
+                    yield f"ERROR: DEM file not found: {dem_filename}"
+                    return
             
             # Ensure directories exist
             Path(results_path).mkdir(parents=True, exist_ok=True)
@@ -809,26 +825,36 @@ class WorkflowManager(DistributedWorkflowManager):
                 workflow_type, dem_filename, parameters, job_id
             )
             
-            # Build docker run command with subprocess
+            # Build docker run command with better logging
             docker_run_cmd = [
-                'docker', 'run', '--rm',
+                'docker', 'run',
+                '--name', f'eemt-job-{job_id[:8]}',  # Container name for tracking
+                '--rm',  # Remove after completion
                 '-v', f'{uploads_path}:/data/input:ro',
                 '-v', f'{results_path}:/data/output:rw',
                 '-v', f'{temp_path}:/data/temp:rw',
                 '-v', f'{cache_path}:/data/cache:rw',
+                # CPU and memory limits
+                '--cpus', str(parameters.get('num_threads', 4)),
+                '--memory', self.container_config.memory_limit,
                 # Environment variables
+                '-e', 'PYTHONUNBUFFERED=1',  # Important for real-time output
                 '-e', 'EEMT_NUM_THREADS=' + str(parameters.get('num_threads', 4)),
                 '-e', 'EEMT_STEP=' + str(parameters.get('step', 15)),
-                '-e', 'EEMT_LINKE_VALUE=' + str(parameters.get('linke_value', 2.0)),
+                '-e', 'EEMT_LINKE_VALUE=' + str(parameters.get('linke_value', 3.0)),
                 '-e', 'EEMT_ALBEDO_VALUE=' + str(parameters.get('albedo_value', 0.2)),
+                '-e', 'GRASS_MESSAGE_FORMAT=plain',
+                '-e', 'GRASS_VERBOSE=1',
                 self.container_config.image
             ] + container_cmd
             
-            yield f"STATUS: Starting {workflow_type} workflow via subprocess"
-            yield f"STATUS: Docker command: {' '.join(docker_run_cmd[:10])}..."
+            yield "STATUS: Container environment ready"
+            yield "PROGRESS: 30%"
+            
+            logger.info(f"Starting Docker container for job {job_id}")
+            logger.debug(f"Docker command: {' '.join(docker_run_cmd)}")
             
             # Execute container via subprocess
-            import subprocess
             import asyncio
             
             process = await asyncio.create_subprocess_exec(
@@ -837,33 +863,69 @@ class WorkflowManager(DistributedWorkflowManager):
                 stderr=asyncio.subprocess.STDOUT
             )
             
+            # Store process for potential cancellation
             self.active_containers[job_id] = process
             
-            yield f"STATUS: Container started for job {job_id}"
+            yield "STATUS: Workflow initialization started"
+            yield "PROGRESS: 35%"
             
-            # Monitor process output
+            # Track workflow progress
+            progress_started = False
+            tasks_completed = 0
+            total_tasks = 365 if workflow_type == "sol" else 816  # Estimate task count
+            
+            # Monitor process output with better progress tracking
             while True:
                 line = await process.stdout.readline()
                 if not line:
                     break
                     
-                output = line.decode().strip()
+                output = line.decode('utf-8', errors='ignore').strip()
                 if output:
-                    # Parse and format output
-                    if "PROGRESS:" in output:
-                        yield output
-                    elif "STATUS:" in output:
-                        yield output
-                    elif "ERROR:" in output:
-                        yield output
-                    else:
-                        # General output
-                        yield f"LOG: {output}"
+                    logger.debug(f"Container output: {output}")
+                    
+                    # Parse different types of output
+                    if "initializing grass" in output.lower():
+                        yield "STATUS: Initializing GRASS GIS environment"
+                        yield "PROGRESS: 40%"
+                        progress_started = True
+                    elif "loading dem" in output.lower():
+                        yield "STATUS: Loading and processing DEM data"
+                        yield "PROGRESS: 45%"
+                    elif "starting solar calculations" in output.lower() or "running r.sun" in output.lower():
+                        yield "STATUS: Starting solar radiation calculations"
+                        yield "PROGRESS: 50%"
+                    elif "task" in output.lower() and "/" in output:
+                        # Parse task progress
+                        import re
+                        match = re.search(r'(\d+)\s*/\s*(\d+)', output)
+                        if match:
+                            current = int(match.group(1))
+                            total = int(match.group(2))
+                            # Calculate progress (50-95% for main tasks)
+                            progress = 50 + (current / total * 45)
+                            yield f"PROGRESS: {progress:.1f}%"
+                            yield f"STATUS: Processing task {current}/{total}"
+                    elif "monthly aggregation" in output.lower():
+                        yield "STATUS: Generating monthly aggregations"
+                        yield "PROGRESS: 95%"
+                    elif "workflow completed" in output.lower() or "successfully" in output.lower():
+                        yield "STATUS: Finalizing results"
+                        yield "PROGRESS: 98%"
+                    elif "error" in output.lower() or "failed" in output.lower():
+                        yield f"ERROR: {output}"
+                    elif progress_started:
+                        # Generic progress tracking
+                        tasks_completed += 1
+                        if tasks_completed % 10 == 0:  # Update every 10 tasks
+                            progress = min(50 + (tasks_completed / total_tasks * 45), 95)
+                            yield f"PROGRESS: {progress:.1f}%"
             
             # Wait for completion
             return_code = await process.wait()
             
             if return_code == 0:
+                yield "PROGRESS: 100%"
                 yield "COMPLETED: Workflow execution finished successfully"
             else:
                 yield f"ERROR: Workflow failed with exit code {return_code}"
@@ -872,6 +934,16 @@ class WorkflowManager(DistributedWorkflowManager):
             if job_id in self.active_containers:
                 del self.active_containers[job_id]
                 
+        except asyncio.CancelledError:
+            # Handle cancellation
+            if job_id in self.active_containers:
+                process = self.active_containers[job_id]
+                process.terminate()
+                await process.wait()
+                del self.active_containers[job_id]
+            yield "ERROR: Workflow cancelled by user"
+            raise
+            
         except Exception as e:
             logger.error(f"Subprocess workflow execution failed: {e}")
             yield f"ERROR: Workflow execution failed: {str(e)}"
