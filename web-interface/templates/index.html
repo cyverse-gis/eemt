@@ -78,11 +78,20 @@
                                     <label for="dem_file" class="form-label mb-3">
                                         <i class="bi bi-file-earmark-arrow-up"></i> Digital Elevation Model (DEM)
                                     </label>
-                                    <input class="form-control form-control-lg mb-3" type="file" id="dem_file" name="dem_file" accept=".tif,.tiff" required style="padding: 12px;">
-                                    <div class="mt-2">
-                                        <div id="upload_status" class="text-muted small">No file selected</div>
-                                        <div id="upload_progress" class="progress mt-2" style="display: none;">
-                                            <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                    <div class="file-upload-container">
+                                        <input class="form-control form-control-lg mb-3" type="file" id="dem_file" name="dem_file" accept=".tif,.tiff" required>
+                                        <div class="file-upload-info mt-2">
+                                            <div id="upload_status" class="text-center">No file selected</div>
+                                            <div id="upload_progress_container" class="mt-3" style="display: none;">
+                                                <div class="progress" style="height: 20px;">
+                                                    <div id="upload_progress_bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%">
+                                                        <span class="progress-text">0%</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="upload_details" class="mt-2 small text-muted text-center" style="display: none;">
+                                                <span id="upload_size"></span> | <span id="upload_speed"></span>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="form-text mt-2">Upload a GeoTIFF (.tif) file containing elevation data. File will upload immediately when selected.</div>
@@ -100,8 +109,8 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="num_threads" class="form-label">CPU Threads</label>
-                                            <input type="number" class="form-control" id="num_threads" name="num_threads" value="4" min="1" max="32">
-                                            <div class="form-text">Number of parallel processing threads</div>
+                                            <input type="number" class="form-control" id="num_threads" name="num_threads" value="4" min="1" max="512">
+                                            <div class="form-text">Number of parallel processing threads (max: 512)</div>
                                         </div>
                                     </div>
                                 </div>
@@ -178,14 +187,23 @@
                     </div>
 
                     <div class="card">
-                        <div class="card-header">
-                            <h5><i class="bi bi-gear"></i> System Status</h5>
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="bi bi-gear"></i> System Status</h5>
+                            <small class="text-muted" id="status-update-time">Updating...</small>
                         </div>
                         <div class="card-body">
                             <div id="system_status">
                                 <div class="text-center text-muted">
-                                    <i class="bi bi-hourglass-split fs-1"></i>
-                                    <p>Checking system status...</p>
+                                    <div class="spinner-border spinner-border-sm" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p class="mt-2">Checking system status...</p>
+                                </div>
+                            </div>
+                            <div id="active_workflows" class="mt-3" style="display: none;">
+                                <h6 class="text-muted mb-2">Active Workflows</h6>
+                                <div id="active_workflows_list">
+                                    <div class="text-muted small">No active workflows</div>
                                 </div>
                             </div>
                         </div>
@@ -216,20 +234,53 @@
 
     <!-- Progress Modal -->
     <div class="modal fade" id="progressModal" tabindex="-1" data-bs-backdrop="static">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Job Submitted Successfully</h5>
+                    <h5 class="modal-title">Workflow Submission Progress</h5>
                 </div>
                 <div class="modal-body">
-                    <p>Your workflow has been submitted and is being processed.</p>
-                    <div class="mb-2">
-                        <strong>Job ID:</strong> <span id="job_id_display"></span>
+                    <div class="mb-3">
+                        <strong>Job ID:</strong> <span id="job_id_display" class="font-monospace"></span>
                     </div>
-                    <div class="progress mb-3">
-                        <div class="progress-bar" id="progress_bar" role="progressbar" style="width: 0%"></div>
+                    
+                    <!-- Progress Steps -->
+                    <div class="submission-steps mb-4">
+                        <div class="step-item" id="step-validate">
+                            <i class="bi bi-circle step-icon"></i>
+                            <span class="step-text">Validating input file</span>
+                        </div>
+                        <div class="step-item" id="step-prepare">
+                            <i class="bi bi-circle step-icon"></i>
+                            <span class="step-text">Preparing container environment</span>
+                        </div>
+                        <div class="step-item" id="step-init">
+                            <i class="bi bi-circle step-icon"></i>
+                            <span class="step-text">Initializing workflow</span>
+                        </div>
+                        <div class="step-item" id="step-start">
+                            <i class="bi bi-circle step-icon"></i>
+                            <span class="step-text">Starting workflow execution</span>
+                        </div>
                     </div>
-                    <div id="job_status">Initializing...</div>
+                    
+                    <!-- Overall Progress -->
+                    <div class="progress mb-3" style="height: 25px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" id="progress_bar" role="progressbar" style="width: 0%">
+                            <span id="progress_text">0%</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Status Details -->
+                    <div id="job_status_details" class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> <span id="job_status_text">Submitting job...</span>
+                    </div>
+                    
+                    <!-- Live Log Output (initially hidden) -->
+                    <div id="job_log_container" style="display: none;">
+                        <h6>Workflow Output:</h6>
+                        <div id="job_log" class="bg-dark text-light p-2 rounded" style="height: 200px; overflow-y: auto; font-family: monospace; font-size: 0.875rem;"></div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <a href="/monitor" class="btn btn-primary">View in Monitor</a>

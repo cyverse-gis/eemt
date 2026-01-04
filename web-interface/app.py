@@ -510,9 +510,19 @@ async def execute_containerized_workflow(job_id: str, workflow_type: str, dem_fi
             logger.warning(f"Cleanup warning for job {job_id}: {cleanup_error}")
 
 @app.get("/api/jobs")
-async def list_jobs():
-    """List all jobs"""
-    return job_manager.list_jobs()
+async def list_jobs(status: Optional[str] = None, limit: Optional[int] = None):
+    """List all jobs with optional filtering"""
+    jobs = job_manager.list_jobs()
+    
+    # Filter by status if requested
+    if status:
+        jobs = [j for j in jobs if j["status"] == status]
+    
+    # Limit results if requested
+    if limit:
+        jobs = jobs[:limit]
+    
+    return jobs
 
 @app.get("/api/jobs/{job_id}")
 async def get_job(job_id: str):
@@ -521,6 +531,63 @@ async def get_job(job_id: str):
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
     return job
+
+@app.get("/api/jobs/{job_id}/logs")
+async def get_job_logs(job_id: str, tail: int = 50):
+    """Get job logs (last N lines)"""
+    job = job_manager.get_job(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    # Look for log files in the results directory
+    results_path = RESULTS_DIR / job_id
+    log_content = ""
+    
+    # Check for various log files
+    log_files = [
+        results_path / "workflow.log",
+        results_path / "task_output.log",
+        results_path / "sys.err",
+        results_path / "container.log"
+    ]
+    
+    for log_file in log_files:
+        if log_file.exists():
+            try:
+                with open(log_file, 'r') as f:
+                    lines = f.readlines()
+                    # Get last N lines
+                    if tail > 0:
+                        lines = lines[-tail:]
+                    log_content += f"\n--- {log_file.name} ---\n"
+                    log_content += ''.join(lines)
+            except Exception as e:
+                logger.warning(f"Could not read log file {log_file}: {e}")
+    
+    if not log_content:
+        # Try to get container logs if available
+        if job_id in job_manager.active_containers:
+            try:
+                container_id = job_manager.active_containers[job_id]
+                # Get logs from Docker
+                import subprocess
+                result = subprocess.run(
+                    ["docker", "logs", "--tail", str(tail), container_id],
+                    capture_output=True,
+                    text=True,
+                    timeout=5
+                )
+                if result.returncode == 0:
+                    log_content = result.stdout
+                else:
+                    log_content = "Container logs not available"
+            except Exception as e:
+                logger.warning(f"Could not get container logs: {e}")
+                log_content = "Logs not yet available. Workflow may still be initializing..."
+        else:
+            log_content = "No logs available yet. Please wait for workflow to start..."
+    
+    return log_content
 
 @app.get("/api/jobs/{job_id}/results")
 async def download_results(job_id: str):
@@ -564,21 +631,49 @@ async def health_check():
 
 @app.get("/api/system/status")
 async def system_status():
-    """Get system and Docker status"""
+    """Get enhanced system and Docker status"""
     try:
         docker_available = workflow_manager.check_docker_availability()
         container_stats = workflow_manager.get_container_stats() if docker_available else {}
         
+        # Count active jobs
+        active_jobs = len([j for j in job_manager.list_jobs() if j["status"] == JobStatus.RUNNING])
+        
+        # Check if Docker image exists
+        image_exists = False
+        if docker_available:
+            try:
+                import subprocess
+                result = subprocess.run(
+                    ["docker", "images", "-q", workflow_manager.container_config.image],
+                    capture_output=True,
+                    text=True,
+                    timeout=5
+                )
+                image_exists = bool(result.stdout.strip())
+            except:
+                pass
+        
         return {
             "docker_available": docker_available,
             "container_stats": container_stats,
-            "image_name": workflow_manager.container_config.image
+            "image_name": workflow_manager.container_config.image,
+            "image_exists": image_exists,
+            "active_jobs": active_jobs,
+            "active_containers": list(job_manager.active_containers.keys()),
+            "system_info": {
+                "uploads_dir": str(UPLOADS_DIR),
+                "results_dir": str(RESULTS_DIR),
+                "uploads_dir_exists": UPLOADS_DIR.exists(),
+                "results_dir_exists": RESULTS_DIR.exists()
+            }
         }
     except Exception as e:
         return {
             "docker_available": False,
             "error": str(e),
-            "image_name": workflow_manager.container_config.image
+            "image_name": workflow_manager.container_config.image,
+            "active_jobs": 0
         }
 
 @app.delete("/api/jobs/{job_id}")
