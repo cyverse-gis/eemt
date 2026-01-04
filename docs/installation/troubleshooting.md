@@ -4,9 +4,35 @@ title: Installation Troubleshooting
 
 # Installation Troubleshooting Guide
 
+**Updated January 2025** - Version 2.0.0
+
 ## Overview
 
-This guide helps resolve common installation issues for both Docker and manual installations of EEMT. Each section includes symptoms, diagnosis steps, and solutions.
+This guide helps resolve common installation issues for both Docker and manual installations of EEMT. Each section includes symptoms, diagnosis steps, and solutions. Many critical issues have been fixed in version 2.0.0.
+
+## 🎉 Recently Fixed Issues (v2.0.0)
+
+The following issues have been resolved and should no longer occur:
+
+### Web Interface Workflow Submission
+**Previous Issue**: JSON parsing errors, container preparation hanging at 25%
+**Status**: ✅ FIXED
+**Solution Implemented**: Enhanced error handling with proper content-type checking
+
+### System Resource Detection
+**Previous Issue**: Displayed "unknown (subprocess mode)" instead of actual resources
+**Status**: ✅ FIXED
+**Solution Implemented**: Added psutil-based CPU and memory detection
+
+### Job Monitoring
+**Previous Issue**: Jobs not appearing, progress bars stuck
+**Status**: ✅ FIXED
+**Solution Implemented**: Enhanced progress parsing and job persistence
+
+### System Status Updates
+**Previous Issue**: Timestamp stuck at "Updating..."
+**Status**: ✅ FIXED
+**Solution Implemented**: Fixed API error handling and response processing
 
 ## Docker Installation Issues
 
@@ -56,6 +82,10 @@ sudo docker-compose up
 ```
 ERROR: failed to solve: process "/bin/sh -c apt-get update" did not complete successfully
 ```
+
+**Current Container Versions (v2.0.0)**:
+- eemt:ubuntu24.04 - Image ID: e3a84eb59c8e
+- eemt-web:latest - Image ID: e8e8fa0d382d
 
 **Solutions**:
 
@@ -375,9 +405,69 @@ sudo chcon -Rt svirt_sandbox_file_t /path/to/data
 sudo setsebool -P container_manage_cgroup on
 ```
 
+## Web Interface Specific Issues
+
+### Resource Detection Shows Incorrect Values
+
+**Symptoms**:
+```
+System shows incorrect CPU/memory values
+```
+
+**Solution**:
+```bash
+# Ensure psutil is installed
+pip install psutil
+
+# Restart web interface
+python app.py
+
+# Verify detection is working
+curl http://localhost:5000/api/system/status
+```
+
+### Docker Subprocess Mode Issues
+
+**Symptoms**:
+```
+Docker commands fail in subprocess mode
+```
+
+**Solution**:
+```bash
+# Ensure user has Docker permissions
+sudo usermod -aG docker $USER
+# Log out and back in
+
+# Test Docker access
+docker ps
+
+# For Docker Compose deployments
+docker-compose up --build
+```
+
+### Container Orchestration Problems
+
+**Symptoms**:
+```
+Containers start but workflows don't execute
+```
+
+**Solution**:
+```bash
+# Check container logs
+docker logs <container_id>
+
+# Verify volume mounts
+docker inspect <container_id> | grep -A 10 Mounts
+
+# Ensure workflow scripts are accessible
+docker run --rm eemt:ubuntu24.04 ls /opt/eemt/
+```
+
 ## Diagnostic Commands
 
-### System Information
+### Enhanced System Information (v2.0.0)
 
 ```bash
 #!/bin/bash
@@ -412,6 +502,12 @@ echo "Docker Status:"
 if command -v docker &> /dev/null; then
     echo "  $(docker --version)"
     echo "  Daemon: $(docker ps &> /dev/null && echo 'Running' || echo 'Not running')"
+    # Check EEMT images
+    echo "  EEMT Images:"
+    docker images | grep eemt | sed 's/^/    /'
+    # Check running containers
+    echo "  Running Containers:"
+    docker ps --filter "ancestor=eemt:ubuntu24.04" --filter "ancestor=eemt-web:latest" | sed 's/^/    /'
 else
     echo "  Docker: Not installed"
 fi
@@ -476,11 +572,11 @@ def check_command(cmd):
     except FileNotFoundError:
         return False
 
-# Python modules to check
+# Python modules to check (updated for v2.0.0)
 modules = [
     'numpy', 'pandas', 'xarray', 'rasterio', 
     'geopandas', 'dask', 'scipy', 'matplotlib',
-    'fastapi', 'uvicorn'
+    'fastapi', 'uvicorn', 'psutil', 'docker'
 ]
 
 # System commands to check

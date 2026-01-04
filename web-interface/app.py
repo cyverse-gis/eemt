@@ -45,8 +45,21 @@ DB_PATH = Path("/tmp") / "jobs.db" if os.path.exists("/tmp") else BASE_DIR / "jo
 for dir_path in [UPLOADS_DIR, RESULTS_DIR, STATIC_DIR, TEMPLATES_DIR]:
     dir_path.mkdir(exist_ok=True)
 
-# Mount static files and templates
-app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+# Mount static files with cache busting for development
+class NoCacheStaticFiles(StaticFiles):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+    
+    async def __call__(self, scope, receive, send):
+        response = await super().__call__(scope, receive, send)
+        # Add no-cache headers for development
+        if hasattr(response, 'headers'):
+            response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+            response.headers["Pragma"] = "no-cache"
+            response.headers["Expires"] = "0"
+        return response
+
+app.mount("/static", NoCacheStaticFiles(directory=STATIC_DIR), name="static")
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 # Initialize container workflow manager
@@ -368,6 +381,26 @@ job_manager = JobManager()
 async def home(request: Request):
     """Main page with job submission form"""
     return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/app.js")
+async def get_app_js():
+    """Serve app.js with no-cache headers"""
+    js_file = STATIC_DIR / "app.js"
+    response = FileResponse(js_file, media_type="application/javascript")
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
+
+@app.get("/style.css")
+async def get_style_css():
+    """Serve style.css with no-cache headers"""
+    css_file = STATIC_DIR / "style.css"
+    response = FileResponse(css_file, media_type="text/css")
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 @app.post("/api/upload-file")
 async def upload_file(file: UploadFile = File(...)):

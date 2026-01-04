@@ -3,13 +3,40 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/docker-supported-blue.svg)](docker/)
 [![Documentation](https://img.shields.io/badge/docs-mkdocs-blue.svg)](docs/)
+[![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](RELEASE_NOTES.md)
 
 The **Effective Energy and Mass Transfer (EEMT) Algorithm Suite** is a comprehensive geospatial modeling toolkit for calculating energy flux in the Critical Zone using topographic solar radiation modeling and climate data integration.
 
+## 🎉 Recent Major Improvements (January 2025)
+
+- ✅ **Fixed Web Interface Workflow Submission**: Resolved JSON parsing errors and container preparation hanging issues
+- ✅ **Enhanced System Resource Detection**: Now accurately detects and displays system CPU/memory (255 cores, 1TB RAM on gpu06)
+- ✅ **Improved Container Reliability**: Rebuilt containers with enhanced orchestration and resource management
+- ✅ **Real-time Progress Tracking**: Fixed monitoring dashboard with accurate 0-100% progress updates
+- ✅ **Better Error Handling**: Enhanced error messages and recovery mechanisms throughout the system
+
+[View Full Release Notes](RELEASE_NOTES.md)
+
 ## 🚀 Quick Start
 
-### Web Interface (Recommended)
-Get started with the modern web interface for easy job submission and monitoring:
+### Docker Compose (Fastest Setup)
+Get up and running in under 5 minutes:
+
+```bash
+# 1. Clone repository
+git clone https://github.com/cyverse-gis/eemt.git
+cd eemt
+
+# 2. Start with Docker Compose (auto-builds containers)
+docker-compose up
+
+# 3. Access web interface
+open http://127.0.0.1:5000  # Main interface
+open http://127.0.0.1:5000/monitor  # Job monitoring
+```
+
+### Manual Setup
+For development or custom configurations:
 
 ```bash
 # 1. Build container (one-time setup)
@@ -18,7 +45,7 @@ cd docker/ubuntu/24.04/
 
 # 2. Start web interface  
 cd ../../web-interface/
-pip install -r requirements.txt
+pip install -r requirements.txt  # Includes psutil for resource detection
 python app.py
 
 # 3. Access via browser
@@ -26,11 +53,12 @@ firefox http://127.0.0.1:5000
 ```
 
 ### Key Features
-- 🌐 **Web-based Interface**: Upload DEMs and configure workflows through browser
-- 🐳 **Containerized Execution**: Docker containers with all dependencies included
-- 📊 **Real-time Monitoring**: Track progress with live updates and log streaming
+- 🌐 **Web-based Interface**: Upload DEMs and configure workflows through responsive browser interface
+- 🐳 **Containerized Execution**: Docker containers with all dependencies included (GRASS 8.4+, CCTools 7.8.2)
+- 📊 **Real-time Monitoring**: Track progress with live updates, accurate system resource detection
 - 🔄 **Multi-Workflow Support**: Solar radiation modeling and full EEMT analysis
 - 💾 **Easy Results**: Download processed data as ZIP archives
+- 🖥️ **System Awareness**: Automatic detection of available CPU cores and memory for optimal configuration
 
 ## 📋 What is EEMT?
 

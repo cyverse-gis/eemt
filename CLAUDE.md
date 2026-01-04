@@ -133,16 +133,23 @@ dask-distributed: ">=2024.1"
 ## Computational Requirements
 
 ### Default Resource Allocation
-- **Threads**: 4 (configurable via `--num_threads`)
+- **Threads**: 4 (configurable via `--num_threads`, supports up to 512)
 - **Memory per thread**: 2GB minimum
 - **Disk space**: 50GB for typical regional analysis
 - **GPU**: Optional but recommended for large datasets
+
+### Current System Capabilities (gpu06.cyverse.org)
+- **CPU Cores**: 255 (automatically detected)
+- **Memory**: 1007.7 GB (~1TB RAM) (automatically detected)
+- **Docker Containers**: 14+ running simultaneously
+- **System Detection**: Accurate resource reporting via psutil
 
 ### Scaling Characteristics
 - **Daily solar calculations**: 365 parallel tasks
 - **EEMT calculations**: 816 tasks for 34-year analysis
 - **Memory scaling**: Linear with DEM resolution
 - **I/O bottleneck**: Large raster operations
+- **Resource Detection**: Automatic CPU/memory detection for optimal configuration
 
 ## Build and Development Commands
 

@@ -1,26 +1,52 @@
 # EEMT Web Interface - Local Mode
 
-A modern web-based interface for submitting and monitoring EEMT (Effective Energy and Mass Transfer) and solar radiation workflows in local execution mode.
+**Version 2.0.0** - A modern, reliable web-based interface for submitting and monitoring EEMT (Effective Energy and Mass Transfer) and solar radiation workflows with enhanced system resource detection and improved container orchestration.
+
+## 🎉 Recent Major Improvements (January 2025)
+
+### Critical Fixes
+- ✅ **Workflow Submission**: Fixed JSON parsing errors and container preparation hanging issues
+- ✅ **System Detection**: Replaced "unknown (subprocess mode)" with actual CPU/memory detection
+- ✅ **Progress Tracking**: Fixed monitoring dashboard with accurate 0-100% progress updates
+- ✅ **Error Handling**: Enhanced error messages and recovery mechanisms
+
+### New Capabilities
+- 🖥️ **Resource Detection**: Automatic detection of system resources (CPU cores, RAM)
+- 📊 **Real-time Updates**: Improved job monitoring with live progress streaming
+- 🐳 **Container Reliability**: Enhanced Docker orchestration with better resource management
+- 🔧 **System Status**: Live system health monitoring with timestamp updates
 
 ## Features
 
+### Core Functionality
 - 🌐 **Web-based Job Submission**: Upload DEM files and configure parameters through a responsive interface
-- 📊 **Real-time Monitoring**: Track job progress with live updates and status monitoring
+- 📊 **Real-time Monitoring**: Track job progress with live updates and accurate status monitoring
 - 🔄 **Multi-Workflow Support**: Choose between solar radiation modeling and full EEMT analysis
 - 💾 **Result Management**: Download completed results as ZIP archives
 - 📱 **Responsive Design**: Works on desktop, tablet, and mobile devices
-- ⚡ **Fast API Backend**: High-performance REST API built with FastAPI
-- 🐳 **Containerized Execution**: Docker containers with all dependencies included
-- 🔄 **Progress Streaming**: Real-time log monitoring via container output parsing
-- 🛠️ **Resource Management**: Automatic container lifecycle and cleanup
+
+### Enhanced in v2.0.0
+- ⚡ **Fast API Backend**: High-performance REST API with improved error handling
+- 🐳 **Containerized Execution**: Reliable Docker containers with resource limits
+- 🔄 **Progress Streaming**: Fixed real-time log monitoring with accurate percentage tracking
+- 🛠️ **Resource Management**: Automatic container lifecycle with proper cleanup
+- 🖥️ **System Awareness**: Displays actual CPU cores and memory for configuration guidance
+- ⏱️ **Live Status Updates**: System status with real-time timestamp updates
+- 🚨 **Better Error Messages**: Clear, actionable error feedback throughout the interface
 
 ## Prerequisites
 
 ### System Requirements
 - **Docker**: Version 20.0+ with daemon running
-- **Python 3.8+**: For web interface dependencies
+- **Python 3.8+**: For web interface dependencies (3.12+ recommended)
 - **4GB+ RAM**: 8GB+ recommended for larger DEMs
 - **20GB+ Disk**: For container images and workflow outputs
+- **CPU**: 4+ cores recommended (system will detect available cores)
+
+### Verified Configurations
+- **Production**: gpu06.cyverse.org - 255 CPU cores, 1007.7 GB RAM
+- **Development**: 8 cores, 16GB RAM minimum
+- **Container Images**: eemt:ubuntu24.04 (e3a84eb59c8e), eemt-web:latest (e8e8fa0d382d)
 
 ### Container Setup (Required)
 The web interface uses Docker containers for workflow execution:
@@ -282,12 +308,33 @@ curl "http://127.0.0.1:5000/api/jobs"
 
 ## Troubleshooting
 
+### Recently Fixed Issues (v2.0.0)
+
+These issues have been resolved in the latest version:
+
+1. **JSON Parsing Errors During Submission** - FIXED
+   - Previously caused workflow submission to fail
+   - Now properly handles all content types and JSON responses
+
+2. **Container Preparation Hanging at 25%** - FIXED
+   - Container environment now prepares successfully
+   - Progress tracking works from 0-100%
+
+3. **"Unknown (subprocess mode)" System Detection** - FIXED
+   - Now shows actual CPU cores and memory
+   - Uses psutil for accurate system resource detection
+
+4. **System Status "Updating..." Forever** - FIXED
+   - Timestamps now update in real-time
+   - Proper error handling for system status API
+
 ### Common Issues
 
 1. **"Docker not available or image not built"**:
    - Verify Docker daemon is running: `docker info`
    - Build container: `cd ../docker/ubuntu/24.04 && ./build.sh`
    - Check image exists: `docker images | grep eemt`
+   - Verify correct image ID: Should show e3a84eb59c8e for eemt:ubuntu24.04
 
 2. **"Container execution failed"**:
    - Check Docker logs: `docker logs <container_id>`
@@ -311,12 +358,14 @@ curl "http://127.0.0.1:5000/api/jobs"
 
 ### Performance Optimization
 
+- **Resource Detection**: System automatically detects available CPU/memory for optimal configuration
 - **Large DEMs**: Consider tiling very large elevation models before processing
-- **Container Resources**: Adjust CPU/memory limits in workflow_manager.py
-- **Concurrent Jobs**: Limit simultaneous containers based on available resources
+- **Container Resources**: Adjust CPU/memory limits in workflow_manager.py based on detected resources
+- **Concurrent Jobs**: Limit simultaneous containers based on available resources (auto-detected)
 - **Disk Space**: Monitor storage usage in uploads/, results/, temp/, and cache/
-- **Container Cleanup**: Automatic cleanup prevents resource leaks
-- **Image Optimization**: Container image is ~5GB, ensure adequate Docker space
+- **Container Cleanup**: Enhanced automatic cleanup prevents resource leaks
+- **Image Optimization**: Container images rebuilt and optimized (~5GB each)
+- **Subprocess Mode**: Docker operations use subprocess for better compatibility and resource tracking
 
 ## Integration with Other Modes
 
