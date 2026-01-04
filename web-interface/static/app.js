@@ -55,6 +55,9 @@ async function checkDockerStatus() {
     
     try {
         const response = await fetch('/api/system/status');
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
         const status = await response.json();
         
         const systemStatusDiv = document.getElementById('system_status');
@@ -138,6 +141,8 @@ async function checkDockerStatus() {
         if (statusUpdateTime) {
             const now = new Date();
             statusUpdateTime.textContent = now.toLocaleTimeString();
+        } else {
+            console.warn('status-update-time element not found');
         }
         
     } catch (error) {
@@ -149,6 +154,12 @@ async function checkDockerStatus() {
                 <div class="small mt-1">Unable to connect to backend service</div>
             </div>
         `;
+        
+        // Update timestamp even on error
+        if (statusUpdateTime) {
+            const now = new Date();
+            statusUpdateTime.textContent = now.toLocaleTimeString();
+        }
     }
 }
 
