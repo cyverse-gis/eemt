@@ -670,6 +670,9 @@ class WorkflowManager(DistributedWorkflowManager):
             # Handle subprocess mode
             if self.docker_client == "subprocess":
                 import subprocess
+                import os
+                import psutil
+                
                 # Get running containers via subprocess
                 result = subprocess.run(['docker', 'ps', '--format', 'table {{.Names}}\t{{.Image}}'], 
                                       capture_output=True, text=True, check=True)
@@ -677,13 +680,34 @@ class WorkflowManager(DistributedWorkflowManager):
                     lines = result.stdout.strip().split('\n')[1:]  # Skip header
                     eemt_containers = [line.split('\t')[0] for line in lines if self.container_config.image in line]
                     
+                    # Get actual system resources
+                    cpu_count = os.cpu_count() or psutil.cpu_count() or 4
+                    try:
+                        memory_info = psutil.virtual_memory()
+                        memory_gb = round(memory_info.total / (1024**3), 1)
+                    except:
+                        memory_gb = "N/A"
+                    
+                    # Get total container count via Docker
+                    try:
+                        docker_info_result = subprocess.run(['docker', 'info', '--format', '{{json .}}'], 
+                                                          capture_output=True, text=True, check=True)
+                        if docker_info_result.returncode == 0:
+                            import json
+                            docker_info = json.loads(docker_info_result.stdout)
+                            containers_running = docker_info.get("ContainersRunning", len(eemt_containers))
+                        else:
+                            containers_running = len(eemt_containers)
+                    except:
+                        containers_running = len(eemt_containers)
+                    
                     return {
                         "total_containers": len(eemt_containers),
                         "running_jobs": eemt_containers,
                         "system_stats": {
-                            "cpus": "unknown (subprocess mode)",
-                            "memory": "unknown (subprocess mode)",
-                            "containers_running": len(eemt_containers)
+                            "cpus": cpu_count,
+                            "memory": f"{memory_gb} GB",
+                            "containers_running": containers_running
                         }
                     }
                 else:
