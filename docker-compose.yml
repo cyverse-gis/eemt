@@ -17,6 +17,7 @@ services:
       - ./data/temp:/app/temp
       - ./data/cache:/app/cache
       - ./data/logs:/app/logs  # Mount logs directory to fix permission issues
+      - ./data:/host/data:rw  # Mount entire host data directory for workflow container paths
       - /var/run/docker.sock:/var/run/docker.sock  # For container management
       - ./web-interface/containers:/app/containers:rw  # Mount workflow manager for development
       - ./sol:/opt/eemt/sol:ro  # Mount workflow scripts

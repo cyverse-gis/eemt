@@ -573,10 +573,33 @@ async function handleJobSubmission(event) {
     submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
     
     try {
+        // Get the uploaded filename
+        const demFileElement = document.getElementById('dem_file');
+        const uploadedFilename = demFileElement.dataset.uploadedFile;
+        
+        if (!uploadedFilename) {
+            throw new Error('No file uploaded. Please select and upload a DEM file first.');
+        }
+        
+        // Create new FormData without the file, using uploaded filename instead
+        const jobFormData = new FormData();
+        jobFormData.append('workflow_type', formData.get('workflow_type'));
+        jobFormData.append('uploaded_filename', uploadedFilename);
+        jobFormData.append('step', formData.get('step'));
+        jobFormData.append('linke_value', formData.get('linke_value'));
+        jobFormData.append('albedo_value', formData.get('albedo_value'));
+        jobFormData.append('num_threads', formData.get('num_threads'));
+        
+        // Add EEMT parameters if needed
+        if (formData.get('workflow_type') === 'eemt') {
+            if (formData.get('start_year')) jobFormData.append('start_year', formData.get('start_year'));
+            if (formData.get('end_year')) jobFormData.append('end_year', formData.get('end_year'));
+        }
+        
         // Submit the job
         const response = await fetch('/api/submit-job', {
             method: 'POST',
-            body: formData
+            body: jobFormData
         });
         
         // Check content type before parsing as JSON
@@ -640,11 +663,12 @@ async function handleJobSubmission(event) {
                 // Job may still be initializing
                 updateStep('start', 'active', 'Workflow is initializing (this may take a moment)...');
                 jobStatusDetails.className = 'alert alert-info';
-            jobStatusDetails.innerHTML = `
-                <i class="bi bi-check-circle-fill"></i> <strong>Workflow is now running!</strong><br>
-                <small>Job ID: ${result.job_id}</small><br>
-                <small>You can close this window and monitor progress in the dashboard.</small>
-            `;
+                jobStatusDetails.innerHTML = `
+                    <i class="bi bi-check-circle-fill"></i> <strong>Workflow is now running!</strong><br>
+                    <small>Job ID: ${result.job_id}</small><br>
+                    <small>You can close this window and monitor progress in the dashboard.</small>
+                `;
+            }
             
             // Show log container if available
             const logContainer = document.getElementById('job_log_container');
@@ -661,9 +685,10 @@ async function handleJobSubmission(event) {
             document.getElementById('workflow_sol').checked = true;
             updateWorkflowSelection('sol');
             
-            // Clear file upload status
+            // Clear file upload status and uploaded file reference
             document.getElementById('upload_status').textContent = 'No file selected';
             document.getElementById('upload_status').className = 'text-center text-muted';
+            document.getElementById('dem_file').dataset.uploadedFile = '';
             
         } else {
             throw new Error(result.detail || 'Job submission failed');
@@ -780,10 +805,10 @@ function validateForm(form) {
     const demFile = form.querySelector('#dem_file');
     const workflowType = form.querySelector('input[name="workflow_type"]:checked');
     
-    // Check if file was uploaded (not just selected)
+    // Check if file was uploaded (now using uploadedFile data attribute only)
     const uploadStatus = document.getElementById('upload_status');
-    if (!demFile.files[0] && !demFile.dataset.uploadedFile) {
-        showAlert('Please select and upload a DEM file', 'danger');
+    if (!demFile.dataset.uploadedFile) {
+        showAlert('Please select and upload a DEM file first', 'danger');
         return false;
     }
     

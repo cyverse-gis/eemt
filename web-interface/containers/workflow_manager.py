@@ -879,8 +879,6 @@ class WorkflowManager(DistributedWorkflowManager):
             logger.debug(f"Docker command: {' '.join(docker_run_cmd)}")
             
             # Execute container via subprocess
-            import asyncio
-            
             process = await asyncio.create_subprocess_exec(
                 *docker_run_cmd,
                 stdout=asyncio.subprocess.PIPE,

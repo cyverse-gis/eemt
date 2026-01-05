@@ -63,7 +63,16 @@ app.mount("/static", NoCacheStaticFiles(directory=STATIC_DIR), name="static")
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 # Initialize container workflow manager
-workflow_manager = WorkflowManager(BASE_DIR, NodeType.LOCAL)
+# When running in container, use host paths for volume mounting to workflow containers
+import os
+if os.path.exists('/host/data'):  # Running inside container with host data mounted
+    host_data_dir = Path("/host/data")  # Points to actual host ./data directory
+    workflow_manager = WorkflowManager(host_data_dir, NodeType.LOCAL)
+    logger.info("Initialized WorkflowManager with host data paths for containerized execution")
+else:
+    # Running directly on host or without host mount
+    workflow_manager = WorkflowManager(BASE_DIR, NodeType.LOCAL)
+    logger.info("Initialized WorkflowManager with local paths")
 
 # Database initialization
 def init_database():
@@ -441,7 +450,7 @@ async def upload_file(file: UploadFile = File(...)):
 @app.post("/api/submit-job")
 async def submit_job(
     workflow_type: str = Form(...),
-    dem_file: UploadFile = File(...),
+    uploaded_filename: str = Form(...),  # Use already uploaded file
     step: float = Form(15.0),
     linke_value: float = Form(3.0),
     albedo_value: float = Form(0.2),
@@ -449,26 +458,21 @@ async def submit_job(
     start_year: Optional[int] = Form(None),
     end_year: Optional[int] = Form(None)
 ):
-    """Submit a new EEMT or solar workflow job"""
+    """Submit a new EEMT or solar workflow job using pre-uploaded file"""
     
-    # Validate file
-    if not dem_file.filename.endswith(('.tif', '.tiff')):
+    # Validate uploaded file exists
+    dem_path = UPLOADS_DIR / uploaded_filename
+    if not dem_path.exists():
+        raise HTTPException(status_code=400, detail="Uploaded file not found. Please upload a DEM file first.")
+    
+    # Validate file extension
+    if not uploaded_filename.lower().endswith(('.tif', '.tiff')):
         raise HTTPException(status_code=400, detail="DEM file must be a GeoTIFF (.tif or .tiff)")
     
-    # Generate job ID first
+    # Generate job ID
     job_id = str(uuid.uuid4())
     
-    # Save uploaded file with job ID prefix
-    dem_filename = f"{job_id}_{dem_file.filename}"
-    dem_path = UPLOADS_DIR / dem_filename
-    
-    try:
-        with open(dem_path, "wb") as buffer:
-            shutil.copyfileobj(dem_file.file, buffer)
-        logger.info(f"Saved DEM file: {dem_filename}")
-    except Exception as e:
-        logger.error(f"Failed to save uploaded file: {e}")
-        raise HTTPException(status_code=500, detail=f"Failed to save uploaded file: {str(e)}")
+    logger.info(f"Using pre-uploaded file: {uploaded_filename} for job {job_id}")
     
     # Create job parameters
     parameters = {
@@ -482,12 +486,12 @@ async def submit_job(
         parameters["start_year"] = start_year or 2020
         parameters["end_year"] = end_year or 2020
     
-    # Create job in database (use the generated job_id)
+    # Create job in database using the pre-uploaded filename
     conn = sqlite3.connect(DB_PATH)
     try:
         conn.execute(
             "INSERT INTO jobs (id, workflow_type, status, dem_filename, parameters, progress) VALUES (?, ?, ?, ?, ?, ?)",
-            (job_id, workflow_type, JobStatus.PENDING, dem_filename, json.dumps(parameters), 0)
+            (job_id, workflow_type, JobStatus.PENDING, uploaded_filename, json.dumps(parameters), 0)
         )
         conn.commit()
         logger.info(f"Created job {job_id} in database")
@@ -498,7 +502,7 @@ async def submit_job(
         conn.close()
     
     # Start containerized job execution asynchronously
-    asyncio.create_task(execute_containerized_workflow(job_id, workflow_type, dem_filename, parameters))
+    asyncio.create_task(execute_containerized_workflow(job_id, workflow_type, uploaded_filename, parameters))
     
     return {"job_id": job_id, "status": "submitted"}
 
