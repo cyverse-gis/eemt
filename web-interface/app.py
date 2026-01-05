@@ -378,6 +378,7 @@ job_manager = JobManager()
 
 # Routes
 @app.get("/", response_class=HTMLResponse)
+@app.head("/")
 async def home(request: Request):
     """Main page with job submission form"""
     return templates.TemplateResponse("index.html", {"request": request})
