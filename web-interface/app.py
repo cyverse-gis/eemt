@@ -63,14 +63,17 @@ app.mount("/static", NoCacheStaticFiles(directory=STATIC_DIR), name="static")
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 # Initialize container workflow manager
-# When running in container, use host paths for volume mounting to workflow containers
+# When running in container, use host data directory path for Docker volume mounts
 import os
-if os.path.exists('/host/data'):  # Running inside container with host data mounted
-    host_data_dir = Path("/host/data")  # Points to actual host ./data directory
-    workflow_manager = WorkflowManager(host_data_dir, NodeType.LOCAL)
-    logger.info("Initialized WorkflowManager with host data paths for containerized execution")
+host_data_dir = os.getenv('EEMT_HOST_DATA_DIR')
+if host_data_dir:  # Running inside container with host data directory path provided
+    # Use the actual host data directory path for Docker volume mounting
+    # This allows the workflow manager to mount the correct host paths into workflow containers
+    host_base_dir = Path(host_data_dir)
+    workflow_manager = WorkflowManager(host_base_dir, NodeType.LOCAL)
+    logger.info(f"Initialized WorkflowManager with host data directory: {host_data_dir}")
 else:
-    # Running directly on host or without host mount
+    # Running directly on host or without environment variable
     workflow_manager = WorkflowManager(BASE_DIR, NodeType.LOCAL)
     logger.info("Initialized WorkflowManager with local paths")
 

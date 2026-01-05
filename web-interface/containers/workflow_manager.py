@@ -85,9 +85,14 @@ class DistributedWorkflowManager:
         self.cache_dir = self.base_dir / "cache"
         self.shared_dir = self.base_dir / "shared"  # For distributed file sharing
         
-        # Ensure directories exist
+        # Ensure directories exist (skip if they don't have write permissions)
         for dir_path in [self.uploads_dir, self.results_dir, self.temp_dir, self.cache_dir, self.shared_dir]:
-            dir_path.mkdir(exist_ok=True, parents=True)
+            try:
+                dir_path.mkdir(exist_ok=True, parents=True)
+            except PermissionError:
+                # Skip directory creation if no permissions (e.g., host paths in container)
+                logger.warning(f"Cannot create directory {dir_path} due to permissions - assuming it exists on host")
+                continue
         
         # Initialize based on node type
         self.makeflow_process = None

@@ -27,6 +27,7 @@ services:
       - EEMT_HOST=0.0.0.0
       - EEMT_PORT=5000
       - REAL_WORKFLOWS=true  # Enable real workflow execution
+      - EEMT_HOST_DATA_DIR=${PWD}/data  # Absolute path to host data directory
       # Cleanup configuration (disabled due to cron user issues)
       - EEMT_CLEANUP_ENABLED=false
       - EEMT_SUCCESS_RETENTION_DAYS=7

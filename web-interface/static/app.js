@@ -1,11 +1,13 @@
 // EEMT Web Interface - Enhanced JavaScript with Real-Time Feedback
 
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('EEMT: DOM loaded, initializing application...');
     // Initialize the application
     initializeApp();
     loadRecentJobs();
     setupEventHandlers();
     startSystemMonitoring();
+    console.log('EEMT: Application initialization complete');
 });
 
 // Global state
@@ -335,14 +337,29 @@ function validateDemFile(file) {
 }
 
 function setupEventHandlers() {
+    console.log('EEMT: Setting up event handlers...');
+    
     // Form submission
-    document.getElementById('jobForm').addEventListener('submit', handleJobSubmission);
+    const jobForm = document.getElementById('jobForm');
+    if (jobForm) {
+        jobForm.addEventListener('submit', handleJobSubmission);
+        console.log('EEMT: Job form submit handler attached');
+    } else {
+        console.error('EEMT: jobForm element not found!');
+    }
     
     // Enhanced file upload with progress tracking
-    document.getElementById('dem_file').addEventListener('change', handleFileUpload);
+    const demFile = document.getElementById('dem_file');
+    if (demFile) {
+        demFile.addEventListener('change', handleFileUpload);
+        console.log('EEMT: File upload change handler attached');
+    } else {
+        console.error('EEMT: dem_file element not found!');
+    }
     
     // Auto-refresh for recent jobs
     setInterval(loadRecentJobs, 10000); // Refresh every 10 seconds
+    console.log('EEMT: Event handlers setup complete');
 }
 
 function startSystemMonitoring() {
@@ -364,7 +381,10 @@ function startSystemMonitoring() {
 }
 
 async function handleFileUpload(event) {
+    console.log('EEMT: File upload handler triggered', event);
     const file = event.target.files[0];
+    console.log('EEMT: Selected file:', file ? file.name : 'none');
+    
     const uploadStatus = document.getElementById('upload_status');
     const uploadProgressContainer = document.getElementById('upload_progress_container');
     const progressBar = document.getElementById('upload_progress_bar');
@@ -373,6 +393,7 @@ async function handleFileUpload(event) {
     const uploadSpeed = document.getElementById('upload_speed');
     
     if (!file) {
+        console.log('EEMT: No file selected, resetting UI');
         uploadStatus.textContent = 'No file selected';
         uploadStatus.className = 'text-center text-muted';
         uploadProgressContainer.style.display = 'none';
@@ -412,12 +433,15 @@ async function handleFileUpload(event) {
     progressBar.querySelector('.progress-text').textContent = '0%';
     
     try {
+        console.log('EEMT: Starting file upload process');
         // Create FormData for upload
         const formData = new FormData();
         formData.append('file', file);
+        console.log('EEMT: FormData created');
         
         // Upload with progress tracking
         const xhr = new XMLHttpRequest();
+        console.log('EEMT: XMLHttpRequest created');
         
         // Track upload progress
         xhr.upload.onprogress = function(e) {
@@ -499,8 +523,8 @@ async function handleFileUpload(event) {
         xhr.send(formData);
         
     } catch (error) {
-        console.error('Upload error:', error);
-        uploadStatus.innerHTML = '❌ Upload failed - Unexpected error';
+        console.error('EEMT: Upload error:', error);
+        uploadStatus.innerHTML = '❌ Upload failed - Unexpected error: ' + error.message;
         uploadStatus.className = 'text-center text-danger';
         uploadProgressContainer.style.display = 'none';
         uploadDetails.style.display = 'none';
@@ -508,6 +532,7 @@ async function handleFileUpload(event) {
 }
 
 async function handleJobSubmission(event) {
+    console.log('EEMT: Job submission handler triggered');
     event.preventDefault();
     
     const form = event.target;
@@ -515,10 +540,15 @@ async function handleJobSubmission(event) {
     const submitBtn = document.getElementById('submitBtn');
     const modal = new bootstrap.Modal(document.getElementById('progressModal'));
     
+    console.log('EEMT: Form data collected, validating...');
+    
     // Validate form
     if (!validateForm(form)) {
+        console.log('EEMT: Form validation failed');
         return;
     }
+    
+    console.log('EEMT: Form validation passed');
     
     // Show submission modal immediately
     modal.show();
