@@ -1,0 +1,38 @@
+# Singularity container images (too large for GitHub)
+*.simg
+*.sif
+
+# GeoTIFF data files
+*.tif
+*.tiff
+
+# Temporary and output files
+*.pyc
+__pycache__/
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Job output files
+web-interface/uploads/
+web-interface/results/
+web-interface/cleanup_summary_*.json
+
+# Environment files
+.env
+*.env.local
+
+# Log files
+*.log
