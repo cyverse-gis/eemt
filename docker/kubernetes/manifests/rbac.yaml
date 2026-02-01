@@ -1,0 +1,115 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: eemt-service-account
+  namespace: eemt
+  labels:
+    app.kubernetes.io/name: eemt
+    app.kubernetes.io/component: service-account
+  annotations:
+    description: "Service account for EEMT workloads"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: eemt-cluster-role
+  labels:
+    app.kubernetes.io/name: eemt
+    app.kubernetes.io/component: rbac
+rules:
+# Node access for worker scheduling
+- apiGroups: [""]
+  resources: ["nodes"]
+  verbs: ["get", "list", "watch"]
+
+# Pod management for distributed computing
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch", "create", "delete"]
+
+# Service discovery
+- apiGroups: [""]
+  resources: ["services", "endpoints"]
+  verbs: ["get", "list", "watch"]
+
+# ConfigMaps and Secrets for configuration
+- apiGroups: [""]
+  resources: ["configmaps", "secrets"]
+  verbs: ["get", "list", "watch"]
+
+# PVC management for data storage
+- apiGroups: [""]
+  resources: ["persistentvolumeclaims"]
+  verbs: ["get", "list", "watch", "create"]
+
+# Job management for cleanup and batch processing
+- apiGroups: ["batch"]
+  resources: ["jobs", "cronjobs"]
+  verbs: ["get", "list", "watch", "create", "delete"]
+
+# Metrics access for monitoring
+- apiGroups: ["metrics.k8s.io"]
+  resources: ["nodes", "pods"]
+  verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: eemt-namespace-role
+  namespace: eemt
+  labels:
+    app.kubernetes.io/name: eemt
+    app.kubernetes.io/component: rbac
+rules:
+# Full access to namespace resources
+- apiGroups: [""]
+  resources: ["*"]
+  verbs: ["*"]
+
+# Apps and extensions
+- apiGroups: ["apps", "extensions"]
+  resources: ["*"]
+  verbs: ["*"]
+
+# Batch jobs
+- apiGroups: ["batch"]
+  resources: ["*"]
+  verbs: ["*"]
+
+# Networking
+- apiGroups: ["networking.k8s.io"]
+  resources: ["*"]
+  verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: eemt-cluster-role-binding
+  labels:
+    app.kubernetes.io/name: eemt
+    app.kubernetes.io/component: rbac
+subjects:
+- kind: ServiceAccount
+  name: eemt-service-account
+  namespace: eemt
+roleRef:
+  kind: ClusterRole
+  name: eemt-cluster-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: eemt-namespace-role-binding
+  namespace: eemt
+  labels:
+    app.kubernetes.io/name: eemt
+    app.kubernetes.io/component: rbac
+subjects:
+- kind: ServiceAccount
+  name: eemt-service-account
+  namespace: eemt
+roleRef:
+  kind: Role
+  name: eemt-namespace-role
+  apiGroup: rbac.authorization.k8s.io

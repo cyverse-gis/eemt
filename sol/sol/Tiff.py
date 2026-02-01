@@ -45,8 +45,10 @@ class Tiff:
                                 (cmdInfo, process.returncode, output, err))
         
         # Process gdalinfo output by lines
+        if isinstance(output, bytes):
+            output = output.decode('utf-8')
         output = output.split('\n')
-        for i in xrange(len(output) - 1, -1, -1):
+        for i in range(len(output) - 1, -1, -1):
             if output[i].startswith("Size is"):
                 # Extract # of pixels along X,Y axis
                 self.nPixelX = int(output[i].split(' ')[2][:-1])
@@ -100,17 +102,21 @@ class Tiff:
         process=Popen(command, stdout=PIPE, shell=False)
         stdout,stderr=process.communicate()
         if process.returncode != 0:
-            print stderr
+            print(stderr)
             sys.exit("Could not open " + self.filename)
+        if isinstance(stdout, bytes):
+            stdout = stdout.decode('utf-8')
         stdout = stdout.split('\n')
         self.region=""
         for line in stdout:
             if line.startswith('    AUTHORITY'):
-                line=line.translate(None, '[]"/')
+                # Python 3 compatible string translation
+                translator = str.maketrans('', '', '[]"/')
+                line = line.translate(translator)
                 line = line.split(',')
                 self.region=line[1]
         if not self.region:
-            print "ERROR: Could not calculate region of Tif"
+            print("ERROR: Could not calculate region of Tif")
             quit(1)
     def mergeTiff(self,other,path,output):
         for tif in other:
@@ -127,19 +133,19 @@ class Tiff:
             process = Popen(command, stdout=PIPE, shell=False)
             stderr=process.communicate()
             if process.returncode != 0:
-                print stderr
+                print(stderr)
             else:
-                print "Finished merging " + output
+                print("Finished merging " + output)
             new_tiff=Tiff(path,output,"")
             return new_tiff
         else:
-            print "File " + output + " already exists. Exiting"      
+            print("File " + output + " already exists. Exiting")      
     def warp(self,proj):
         if proj=="DAYMET":
-            print "Converting to DAYMET Projection"
+            print("Converting to DAYMET Projection")
             t_proj=self.DAYMET_proj
         elif proj=="PRISM":
-            print "Converting to PRISM Projection"
+            print("Converting to PRISM Projection")
             t_proj=self.PRISM_proj
         else:
             raise RuntimeError("Invalid projection type")
@@ -155,5 +161,5 @@ class Tiff:
             sys.exit(stderr)
         return output_file
 def createMultiBandTiff():
-    print "CreateMultiBandTiff"
+    print("CreateMultiBandTiff")
     return

@@ -1,0 +1,96 @@
+#!/bin/bash
+
+set -e
+
+# figure out the full path for the top directory
+TOP_DIR=`dirname $0`
+TOP_DIR=`cd $TOP_DIR && pwd`
+
+# similarly, full path to DEM
+if [ "x$1" = "x" ]; then
+    echo "Error: Please specify the DEM to run as the only argument"
+    exit 1
+fi
+DEM_DIR=`dirname $1`
+DEM_DIR=`cd $DEM_DIR && pwd`
+DEM_NAME=`basename $1`
+DEM="$DEM_DIR/$DEM_NAME"
+
+STEP=$2
+LINKE_VALUE=$3
+ALBEDO_VALUE=$4
+
+# default values
+if [ "x$STEP" = "x" ]; then
+    STEP="0.5"
+fi
+if [ "x$LINKE_VALUE" = "x" ]; then
+    LINKE_VALUE="3.0"
+fi
+if [ "x$ALBEDO_VALUE" = "x" ]; then
+    ALBEDO_VALUE="0.2"
+fi
+
+# make sure we have a password, and create a hash for the project name
+if [ ! -r ~/.eemt-makeflow-password ]; then
+    echo "Please create ~/.eemt-makeflow-password , and populate it with your workqueue password"
+    exit 1
+fi
+PW_HASH=`cat ~/.eemt-makeflow-password | sha256sum | cut -d ' ' -f 1`
+
+# env
+export TCP_LOW_PORT=20000
+export TCP_HIGH_PORT=60000 
+
+#module load singularity >/dev/null 2>&1 || true
+
+# should be in the container
+export PYTHONPATH=/opt/osgeo/lib/python2.7/site-packages
+
+# we need a temporary directory to run from
+if [ "x$WORK_DIR" = "x" ]; then
+    WORK_DIR=`mktemp -d -t master.XXXXXXXX`
+fi
+cd $WORK_DIR
+cp $TOP_DIR/sol/* ./
+if [ ! -e $DEM_NAME ]; then
+    cp $DEM ./
+fi
+
+# large input files get special project name so we can
+# map them to an large resource
+PROJECT_NAME="EEMT"
+DEM_SIZE=`du -s $DEM | awk '{print $1}'`
+NUM_THREADS=4
+if [ $DEM_SIZE -gt 200000 ]; then
+    PROJECT_NAME="EEMT_LARGE"
+    NUM_THREADS=24
+fi
+
+# download the container if we do not already have it
+if [ ! -e "$WORK_DIR/eemt-current.simg" ]; then
+    wget -nv -O $WORK_DIR/eemt-current.simg http://data.cyverse.org/dav-anon/iplant/home/tswetnam/eemt/singularity/eemt-current.simg
+fi
+
+# we also need the password file
+cp ~/.eemt-makeflow-password ./
+
+# run the workflow
+singularity exec \
+  --home $PWD:/srv \
+  --pwd /srv \
+  --contain --ipc --pid \
+  $WORK_DIR/eemt-current.simg \
+  /srv/run-workflow \
+    --name ${PROJECT_NAME}-${PW_HASH} \
+    --step $STEP \
+    --linke_value $LINKE_VALUE \
+    --albedo_value $ALBEDO_VALUE \
+    --num_threads $NUM_THREADS \
+    -O /srv/work \
+    /srv/$DEM_NAME
+
+echo
+echo "Output files in $WORK_DIR/work"
+echo
+

@@ -1,0 +1,58 @@
+apiVersion: v2
+name: eemt
+description: |
+  EEMT (Effective Energy and Mass Transfer) Algorithm Suite
+  
+  A Helm chart for deploying the EEMT geospatial modeling and Critical Zone science
+  platform on Kubernetes. Provides solar radiation modeling, EEMT calculations,
+  and distributed workflow management with automatic job data cleanup.
+
+type: application
+version: 2.0.0
+appVersion: "2.0"
+
+keywords:
+  - geospatial
+  - modeling
+  - earth-science
+  - solar-radiation
+  - critical-zone
+  - grass-gis
+  - distributed-computing
+
+home: https://github.com/cyverse-gis/eemt
+sources:
+  - https://github.com/cyverse-gis/eemt
+  - https://hub.docker.com/r/cyversegis/eemt
+
+maintainers:
+  - name: Tyson Swetnam
+    email: tswetnam@cyverse.org
+    url: https://tysonswetnam.com
+  - name: EEMT Development Team
+    url: https://github.com/cyverse-gis/eemt/graphs/contributors
+
+annotations:
+  category: Scientific Computing
+  artifacthub.io/license: MIT
+  artifacthub.io/operator: "false"
+  artifacthub.io/prerelease: "false"
+  artifacthub.io/containsSecurityUpdates: "true"
+  artifacthub.io/changes: |
+    - Added automated job data cleanup
+    - Improved container orchestration
+    - Enhanced monitoring and logging
+    - Added GPU acceleration support
+  artifacthub.io/images: |
+    - name: eemt-web
+      image: eemt-web:2.0
+    - name: eemt-worker
+      image: eemt:ubuntu24.04
+
+dependencies: []
+
+# Minimum Kubernetes version required
+kubeVersion: ">=1.18.0"
+
+# Icon for the application (base64 encoded)
+icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==

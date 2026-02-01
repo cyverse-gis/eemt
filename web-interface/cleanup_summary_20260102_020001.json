@@ -1,0 +1,12 @@
+{
+  "start_time": "2026-01-02T02:00:01.740463",
+  "dry_run": false,
+  "successful_jobs_processed": 0,
+  "failed_jobs_processed": 0,
+  "total_size_freed_mb": 0,
+  "configs_preserved": 0,
+  "configs_deleted": 0,
+  "errors": [],
+  "job_details": [],
+  "end_time": "2026-01-02T02:00:01.740468"
+}

@@ -1,0 +1,140 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: eemt-cleanup-job
+  namespace: eemt
+  labels:
+    app: eemt-cleanup
+    component: data-management
+spec:
+  # Schedule: Daily at 2 AM UTC
+  schedule: "0 2 * * *"
+  
+  # Keep last 3 successful jobs and 1 failed job for debugging
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  
+  # Job template
+  jobTemplate:
+    metadata:
+      labels:
+        app: eemt-cleanup
+        component: data-management
+    spec:
+      # Allow job to run for up to 2 hours (large datasets)
+      activeDeadlineSeconds: 7200
+      
+      template:
+        metadata:
+          labels:
+            app: eemt-cleanup
+            component: data-management
+        spec:
+          restartPolicy: OnFailure
+          
+          containers:
+          - name: eemt-cleanup
+            image: eemt-web:latest
+            imagePullPolicy: IfNotPresent
+            
+            # Cleanup command
+            command:
+            - /bin/bash
+            - -c
+            - |
+              echo "Starting EEMT cleanup job at $(date)"
+              echo "Configuration:"
+              echo "  Success retention: ${EEMT_SUCCESS_RETENTION_DAYS} days"
+              echo "  Failed retention: ${EEMT_FAILED_RETENTION_HOURS} hours"
+              echo ""
+              
+              # Run cleanup
+              python3 /app/cleanup_jobs.py \
+                --success-retention-days ${EEMT_SUCCESS_RETENTION_DAYS} \
+                --failed-retention-hours ${EEMT_FAILED_RETENTION_HOURS} \
+                --verbose
+              
+              echo "Cleanup job completed at $(date)"
+            
+            # Environment configuration
+            env:
+            - name: EEMT_SUCCESS_RETENTION_DAYS
+              valueFrom:
+                configMapKeyRef:
+                  name: eemt-cleanup-config
+                  key: success-retention-days
+                  optional: true
+            - name: EEMT_FAILED_RETENTION_HOURS
+              valueFrom:
+                configMapKeyRef:
+                  name: eemt-cleanup-config
+                  key: failed-retention-hours
+                  optional: true
+            - name: PYTHONPATH
+              value: "/app:/opt/eemt"
+            
+            # Resource limits
+            resources:
+              requests:
+                memory: "256Mi"
+                cpu: "100m"
+              limits:
+                memory: "1Gi"
+                cpu: "500m"
+            
+            # Volume mounts for data access
+            volumeMounts:
+            - name: eemt-uploads
+              mountPath: /app/uploads
+            - name: eemt-results
+              mountPath: /app/results
+            - name: eemt-database
+              mountPath: /app/jobs.db
+              subPath: jobs.db
+            - name: cleanup-logs
+              mountPath: /app/logs
+          
+          # Volumes
+          volumes:
+          - name: eemt-uploads
+            persistentVolumeClaim:
+              claimName: eemt-uploads-pvc
+          - name: eemt-results
+            persistentVolumeClaim:
+              claimName: eemt-results-pvc
+          - name: eemt-database
+            persistentVolumeClaim:
+              claimName: eemt-database-pvc
+          - name: cleanup-logs
+            persistentVolumeClaim:
+              claimName: eemt-logs-pvc
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eemt-cleanup-config
+  namespace: eemt
+  labels:
+    app: eemt-cleanup
+    component: data-management
+data:
+  success-retention-days: "7"
+  failed-retention-hours: "12"
+  cleanup-schedule: "0 2 * * *"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eemt-cleanup-service
+  namespace: eemt
+  labels:
+    app: eemt-cleanup
+    component: data-management
+spec:
+  # Headless service for CronJob (no load balancing needed)
+  clusterIP: None
+  selector:
+    app: eemt-cleanup
+    component: data-management

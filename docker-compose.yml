@@ -1,0 +1,269 @@
+version: '3.8'
+
+services:
+  # EEMT Web Interface (Local Mode)
+  eemt-web:
+    image: eemt-web:latest
+    build:
+      context: .
+      dockerfile: docker/web-interface/Dockerfile
+    container_name: eemt-web-local
+    user: "57275:984"  # Run as specific UID:docker_group for Docker socket access
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./data/uploads:/app/uploads
+      - ./data/results:/app/results
+      - ./data/temp:/app/temp
+      - ./data/cache:/app/cache
+      - ./data/logs:/app/logs  # Mount logs directory to fix permission issues
+      - ./data:/host/data:rw  # Mount entire host data directory for workflow container paths
+      - /var/run/docker.sock:/var/run/docker.sock  # For container management
+      - ./web-interface/containers:/app/containers:rw  # Mount workflow manager for development
+      - ./sol:/opt/eemt/sol:ro  # Mount workflow scripts
+      - ./eemt:/opt/eemt/eemt:ro  # Mount workflow scripts
+    environment:
+      - EEMT_MODE=local
+      - EEMT_HOST=0.0.0.0
+      - EEMT_PORT=5000
+      - REAL_WORKFLOWS=true  # Enable real workflow execution
+      - EEMT_HOST_DATA_DIR=${PWD}/data  # Absolute path to host data directory
+      # Cleanup configuration (disabled due to cron user issues)
+      - EEMT_CLEANUP_ENABLED=false
+      - EEMT_SUCCESS_RETENTION_DAYS=7
+      - EEMT_FAILED_RETENTION_HOURS=12
+    networks:
+      - eemt-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  # EEMT Master Node (Distributed Mode)
+  eemt-master:
+    image: eemt-web:latest
+    build:
+      context: .
+      dockerfile: docker/web-interface/Dockerfile
+    container_name: eemt-master
+    ports:
+      - "5000:5000"  # Web interface
+      - "9123:9123"  # Work Queue port
+    volumes:
+      - ./data/shared:/app/shared
+      - ./data/uploads:/app/uploads
+      - ./data/results:/app/results
+      - ./data/temp:/app/temp
+      - ./data/cache:/app/cache
+    environment:
+      - EEMT_MODE=master
+      - EEMT_HOST=0.0.0.0
+      - EEMT_PORT=5000
+      - WORK_QUEUE_PORT=9123
+      - WORK_QUEUE_PROJECT=EEMT-Docker
+      - MAX_WORKERS=10
+      # Cleanup configuration
+      - EEMT_CLEANUP_ENABLED=true
+      - EEMT_SUCCESS_RETENTION_DAYS=7
+      - EEMT_FAILED_RETENTION_HOURS=12
+    command: >
+      bash -c "
+        python scripts/start-master.py 
+        --work-dir /app 
+        --port 9123 
+        --project EEMT-Docker 
+        --max-workers 10 
+        --web-interface 
+        --web-port 5000
+      "
+    networks:
+      - eemt-network
+    profiles:
+      - distributed
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 8G
+        reservations:
+          cpus: '2.0'
+          memory: 4G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+
+  # EEMT Worker Node
+  eemt-worker:
+    image: eemt:ubuntu24.04
+    build:
+      context: .
+      dockerfile: docker/ubuntu/24.04/Dockerfile
+    volumes:
+      - ./data/shared:/data/shared
+      - ./data/cache:/data/cache
+    environment:
+      - MASTER_HOST=eemt-master
+      - MASTER_PORT=9123
+      - WORKER_CORES=4
+      - WORKER_MEMORY=8G
+      - WORKER_DISK=50G
+    command: >
+      bash -c "
+        if [ '${EEMT_MODE:-local}' = 'distributed' ]; then
+          python /scripts/start-worker.py 
+          --master-host $$MASTER_HOST 
+          --master-port $$MASTER_PORT 
+          --cores $$WORKER_CORES 
+          --memory $$WORKER_MEMORY 
+          --disk $$WORKER_DISK 
+          --work-dir /tmp/eemt-worker
+        else
+          sleep infinity
+        fi
+      "
+    networks:
+      - eemt-network
+    profiles:
+      - distributed
+    deploy:
+      resources:
+        limits:
+          cpus: '8.0'  # High CPU for geospatial processing
+          memory: 16G  # High memory for large DEMs
+        reservations:
+          cpus: '4.0'
+          memory: 8G
+    healthcheck:
+      test: ["CMD", "ps", "aux", "|", "grep", "-v", "grep", "|", "grep", "python"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+
+  # Additional Worker Nodes (Scale as needed)
+  # Note: Use --scale eemt-worker-extra=N to scale workers
+  eemt-worker-extra:
+    image: eemt:ubuntu24.04
+    build:
+      context: .
+      dockerfile: docker/ubuntu/24.04/Dockerfile
+    volumes:
+      - ./data/shared:/data/shared
+      - ./data/cache:/data/cache
+    environment:
+      - MASTER_HOST=eemt-master
+      - MASTER_PORT=9123
+      - WORKER_CORES=4
+      - WORKER_MEMORY=8G
+      - WORKER_DISK=50G
+    command: >
+      bash -c "
+        if [ '${EEMT_MODE:-local}' = 'distributed' ]; then
+          python /scripts/start-worker.py 
+          --master-host $$MASTER_HOST 
+          --master-port $$MASTER_PORT 
+          --cores $$WORKER_CORES 
+          --memory $$WORKER_MEMORY 
+          --disk $$WORKER_DISK 
+          --work-dir /tmp/eemt-worker
+        else
+          sleep infinity
+        fi
+      "
+    networks:
+      - eemt-network
+    profiles:
+      - distributed
+      - scale
+    deploy:
+      resources:
+        limits:
+          cpus: '8.0'  # High CPU for geospatial processing
+          memory: 16G  # High memory for large DEMs
+        reservations:
+          cpus: '4.0'
+          memory: 8G
+    healthcheck:
+      test: ["CMD", "ps", "aux", "|", "grep", "-v", "grep", "|", "grep", "python"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+
+  # Documentation Server
+  eemt-docs:
+    build:
+      context: .
+      dockerfile: docker/docs/Dockerfile
+    container_name: eemt-docs
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./docs:/docs
+      - ./mkdocs.yml:/mkdocs.yml
+    command: mkdocs serve --dev-addr 0.0.0.0:8000
+    networks:
+      - eemt-network
+    profiles:
+      - docs
+
+  # Dedicated Cleanup Service (Optional)
+  eemt-cleanup:
+    image: eemt-web:latest
+    build:
+      context: .
+      dockerfile: docker/web-interface/Dockerfile
+    container_name: eemt-cleanup
+    volumes:
+      - ./data/uploads:/app/uploads
+      - ./data/results:/app/results
+      - ./data/temp:/app/temp
+      - ./data/cache:/app/cache
+      - ./web-interface/jobs.db:/app/jobs.db  # Share database with web interface
+    environment:
+      - EEMT_SUCCESS_RETENTION_DAYS=7
+      - EEMT_FAILED_RETENTION_HOURS=12
+      - EEMT_CLEANUP_ENABLED=true
+      - EEMT_CLEANUP_SCHEDULE=0 2 * * *  # Daily at 2 AM
+    command: >
+      bash -c "
+        echo 'EEMT Dedicated Cleanup Service';
+        # Set up cron job for cleanup
+        echo '${EEMT_CLEANUP_SCHEDULE:-0 2 * * *} cd /app && python3 cleanup_jobs.py >> /app/logs/cleanup.log 2>&1' | crontab -;
+        # Start cron service
+        service cron start;
+        # Run initial cleanup check
+        python3 cleanup_jobs.py --dry-run;
+        # Keep container running
+        tail -f /app/logs/cleanup.log
+      "
+    networks:
+      - eemt-network
+    profiles:
+      - cleanup
+    restart: unless-stopped
+
+networks:
+  eemt-network:
+    driver: bridge
+
+volumes:
+  eemt-data:
+    driver: local

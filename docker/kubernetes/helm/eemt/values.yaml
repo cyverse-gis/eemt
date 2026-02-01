@@ -1,0 +1,332 @@
+# Default values for EEMT Helm chart
+# This is a YAML-formatted file that declares variables to be passed into templates
+
+# Global configuration
+global:
+  # Image registry settings
+  imageRegistry: ""
+  imagePullSecrets: []
+  storageClass: ""
+  
+  # Common labels
+  commonLabels:
+    app.kubernetes.io/part-of: eemt-suite
+    app.kubernetes.io/managed-by: helm
+  
+  # EEMT specific global settings
+  eemt:
+    # Deployment mode: local, distributed, hybrid
+    mode: distributed
+    
+    # Resource allocation strategy
+    resourceStrategy: balanced  # minimal, balanced, performance
+    
+    # Data retention policies
+    cleanup:
+      enabled: true
+      successRetentionDays: 7
+      failedRetentionHours: 12
+      schedule: "0 2 * * *"
+
+# Image configuration
+image:
+  # Web interface image
+  webInterface:
+    repository: eemt-web
+    tag: "2.0"
+    pullPolicy: IfNotPresent
+  
+  # Worker node image  
+  worker:
+    repository: eemt
+    tag: "ubuntu24.04"
+    pullPolicy: IfNotPresent
+
+# Web interface deployment
+webInterface:
+  enabled: true
+  
+  # Replica configuration
+  replicaCount: 1
+  
+  # Pod configuration
+  podAnnotations: {}
+  podLabels: {}
+  
+  # Security context
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+  
+  # Service configuration
+  service:
+    type: ClusterIP
+    port: 5000
+    targetPort: 5000
+    annotations: {}
+  
+  # Resource limits
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 4Gi
+      ephemeral-storage: 10Gi
+    requests:
+      cpu: 500m
+      memory: 1Gi
+      ephemeral-storage: 5Gi
+  
+  # Node selection
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  
+  # Health checks
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: 5000
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+  
+  readinessProbe:
+    httpGet:
+      path: /health
+      port: 5000
+    initialDelaySeconds: 10
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 3
+
+# Worker nodes configuration
+workers:
+  enabled: true
+  
+  # Auto-scaling configuration
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 20
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+  
+  # Manual replica count (used if autoscaling disabled)
+  replicaCount: 4
+  
+  # Pod configuration
+  podAnnotations: {}
+  podLabels: {}
+  
+  # Security context
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+  
+  # Resource configuration per worker
+  resources:
+    limits:
+      cpu: 8000m
+      memory: 16Gi
+      ephemeral-storage: 50Gi
+    requests:
+      cpu: 2000m
+      memory: 4Gi
+      ephemeral-storage: 20Gi
+  
+  # GPU support (optional)
+  gpu:
+    enabled: false
+    count: 1
+    type: "nvidia.com/gpu"
+  
+  # Node selection for workers
+  nodeSelector:
+    # Prefer compute-optimized nodes
+    node-type: compute
+  
+  tolerations:
+    - key: "eemt-worker"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+  
+  affinity:
+    # Prefer spreading workers across different nodes
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app.kubernetes.io/component
+              operator: In
+              values:
+              - worker
+          topologyKey: kubernetes.io/hostname
+
+# Persistent storage configuration
+persistence:
+  # Data storage for uploads, results, and temporary files
+  data:
+    enabled: true
+    storageClass: ""
+    accessMode: ReadWriteMany
+    size: 100Gi
+    annotations: {}
+  
+  # Database storage for job metadata
+  database:
+    enabled: true
+    storageClass: ""
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    annotations: {}
+  
+  # Cache storage for intermediate results
+  cache:
+    enabled: true
+    storageClass: ""
+    accessMode: ReadWriteMany
+    size: 50Gi
+    annotations: {}
+  
+  # Logs storage
+  logs:
+    enabled: true
+    storageClass: ""
+    accessMode: ReadWriteMany
+    size: 20Gi
+    annotations: {}
+
+# Ingress configuration
+ingress:
+  enabled: false
+  className: ""
+  annotations:
+    # nginx.ingress.kubernetes.io/proxy-body-size: "1000m"
+    # nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    # nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+  hosts:
+    - host: eemt.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+  #  - secretName: eemt-tls
+  #    hosts:
+  #      - eemt.example.com
+
+# Service account
+serviceAccount:
+  create: true
+  annotations: {}
+  name: "eemt-service-account"
+
+# Network policies
+networkPolicy:
+  enabled: false
+  ingress: []
+  egress: []
+
+# Monitoring and observability
+monitoring:
+  # Prometheus metrics
+  prometheus:
+    enabled: false
+    port: 8080
+    path: /metrics
+  
+  # Logging configuration
+  logging:
+    level: INFO
+    format: json
+    
+  # Health check endpoints
+  healthCheck:
+    enabled: true
+    path: /health
+
+# Job cleanup configuration
+cleanup:
+  enabled: true
+  
+  # CronJob schedule
+  schedule: "0 2 * * *"
+  
+  # Retention policies
+  retention:
+    successfulJobs:
+      days: 7
+    failedJobs:
+      hours: 12
+  
+  # Resource limits for cleanup job
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  
+  # Keep successful/failed job history
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+
+# Configuration management
+config:
+  # EEMT algorithm parameters
+  eemt:
+    # Default atmospheric parameters
+    linkeValue: 2.0
+    albedoValue: 0.2
+    
+    # Temporal resolution (minutes)
+    timeStep: 15
+    
+    # Default processing threads
+    numThreads: 4
+  
+  # GRASS GIS configuration
+  grass:
+    gisbase: "/usr/lib/grass84"
+    addon_path: "/opt/eemt/grass-addons"
+  
+  # CCTools/Makeflow configuration
+  cctools:
+    workQueuePort: 9123
+    projectName: "EEMT-K8s"
+    maxWorkers: 100
+
+# External dependencies
+external:
+  # DAYMET data service
+  daymet:
+    enabled: true
+    baseUrl: "https://daymet.ornl.gov/data"
+    timeout: 300
+  
+  # External storage (S3, etc.)
+  storage:
+    enabled: false
+    type: "s3"
+    bucket: ""
+    region: ""
+    endpoint: ""
+
+# Development and testing
+development:
+  # Enable debug mode
+  debug: false
+  
+  # Mock external services
+  mockServices: false
+  
+  # Reduced resource requirements
+  reducedResources: false

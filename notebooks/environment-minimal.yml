@@ -1,0 +1,33 @@
+name: eemt-gis
+channels:
+  - conda-forge
+dependencies:
+  # Core Python
+  - python=3.12
+  - pip
+  
+  # Essential Geospatial Stack
+  - gdal=3.11.*
+  - proj>=9.0
+  - pdal>=2.8
+  - grass-core>=8.4
+  - geos>=3.13  # Updated to match GDAL 3.11 requirements
+  
+  # Core Python Scientific
+  - numpy>=1.26
+  - pandas>=2.1
+  - xarray>=2024.1
+  - rasterio>=1.4  # Updated for GDAL 3.11 compatibility
+  - geopandas>=0.14
+  - fiona>=1.9
+  - shapely>=2.0
+  - pyproj>=3.6
+  
+  # Jupyter
+  - jupyter
+  - jupyterlab
+  
+  # Pip dependencies
+  - pip:
+    - grass-session
+    - daymetpy

@@ -1,0 +1,54 @@
+{{- if and .Values.workers.enabled .Values.workers.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "eemt.fullname" . }}-worker-hpa
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "eemt.worker.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "eemt.fullname" . }}-worker
+  minReplicas: {{ .Values.workers.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.workers.autoscaling.maxReplicas }}
+  metrics:
+  {{- if .Values.workers.autoscaling.targetCPUUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.workers.autoscaling.targetCPUUtilizationPercentage }}
+  {{- end }}
+  {{- if .Values.workers.autoscaling.targetMemoryUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.workers.autoscaling.targetMemoryUtilizationPercentage }}
+  {{- end }}
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 10
+        periodSeconds: 60
+      - type: Pods
+        value: 2
+        periodSeconds: 60
+      selectPolicy: Min
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+      - type: Pods
+        value: 4
+        periodSeconds: 15
+      selectPolicy: Max
+{{- end }}

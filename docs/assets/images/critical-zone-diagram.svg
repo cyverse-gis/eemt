@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400">
+  <!-- Background -->
+  <rect width="600" height="400" fill="#87ceeb"/>
+  
+  <!-- Atmosphere -->
+  <text x="50" y="30" font-family="Arial" font-size="14" font-weight="bold" fill="#333">Atmosphere</text>
+  
+  <!-- Vegetation canopy -->
+  <ellipse cx="150" cy="80" rx="30" ry="40" fill="#228b22"/>
+  <ellipse cx="200" cy="75" rx="25" ry="35" fill="#32cd32"/>
+  <ellipse cx="250" cy="85" rx="35" ry="45" fill="#228b22"/>
+  <ellipse cx="300" cy="80" rx="28" ry="38" fill="#32cd32"/>
+  <ellipse cx="350" cy="90" rx="32" ry="42" fill="#228b22"/>
+  <ellipse cx="400" cy="75" rx="25" ry="35" fill="#32cd32"/>
+  
+  <!-- Surface line -->
+  <line x1="50" y1="120" x2="550" y2="130" stroke="#8b4513" stroke-width="3"/>
+  <text x="50" y="140" font-family="Arial" font-size="12" font-weight="bold" fill="#333">Land Surface</text>
+  
+  <!-- Soil horizons -->
+  <!-- O horizon (organic) -->
+  <rect x="50" y="120" width="500" height="20" fill="#654321" opacity="0.8"/>
+  <text x="50" y="155" font-family="Arial" font-size="10" fill="#333">O horizon (organic matter)</text>
+  
+  <!-- A horizon -->
+  <rect x="50" y="140" width="500" height="30" fill="#8b4513" opacity="0.7"/>
+  <text x="50" y="185" font-family="Arial" font-size="10" fill="#333">A horizon (topsoil)</text>
+  
+  <!-- B horizon -->
+  <rect x="50" y="170" width="500" height="40" fill="#cd853f" opacity="0.6"/>
+  <text x="50" y="225" font-family="Arial" font-size="10" fill="#333">B horizon (subsoil)</text>
+  
+  <!-- C horizon -->
+  <rect x="50" y="210" width="500" height="50" fill="#daa520" opacity="0.5"/>
+  <text x="50" y="275" font-family="Arial" font-size="10" fill="#333">C horizon (weathered rock)</text>
+  
+  <!-- Bedrock -->
+  <rect x="50" y="260" width="500" height="60" fill="#696969"/>
+  <text x="50" y="350" font-family="Arial" font-size="12" font-weight="bold" fill="#333">Bedrock</text>
+  
+  <!-- Groundwater -->
+  <rect x="50" y="320" width="500" height="20" fill="#4169e1" opacity="0.6"/>
+  <text x="50" y="370" font-family="Arial" font-size="12" font-weight="bold" fill="#333">Groundwater</text>
+  
+  <!-- Critical Zone boundary -->
+  <rect x="45" y="75" width="510" height="265" fill="none" stroke="#ff0000" stroke-width="3" stroke-dasharray="10,5"/>
+  <text x="470" y="70" font-family="Arial" font-size="14" font-weight="bold" fill="#ff0000">Critical Zone</text>
+  
+  <!-- Energy flux arrows -->
+  <g stroke="#ffa500" stroke-width="4" fill="none" marker-end="url(#energyArrow)">
+    <!-- Solar radiation -->
+    <line x1="100" y1="50" x2="100" y2="75"/>
+    <line x1="200" y1="45" x2="200" y2="70"/>
+    <line x1="300" y1="40" x2="300" y2="70"/>
+    <line x1="400" y1="45" x2="400" y2="75"/>
+  </g>
+  
+  <!-- Water cycle -->
+  <g stroke="#4169e1" stroke-width="2" fill="none">
+    <!-- Precipitation -->
+    <line x1="150" y1="60" x2="150" y2="80"/>
+    <line x1="250" y1="55" x2="250" y2="85"/>
+    <line x1="350" y1="60" x2="350" y2="90"/>
+    
+    <!-- Infiltration -->
+    <line x1="150" y1="120" x2="150" y2="160" stroke-dasharray="5,5"/>
+    <line x1="250" y1="125" x2="250" y2="180" stroke-dasharray="5,5"/>
+    <line x1="350" y1="130" x2="350" y2="190" stroke-dasharray="5,5"/>
+  </g>
+  
+  <!-- Process labels -->
+  <text x="460" y="50" font-family="Arial" font-size="10" fill="#ffa500">Solar Radiation</text>
+  <text x="460" y="100" font-family="Arial" font-size="10" fill="#4169e1">Precipitation</text>
+  <text x="460" y="150" font-family="Arial" font-size="10" fill="#228b22">Primary Production</text>
+  <text x="460" y="200" font-family="Arial" font-size="10" fill="#8b4513">Weathering</text>
+  <text x="460" y="250" font-family="Arial" font-size="10" fill="#4169e1">Groundwater Flow</text>
+  
+  <!-- Arrow marker -->
+  <defs>
+    <marker id="energyArrow" markerWidth="8" markerHeight="6" 
+            refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#ffa500"/>
+    </marker>
+  </defs>
+</svg>

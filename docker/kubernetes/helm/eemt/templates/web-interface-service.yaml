@@ -1,0 +1,28 @@
+{{- if .Values.webInterface.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "eemt.fullname" . }}-web
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "eemt.webInterface.labels" . | nindent 4 }}
+  {{- with .Values.webInterface.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.webInterface.service.type }}
+  ports:
+  - port: {{ .Values.webInterface.service.port }}
+    targetPort: {{ .Values.webInterface.service.targetPort }}
+    protocol: TCP
+    name: http
+  {{- if .Values.monitoring.prometheus.enabled }}
+  - port: {{ .Values.monitoring.prometheus.port }}
+    targetPort: {{ .Values.monitoring.prometheus.port }}
+    protocol: TCP
+    name: metrics
+  {{- end }}
+  selector:
+    {{- include "eemt.webInterface.selectorLabels" . | nindent 4 }}
+{{- end }}

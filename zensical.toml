@@ -1,0 +1,201 @@
+# Zensical configuration for EEMT Documentation
+# https://zensical.org/docs/
+
+[project]
+site_name = "Effective Energy and Mass Transfer (EEMT)"
+site_description = "EEMT: An open source framework for quantifying energy and mass flux in Earth's Critical Zone"
+site_author = "Tyson L. Swetnam"
+site_url = "https://tyson-swetnam.github.io/eemt/"
+docs_dir = "docs"
+copyright = "Copyright &copy; 2025 Tyson L. Swetnam"
+
+[project.repository]
+name = "tyson-swetnam/eemt"
+url = "https://github.com/tyson-swetnam/eemt"
+edit_uri = "edit/master/docs/"
+
+[project.theme]
+variant = "modern"
+logo = "assets/eemt-logo.svg"
+favicon = "assets/favicon.ico"
+
+[project.theme.font]
+text = "Open Sans"
+code = "Roboto Mono"
+
+[[project.theme.palette]]
+scheme = "default"
+primary = "green"
+accent = "light-green"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+scheme = "slate"
+primary = "green"
+accent = "light-green"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"
+
+[project.theme.features]
+navigation_instant = true
+navigation_tabs = true
+navigation_tabs_sticky = true
+navigation_sections = true
+navigation_expand = true
+navigation_indexes = true
+navigation_top = true
+navigation_footer = true
+search_suggest = true
+search_highlight = true
+content_code_copy = true
+content_code_annotate = true
+content_tabs_link = true
+
+# Custom assets
+[project.extra]
+css = ["stylesheets/extra.css"]
+javascript = [
+    "javascripts/mathjax.js",
+    "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+]
+
+[project.extra.analytics]
+provider = "google"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/github"
+link = "https://github.com/tyson-swetnam"
+name = "GitHub"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/docker"
+link = "https://hub.docker.com/u/tswetnam/"
+name = "Docker Hub"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/twitter"
+link = "https://twitter.com/tswetnam"
+name = "Twitter"
+
+[[project.extra.social]]
+icon = "fontawesome/solid/globe"
+link = "https://tysonswetnam.com/"
+name = "Website"
+
+# Markdown Extensions
+[project.markdown_extensions.abbr]
+[project.markdown_extensions.admonition]
+[project.markdown_extensions.attr_list]
+[project.markdown_extensions.def_list]
+[project.markdown_extensions.footnotes]
+[project.markdown_extensions.md_in_html]
+[project.markdown_extensions.tables]
+
+[project.markdown_extensions.toc]
+permalink = true
+title = "Page contents"
+
+[project.markdown_extensions.pymdownx.arithmatex]
+generic = true
+
+[project.markdown_extensions.pymdownx.betterem]
+smart_enable = "all"
+
+[project.markdown_extensions.pymdownx.caret]
+[project.markdown_extensions.pymdownx.details]
+
+[project.markdown_extensions.pymdownx.emoji]
+emoji_index = "zensical.extensions.emoji.twemoji"
+emoji_generator = "zensical.extensions.emoji.to_svg"
+
+[project.markdown_extensions.pymdownx.highlight]
+anchor_linenums = true
+line_spans = "__span"
+pygments_lang_class = true
+
+[project.markdown_extensions.pymdownx.inlinehilite]
+[project.markdown_extensions.pymdownx.keys]
+
+[project.markdown_extensions.pymdownx.magiclink]
+normalize_issue_symbols = true
+repo_url_shorthand = true
+user = "tyson-swetnam"
+repo = "eemt"
+
+[project.markdown_extensions.pymdownx.mark]
+[project.markdown_extensions.pymdownx.smartsymbols]
+[project.markdown_extensions.pymdownx.snippets]
+
+[project.markdown_extensions.pymdownx.superfences]
+custom_fences = [
+    { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" }
+]
+
+[project.markdown_extensions.pymdownx.tabbed]
+alternate_style = true
+combine_header_slug = true
+
+[project.markdown_extensions.pymdownx.tasklist]
+custom_checkbox = true
+
+[project.markdown_extensions.pymdownx.tilde]
+
+# Navigation Structure
+[project.nav]
+items = [
+    { "Home" = [
+        "index.md",
+        { "License" = "license.md" },
+        { "Code of Conduct" = "code_of_conduct.md" }
+    ]},
+    { "Getting Started" = [
+        { "Overview" = "getting-started/index.md" },
+        { "Docker Deployment" = "getting-started/docker-deployment.md" }
+    ]},
+    { "Infrastructure" = [
+        { "Overview" = "infrastructure/index.md" },
+        { "Container Architecture" = "infrastructure/container-architecture.md" }
+    ]},
+    { "Scientific Background" = [
+        "background/index.md"
+    ]},
+    { "Algorithms" = [
+        { "Solar Radiation" = "algorithms/solar-radiation.md" },
+        { "Climate Integration" = "algorithms/climate-integration.md" },
+        { "Topographic Analysis" = "algorithms/topographic-analysis.md" },
+        { "EEMT Calculations" = "algorithms/eemt-calculations.md" }
+    ]},
+    { "Data Sources" = [
+        "data-sources/index.md"
+    ]},
+    { "GRASS GIS" = [
+        "grass-gis/index.md"
+    ]},
+    { "Workflows" = [
+        { "Overview" = "workflows/index.md" },
+        { "Quick Start" = "workflows/quick-start.md" },
+        { "Data Preparation" = "workflows/data-preparation.md" }
+    ]},
+    { "Examples" = [
+        "examples/index.md"
+    ]},
+    { "API" = [
+        { "Web Interface" = "web-interface/index.md" },
+        { "Web Architecture" = "web-interface/architecture.md" },
+        { "REST API" = "web-interface/api-reference.md" },
+        { "Workflow Parameters" = "api-reference/workflow-parameters.md" },
+        { "Legacy CLI" = "api-reference/index.md" }
+    ]},
+    { "Distributed Deployment" = [
+        "distributed-deployment/index.md"
+    ]},
+    { "Development" = [
+        "development/index.md",
+        { "Modernization Plan" = "PLAN.md" }
+    ]},
+    { "About" = [
+        "about/index.md",
+        { "Publications" = "about/publications.md" }
+    ]}
+]

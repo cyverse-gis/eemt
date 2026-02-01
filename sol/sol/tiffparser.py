@@ -27,7 +27,8 @@ class TiffParser(object):
         self.nPixelY = 0
             
     def loadTiff(self, tiffFile):
-        print "Failed" 
+        # TODO: This print statement appears to be placeholder debugging code
+        # Consider implementing proper error handling here 
         """ Read dem file info via gdalinfo command."""
         
         # store file name
@@ -54,7 +55,7 @@ class TiffParser(object):
         
         # Process gdalinfo output by lines
         output = output.split('\n')
-        for i in xrange(len(output) - 1, -1, -1):
+        for i in range(len(output) - 1, -1, -1):
             if output[i].startswith("Size is"):
                 # Extract # of pixels along X,Y axis
                 self.nPixelX = int(output[i].split(' ')[2][:-1])

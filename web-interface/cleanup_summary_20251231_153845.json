@@ -1,0 +1,12 @@
+{
+  "start_time": "2025-12-31T15:38:45.781961",
+  "dry_run": true,
+  "successful_jobs_processed": 0,
+  "failed_jobs_processed": 0,
+  "total_size_freed_mb": 0,
+  "configs_preserved": 0,
+  "configs_deleted": 0,
+  "errors": [],
+  "job_details": [],
+  "end_time": "2025-12-31T15:38:45.781966"
+}

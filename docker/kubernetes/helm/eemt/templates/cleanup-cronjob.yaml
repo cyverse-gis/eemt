@@ -1,0 +1,188 @@
+{{- if .Values.cleanup.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "eemt.fullname" . }}-cleanup
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "eemt.cleanup.labels" . | nindent 4 }}
+  annotations:
+    description: "EEMT job data cleanup - removes old job data based on retention policies"
+spec:
+  schedule: {{ .Values.cleanup.schedule | quote }}
+  successfulJobsHistoryLimit: {{ .Values.cleanup.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.cleanup.failedJobsHistoryLimit }}
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 600
+  
+  jobTemplate:
+    metadata:
+      labels:
+        {{- include "eemt.cleanup.labels" . | nindent 8 }}
+        batch-job: cleanup
+    spec:
+      activeDeadlineSeconds: 7200  # 2 hours max
+      template:
+        metadata:
+          labels:
+            {{- include "eemt.cleanup.selectorLabels" . | nindent 12 }}
+            batch-job: cleanup
+        spec:
+          restartPolicy: OnFailure
+          serviceAccountName: {{ include "eemt.serviceAccountName" . }}
+          
+          containers:
+          - name: cleanup
+            image: {{ include "eemt.webInterface.image" . }}
+            imagePullPolicy: {{ .Values.image.webInterface.pullPolicy }}
+            
+            command:
+            - /bin/bash
+            - -c
+            - |
+              echo "========================================"
+              echo "EEMT Job Data Cleanup"
+              echo "========================================"
+              echo "Start time: $(date)"
+              echo "Configuration:"
+              echo "  Success retention: ${EEMT_SUCCESS_RETENTION_DAYS} days"
+              echo "  Failed retention: ${EEMT_FAILED_RETENTION_HOURS} hours"
+              echo "  Database path: ${DATABASE_PATH}"
+              echo "  Data directory: ${DATA_DIR}"
+              echo ""
+              
+              # Verify database exists
+              if [[ ! -f "${DATABASE_PATH}" ]]; then
+                echo "WARNING: Database not found at ${DATABASE_PATH}"
+                echo "Creating empty database for testing..."
+                python3 -c "
+              import sqlite3
+              import sys
+              sys.path.append('/app')
+              from app import init_database
+              init_database()
+              print('Database initialized')
+              "
+              fi
+              
+              # Run cleanup with detailed logging
+              cd /app
+              python3 cleanup_jobs.py \
+                --success-retention-days ${EEMT_SUCCESS_RETENTION_DAYS} \
+                --failed-retention-hours ${EEMT_FAILED_RETENTION_HOURS} \
+                --base-dir /app \
+                --verbose 2>&1 | tee -a /app/logs/cleanup-cronjob.log
+              
+              CLEANUP_EXIT_CODE=$?
+              
+              echo ""
+              echo "========================================"
+              echo "Cleanup completed with exit code: ${CLEANUP_EXIT_CODE}"
+              echo "End time: $(date)"
+              echo "========================================"
+              
+              # Archive cleanup summary
+              if [[ -f /app/cleanup_summary_*.json ]]; then
+                SUMMARY_FILE=$(ls -t /app/cleanup_summary_*.json | head -1)
+                cp "${SUMMARY_FILE}" "/app/logs/cleanup-summary-$(date +%Y%m%d-%H%M%S).json"
+                echo "Cleanup summary archived to logs"
+              fi
+              
+              exit ${CLEANUP_EXIT_CODE}
+            
+            env:
+            {{- include "eemt.envVars" . | nindent 12 }}
+            - name: EEMT_SUCCESS_RETENTION_DAYS
+              value: {{ .Values.cleanup.retention.successfulJobs.days | quote }}
+            - name: EEMT_FAILED_RETENTION_HOURS
+              value: {{ .Values.cleanup.retention.failedJobs.hours | quote }}
+            - name: DATABASE_PATH
+              value: "/app/database/jobs.db"
+            - name: DATA_DIR
+              value: "/app/data"
+            - name: PYTHONPATH
+              value: "/app:/opt/eemt"
+            - name: TZ
+              value: "UTC"
+            
+            resources:
+              {{- toYaml .Values.cleanup.resources | nindent 14 }}
+            
+            volumeMounts:
+            # Database access
+            - name: database-storage
+              mountPath: /app/database
+            # Data access for cleanup
+            - name: data-storage
+              mountPath: /app/data
+            # Logs for cleanup history
+            - name: logs-storage
+              mountPath: /app/logs
+            # Cache access for cleanup
+            {{- if .Values.persistence.cache.enabled }}
+            - name: cache-storage
+              mountPath: /app/cache
+            {{- end }}
+            
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              runAsNonRoot: true
+              runAsUser: 1000
+              runAsGroup: 1000
+              capabilities:
+                drop:
+                - ALL
+          
+          volumes:
+          - name: database-storage
+            {{- if .Values.persistence.database.enabled }}
+            persistentVolumeClaim:
+              claimName: {{ include "eemt.fullname" . }}-database
+            {{- else }}
+            emptyDir: {}
+            {{- end }}
+          - name: data-storage
+            {{- if .Values.persistence.data.enabled }}
+            persistentVolumeClaim:
+              claimName: {{ include "eemt.fullname" . }}-data
+            {{- else }}
+            emptyDir: {}
+            {{- end }}
+          - name: logs-storage
+            {{- if .Values.persistence.logs.enabled }}
+            persistentVolumeClaim:
+              claimName: {{ include "eemt.fullname" . }}-logs
+            {{- else }}
+            emptyDir: {}
+            {{- end }}
+          {{- if .Values.persistence.cache.enabled }}
+          - name: cache-storage
+            persistentVolumeClaim:
+              claimName: {{ include "eemt.fullname" . }}-cache
+          {{- end }}
+          
+          # DNS and restart policy
+          dnsPolicy: ClusterFirst
+          restartPolicy: OnFailure
+---
+{{- end }}
+
+{{/*
+ConfigMap for cleanup configuration
+*/}}
+{{- if .Values.cleanup.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "eemt.fullname" . }}-cleanup-config
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "eemt.cleanup.labels" . | nindent 4 }}
+data:
+  success-retention-days: {{ .Values.cleanup.retention.successfulJobs.days | quote }}
+  failed-retention-hours: {{ .Values.cleanup.retention.failedJobs.hours | quote }}
+  cleanup-schedule: {{ .Values.cleanup.schedule | quote }}
+  cleanup-enabled: {{ .Values.cleanup.enabled | quote }}
+---
+{{- end }}

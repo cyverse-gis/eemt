@@ -1,13 +1,12 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-from __future__ import print_function
 import sys
 import shutil
 from subprocess import Popen, STDOUT, PIPE
 import argparse, getpass
 import sys, os, datetime
-import urllib
-import imp
+import urllib.request
+import importlib.util
 from Tiff import Tiff
 
 quiet=True
@@ -16,7 +15,7 @@ script_location = os.path.abspath(os.path.dirname(sys.argv[0]))
 # Print error messages 
 def error(*objs):
     print("ERROR: ", *objs, file=sys.stderr)
-    exit(1)
+    sys.exit(1)
 def warning(*objs):
     print("WARNING: ", *objs, file=sys.stderr)
 def log(*objs):
