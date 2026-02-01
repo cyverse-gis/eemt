@@ -7,6 +7,132 @@
   --md-accent-fg-color: #8bc34a;
 }
 
+/* Hero section styling */
+.hero-section {
+  background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 50%, #4caf50 100%);
+  border-radius: 0.5rem;
+  padding: 2rem 2rem;
+  margin: -0.5rem -0.5rem 2rem -0.5rem;
+  color: white;
+}
+
+.hero-section p {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 700px;
+}
+
+.hero-section .md-button {
+  margin-right: 0.5rem;
+  margin-top: 1rem;
+}
+
+.hero-section .md-button--primary {
+  background-color: white;
+  color: #2e7d32;
+  border-color: white;
+}
+
+.hero-section .md-button--primary:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+.hero-section .md-button:not(.md-button--primary) {
+  color: white;
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+.hero-section .md-button:not(.md-button--primary):hover {
+  border-color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Dark mode hero section */
+[data-md-color-scheme="slate"] .hero-section {
+  background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 50%, #388e3c 100%);
+}
+
+/* Mermaid diagram enhancements */
+.mermaid {
+  background-color: var(--md-code-bg-color);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+/* Quick start step indicators */
+.quick-start-steps {
+  counter-reset: step-counter;
+}
+
+.quick-start-steps > li {
+  counter-increment: step-counter;
+  position: relative;
+  padding-left: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.quick-start-steps > li::before {
+  content: counter(step-counter);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2rem;
+  height: 2rem;
+  background-color: var(--md-primary-fg-color);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+/* Feature cards hover enhancement */
+.md-typeset .grid.cards > ul > li {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.md-typeset .grid.cards > ul > li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Capability badges */
+.capability-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 2rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin: 0.2rem;
+  background-color: var(--md-default-fg-color--lightest);
+}
+
+.capability-badge.docker {
+  background-color: rgba(0, 150, 214, 0.15);
+  color: #0096d6;
+}
+
+.capability-badge.api {
+  background-color: rgba(76, 175, 80, 0.15);
+  color: #2e7d32;
+}
+
+.capability-badge.web {
+  background-color: rgba(255, 152, 0, 0.15);
+  color: #e65100;
+}
+
+.capability-badge.timeseries {
+  background-color: rgba(103, 58, 183, 0.15);
+  color: #512da8;
+}
+
 /* Custom styling for EEMT equations */
 .eemt-equation {
   background-color: var(--md-code-bg-color);

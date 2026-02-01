@@ -1,5 +1,16 @@
 # Effective Energy and Mass Transfer (EEMT)
 
+<div class="hero-section" markdown>
+<div class="hero-content" markdown>
+
+**EEMT** is a framework for quantifying energy and mass flux in Earth's Critical Zone, providing a common energy currency for understanding landscape evolution, soil formation, and biogeochemical processes.
+
+[Get Started :material-rocket-launch:](installation/index.md){ .md-button .md-button--primary }
+[View on GitHub :material-github:](https://github.com/tyson-swetnam/eemt){ .md-button }
+
+</div>
+</div>
+
 !!! note "Latest Updates"
     **2026-01-01**: Python 3 migration complete, Docker infrastructure modernized, UI/UX improvements deployed
     **2025-12-30**: Complete documentation framework with modern data sources and parallel processing workflows
@@ -13,6 +24,41 @@ $$\text{EEMT} = E_{\text{BIO}} + E_{\text{PPT}} \quad \text{[MJ m}^{-2} \text{yr
 Where:
 - **E<sub>BIO</sub>** = Energy from net primary production (biological energy)
 - **E<sub>PPT</sub>** = Energy from effective precipitation (thermal energy)
+
+## Architecture
+
+The EEMT workflow integrates topographic analysis with climate data to produce energy flux maps:
+
+```mermaid
+flowchart LR
+    subgraph inputs[" Input Data "]
+        DEM[("DEM<br/>Elevation")]
+        DAYMET[("DAYMET<br/>Climate")]
+    end
+
+    subgraph processing[" Processing "]
+        SOL["Solar Radiation<br/>(r.sun.mp)"]
+        TOPO["Topographic Analysis<br/>(slope, aspect, TWI)"]
+        CLIMATE["Climate Processing<br/>(tmin, tmax, prcp)"]
+    end
+
+    subgraph output[" Output "]
+        EEMT["EEMT Calculation"]
+        OUT[("Energy Maps<br/>MJ/m²/yr")]
+    end
+
+    DEM --> SOL
+    DEM --> TOPO
+    DAYMET --> CLIMATE
+    SOL --> EEMT
+    TOPO --> EEMT
+    CLIMATE --> EEMT
+    EEMT --> OUT
+
+    style inputs fill:#e8f5e9,stroke:#2e7d32
+    style processing fill:#fff3e0,stroke:#ff9800
+    style output fill:#e3f2fd,stroke:#1976d2
+```
 
 ## Key Features
 
@@ -135,17 +181,33 @@ Coniferous forests, energy-limited systems
 
 <div class="grid cards" markdown>
 
--   :material-api: [**API**](web-interface/index.md)
+-   :material-download: [**Installation**](installation/index.md)
 
     ---
 
-    Web interface, REST API, and command-line tools
+    Docker, manual installation, and system requirements
 
--   :material-book-open-page-variant: [**Getting Started Guide**](getting-started/index.md)
+-   :material-rocket-launch: [**Quick Start**](getting-started/index.md)
 
     ---
 
-    Installation, setup, and your first EEMT calculation
+    Get up and running with your first EEMT calculation
+
+-   :material-api: [**API Documentation**](api/index.md)
+
+    ---
+
+    REST endpoints, CLI reference, and Python modules
+
+-   :material-flask: [**Scientific Background**](background/index.md)
+
+    ---
+
+    Theory, algorithms, and validation approaches
+
+</div>
+
+<div class="grid cards" markdown>
 
 -   :material-database: [**Data Sources**](data-sources/index.md)
 
@@ -153,11 +215,23 @@ Coniferous forests, energy-limited systems
 
     Access elevation and climate data from public repositories
 
--   :material-workflow: [**Calculation Methods**](workflows/index.md)
+-   :material-workflow: [**Workflows**](workflows/index.md)
 
     ---
 
     Step-by-step workflows for all three EEMT approaches
+
+-   :material-monitor-dashboard: [**Web Interface**](web-interface/index.md)
+
+    ---
+
+    Browser-based job submission and monitoring
+
+-   :material-server-network: [**Distributed Deployment**](distributed-deployment/index.md)
+
+    ---
+
+    Scale EEMT across HPC and cloud environments
 
 </div>
 

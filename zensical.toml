@@ -149,13 +149,17 @@ items = [
         { "License" = "license.md" },
         { "Code of Conduct" = "code_of_conduct.md" }
     ]},
+    { "Installation" = [
+        { "Overview" = "installation/index.md" },
+        { "Docker" = "installation/docker.md" },
+        { "Manual" = "installation/manual.md" },
+        { "Requirements" = "installation/requirements.md" },
+        { "Troubleshooting" = "installation/troubleshooting.md" }
+    ]},
     { "Getting Started" = [
         { "Overview" = "getting-started/index.md" },
-        { "Docker Deployment" = "getting-started/docker-deployment.md" }
-    ]},
-    { "Infrastructure" = [
-        { "Overview" = "infrastructure/index.md" },
-        { "Container Architecture" = "infrastructure/container-architecture.md" }
+        { "Docker Deployment" = "getting-started/docker-deployment.md" },
+        { "Cleanup Scripts" = "getting-started/cleanup-scripts.md" }
     ]},
     { "Scientific Background" = [
         "background/index.md"
@@ -169,30 +173,49 @@ items = [
     { "Data Sources" = [
         "data-sources/index.md"
     ]},
-    { "GRASS GIS" = [
-        "grass-gis/index.md"
-    ]},
     { "Workflows" = [
         { "Overview" = "workflows/index.md" },
         { "Quick Start" = "workflows/quick-start.md" },
         { "Data Preparation" = "workflows/data-preparation.md" }
     ]},
-    { "Examples" = [
-        "examples/index.md"
+    { "GRASS GIS" = [
+        "grass-gis/index.md"
     ]},
-    { "API" = [
-        { "Web Interface" = "web-interface/index.md" },
-        { "Web Architecture" = "web-interface/architecture.md" },
-        { "REST API" = "web-interface/api-reference.md" },
+    { "API Documentation" = [
+        { "Overview" = "api/index.md" },
+        { "REST Endpoints" = "api/endpoints.md" },
+        { "CLI Reference" = "api/cli.md" },
+        { "Parameters" = "api/parameters.md" },
         { "Workflow Parameters" = "api-reference/workflow-parameters.md" },
-        { "Legacy CLI" = "api-reference/index.md" }
+        { "Python Modules" = "api/python-modules.md" },
+        { "Web API" = "api/web-interface.md" },
+        { "Legacy Functions" = "api-reference/index.md" }
+    ]},
+    { "Web Interface" = [
+        { "Overview" = "web-interface/index.md" },
+        { "Architecture" = "web-interface/architecture.md" },
+        { "API Reference" = "web-interface/api-reference.md" },
+        { "Job Cleanup" = "web-interface/job-cleanup.md" }
+    ]},
+    { "Infrastructure" = [
+        { "Overview" = "infrastructure/index.md" },
+        { "Container Architecture" = "infrastructure/container-architecture.md" },
+        { "Job Cleanup" = "infrastructure/job-cleanup.md" }
     ]},
     { "Distributed Deployment" = [
         "distributed-deployment/index.md"
     ]},
+    { "Docker" = [
+        { "Cleanup Integration" = "docker/cleanup-integration.md" }
+    ]},
+    { "Examples" = [
+        "examples/index.md"
+    ]},
     { "Development" = [
-        "development/index.md",
-        { "Modernization Plan" = "PLAN.md" }
+        { "Overview" = "development/index.md" },
+        { "Setup" = "development/setup.md" },
+        { "Modernization Plan" = "PLAN.md" },
+        { "Phase 1" = "PHASE1_IMPLEMENTATION.md" }
     ]},
     { "About" = [
         "about/index.md",
