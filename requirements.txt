@@ -1,10 +1,6 @@
-# MkDocs and plugins for EEMT documentation website
-mkdocs>=1.5.0
-mkdocs-material>=9.4.0
-mkdocs-git-revision-date-localized-plugin>=1.2.0
-mkdocs-git-committers-plugin-2>=1.2.0
-mkdocs-minify-plugin>=0.7.0
-mkdocs-jupyter>=0.24.0
+# Zensical for EEMT documentation website
+# (Modern static site generator by the Material for MkDocs team)
+zensical>=1.0.0
 pymdown-extensions>=10.0.0
 
 # Scientific computing dependencies for EEMT calculations  
