@@ -36,3 +36,4 @@ web-interface/cleanup_summary_*.json
 
 # Log files
 *.log
+data/results/
