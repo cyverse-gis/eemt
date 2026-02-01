@@ -8,6 +8,85 @@ site_author = "Tyson L. Swetnam"
 site_url = "https://tyson-swetnam.github.io/eemt/"
 docs_dir = "docs"
 copyright = "Copyright &copy; 2025 Tyson L. Swetnam"
+nav = [
+    { "Home" = [
+        "index.md",
+        { "License" = "license.md" },
+        { "Code of Conduct" = "code_of_conduct.md" }
+    ]},
+    { "Installation" = [
+        { "Overview" = "installation/index.md" },
+        { "Docker" = "installation/docker.md" },
+        { "Manual" = "installation/manual.md" },
+        { "Requirements" = "installation/requirements.md" },
+        { "Troubleshooting" = "installation/troubleshooting.md" }
+    ]},
+    { "Getting Started" = [
+        { "Overview" = "getting-started/index.md" },
+        { "Docker Deployment" = "getting-started/docker-deployment.md" },
+        { "Cleanup Scripts" = "getting-started/cleanup-scripts.md" }
+    ]},
+    { "Scientific Background" = [
+        "background/index.md"
+    ]},
+    { "Algorithms" = [
+        { "Solar Radiation" = "algorithms/solar-radiation.md" },
+        { "Climate Integration" = "algorithms/climate-integration.md" },
+        { "Topographic Analysis" = "algorithms/topographic-analysis.md" },
+        { "EEMT Calculations" = "algorithms/eemt-calculations.md" }
+    ]},
+    { "Data Sources" = [
+        "data-sources/index.md"
+    ]},
+    { "Workflows" = [
+        { "Overview" = "workflows/index.md" },
+        { "Quick Start" = "workflows/quick-start.md" },
+        { "Data Preparation" = "workflows/data-preparation.md" }
+    ]},
+    { "GRASS GIS" = [
+        "grass-gis/index.md"
+    ]},
+    { "API Documentation" = [
+        { "Overview" = "api/index.md" },
+        { "REST Endpoints" = "api/endpoints.md" },
+        { "CLI Reference" = "api/cli.md" },
+        { "Parameters" = "api/parameters.md" },
+        { "Workflow Parameters" = "api-reference/workflow-parameters.md" },
+        { "Python Modules" = "api/python-modules.md" },
+        { "Web API" = "api/web-interface.md" },
+        { "Legacy Functions" = "api-reference/index.md" }
+    ]},
+    { "Web Interface" = [
+        { "Overview" = "web-interface/index.md" },
+        { "Architecture" = "web-interface/architecture.md" },
+        { "API Reference" = "web-interface/api-reference.md" },
+        { "Job Cleanup" = "web-interface/job-cleanup.md" }
+    ]},
+    { "Infrastructure" = [
+        { "Overview" = "infrastructure/index.md" },
+        { "Container Architecture" = "infrastructure/container-architecture.md" },
+        { "Job Cleanup" = "infrastructure/job-cleanup.md" }
+    ]},
+    { "Distributed Deployment" = [
+        "distributed-deployment/index.md"
+    ]},
+    { "Docker" = [
+        { "Cleanup Integration" = "docker/cleanup-integration.md" }
+    ]},
+    { "Examples" = [
+        "examples/index.md"
+    ]},
+    { "Development" = [
+        { "Overview" = "development/index.md" },
+        { "Setup" = "development/setup.md" },
+        { "Modernization Plan" = "PLAN.md" },
+        { "Phase 1" = "PHASE1_IMPLEMENTATION.md" }
+    ]},
+    { "About" = [
+        "about/index.md",
+        { "Publications" = "about/publications.md" }
+    ]}
+]
 
 [project.repository]
 name = "tyson-swetnam/eemt"
@@ -140,85 +219,3 @@ combine_header_slug = true
 custom_checkbox = true
 
 [project.markdown_extensions.pymdownx.tilde]
-
-# Navigation Structure
-[project.nav]
-items = [
-    { "Home" = [
-        "index.md",
-        { "License" = "license.md" },
-        { "Code of Conduct" = "code_of_conduct.md" }
-    ]},
-    { "Installation" = [
-        { "Overview" = "installation/index.md" },
-        { "Docker" = "installation/docker.md" },
-        { "Manual" = "installation/manual.md" },
-        { "Requirements" = "installation/requirements.md" },
-        { "Troubleshooting" = "installation/troubleshooting.md" }
-    ]},
-    { "Getting Started" = [
-        { "Overview" = "getting-started/index.md" },
-        { "Docker Deployment" = "getting-started/docker-deployment.md" },
-        { "Cleanup Scripts" = "getting-started/cleanup-scripts.md" }
-    ]},
-    { "Scientific Background" = [
-        "background/index.md"
-    ]},
-    { "Algorithms" = [
-        { "Solar Radiation" = "algorithms/solar-radiation.md" },
-        { "Climate Integration" = "algorithms/climate-integration.md" },
-        { "Topographic Analysis" = "algorithms/topographic-analysis.md" },
-        { "EEMT Calculations" = "algorithms/eemt-calculations.md" }
-    ]},
-    { "Data Sources" = [
-        "data-sources/index.md"
-    ]},
-    { "Workflows" = [
-        { "Overview" = "workflows/index.md" },
-        { "Quick Start" = "workflows/quick-start.md" },
-        { "Data Preparation" = "workflows/data-preparation.md" }
-    ]},
-    { "GRASS GIS" = [
-        "grass-gis/index.md"
-    ]},
-    { "API Documentation" = [
-        { "Overview" = "api/index.md" },
-        { "REST Endpoints" = "api/endpoints.md" },
-        { "CLI Reference" = "api/cli.md" },
-        { "Parameters" = "api/parameters.md" },
-        { "Workflow Parameters" = "api-reference/workflow-parameters.md" },
-        { "Python Modules" = "api/python-modules.md" },
-        { "Web API" = "api/web-interface.md" },
-        { "Legacy Functions" = "api-reference/index.md" }
-    ]},
-    { "Web Interface" = [
-        { "Overview" = "web-interface/index.md" },
-        { "Architecture" = "web-interface/architecture.md" },
-        { "API Reference" = "web-interface/api-reference.md" },
-        { "Job Cleanup" = "web-interface/job-cleanup.md" }
-    ]},
-    { "Infrastructure" = [
-        { "Overview" = "infrastructure/index.md" },
-        { "Container Architecture" = "infrastructure/container-architecture.md" },
-        { "Job Cleanup" = "infrastructure/job-cleanup.md" }
-    ]},
-    { "Distributed Deployment" = [
-        "distributed-deployment/index.md"
-    ]},
-    { "Docker" = [
-        { "Cleanup Integration" = "docker/cleanup-integration.md" }
-    ]},
-    { "Examples" = [
-        "examples/index.md"
-    ]},
-    { "Development" = [
-        { "Overview" = "development/index.md" },
-        { "Setup" = "development/setup.md" },
-        { "Modernization Plan" = "PLAN.md" },
-        { "Phase 1" = "PHASE1_IMPLEMENTATION.md" }
-    ]},
-    { "About" = [
-        "about/index.md",
-        { "Publications" = "about/publications.md" }
-    ]}
-]
