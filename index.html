@@ -283,6 +283,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#key-features" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -470,6 +481,13 @@
                   
 
 <h1 id="effective-energy-and-mass-transfer-eemt">Effective Energy and Mass Transfer (EEMT)<a class="headerlink" href="#effective-energy-and-mass-transfer-eemt" title="Permanent link">&para;</a></h1>
+<div class="hero-section">
+<div class="hero-content">
+<p><strong>EEMT</strong> is a framework for quantifying energy and mass flux in Earth's Critical Zone, providing a common energy currency for understanding landscape evolution, soil formation, and biogeochemical processes.</p>
+<p><a class="md-button md-button--primary" href="installation/">Get Started <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m13.13 22.19-1.63-3.83c1.57-.58 3.04-1.36 4.4-2.27zM5.64 12.5l-3.83-1.63 6.1-2.77C7 9.46 6.22 10.93 5.64 12.5M21.61 2.39S16.66.269 11 5.93c-2.19 2.19-3.5 4.6-4.35 6.71-.28.75-.09 1.57.46 2.13l2.13 2.12c.55.56 1.37.74 2.12.46A19.1 19.1 0 0 0 18.07 13c5.66-5.66 3.54-10.61 3.54-10.61m-7.07 7.07c-.78-.78-.78-2.05 0-2.83s2.05-.78 2.83 0c.77.78.78 2.05 0 2.83s-2.05.78-2.83 0m-5.66 7.07-1.41-1.41zM6.24 22l3.64-3.64c-.34-.09-.67-.24-.97-.45L4.83 22zM2 22h1.41l4.77-4.76-1.42-1.41L2 20.59zm0-2.83 4.09-4.08c-.21-.3-.36-.62-.45-.97L2 17.76z"/></svg></span></a>
+<a class="md-button" href="https://github.com/tyson-swetnam/eemt">View on GitHub <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33s1.71.11 2.5.33c1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2"/></svg></span></a></p>
+</div>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Latest Updates</p>
 <p><strong>2026-01-01</strong>: Python 3 migration complete, Docker infrastructure modernized, UI/UX improvements deployed
@@ -477,10 +495,45 @@
 </div>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
 <p><strong>Effective Energy and Mass Transfer (EEMT)</strong> is a framework for quantifying energy and mass flux in Earth's Critical Zone. EEMT provides a common energy currency for understanding landscape evolution, soil formation, and biogeochemical processes across spatiotemporal scales.</p>
-<div class="arithmatex">\[\text{EEMT} = E_{\text{BIO}} + E_{\text{PPT}} \quad \text{[MJ m}^{-2} \text{yr}^{-1}]\]</div>
-<p>Where:
-- <strong>E<sub>BIO</sub></strong> = Energy from net primary production (biological energy)
-- <strong>E<sub>PPT</sub></strong> = Energy from effective precipitation (thermal energy)</p>
+<div class="equation-block">
+<div class="arithmatex">\[\EEMT = \Ebio + \Eppt \quad [\MJmyr]\]</div>
+</div>
+<p>Where:</p>
+<ul>
+<li><strong>E<sub>BIO</sub></strong> = Energy from net primary production (biological energy)</li>
+<li><strong>E<sub>PPT</sub></strong> = Energy from effective precipitation (thermal energy)</li>
+</ul>
+<p>Units: <span class="unit">MJ m<sup>−2</sup> yr<sup>−1</sup></span> (megajoules per square meter per year)</p>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<p>The EEMT workflow integrates topographic analysis with climate data to produce energy flux maps:</p>
+<pre class="mermaid"><code>flowchart LR
+    subgraph inputs[" Input Data "]
+        DEM[("DEM&lt;br/&gt;Elevation")]
+        DAYMET[("DAYMET&lt;br/&gt;Climate")]
+    end
+
+    subgraph processing[" Processing "]
+        SOL["Solar Radiation&lt;br/&gt;(r.sun.mp)"]
+        TOPO["Topographic Analysis&lt;br/&gt;(slope, aspect, TWI)"]
+        CLIMATE["Climate Processing&lt;br/&gt;(tmin, tmax, prcp)"]
+    end
+
+    subgraph output[" Output "]
+        EEMT["EEMT Calculation"]
+        OUT[("Energy Maps&lt;br/&gt;MJ/m²/yr")]
+    end
+
+    DEM --&gt; SOL
+    DEM --&gt; TOPO
+    DAYMET --&gt; CLIMATE
+    SOL --&gt; EEMT
+    TOPO --&gt; EEMT
+    CLIMATE --&gt; EEMT
+    EEMT --&gt; OUT
+
+    style inputs fill:#e8f5e9,stroke:#2e7d32
+    style processing fill:#fff3e0,stroke:#ff9800
+    style output fill:#e3f2fd,stroke:#1976d2</code></pre>
 <h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
 <div class="grid cards">
 <ul>
@@ -574,19 +627,19 @@
 <h2 id="typical-eemt-values-by-climate-zone">Typical EEMT Values by Climate Zone<a class="headerlink" href="#typical-eemt-values-by-climate-zone" title="Permanent link">&para;</a></h2>
 <div class="climate-zone arid">
 <strong>Arid Ecosystems</strong><br>
-<span class="eemt-range">5-15 MJ/m²/yr</span><br>
+<span class="eemt-range">5–15 MJ m<sup>−2</sup> yr<sup>−1</sup></span><br>
 Desert scrub, water-limited systems
 </div>
 
 <div class="climate-zone semiarid">
 <strong>Semiarid Ecosystems</strong><br>
-<span class="eemt-range">15-35 MJ/m²/yr</span><br>
+<span class="eemt-range">15–35 MJ m<sup>−2</sup> yr<sup>−1</sup></span><br>
 Grasslands, oak woodlands, transition zones
 </div>
 
 <div class="climate-zone humid">
 <strong>Humid Ecosystems</strong><br>
-<span class="eemt-range">35-70 MJ/m²/yr</span><br>
+<span class="eemt-range">35–70 MJ m<sup>−2</sup> yr<sup>−1</sup></span><br>
 Coniferous forests, energy-limited systems
 </div>
 
@@ -609,24 +662,48 @@ Coniferous forests, energy-limited systems
 <div class="grid cards">
 <ul>
 <li>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 7H5a2 2 0 0 0-2 2v8h2v-4h2v4h2V9a2 2 0 0 0-2-2m0 4H5V9h2m7-2h-4v10h2v-4h2a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2m0 4h-2V9h2m6 0v6h1v2h-4v-2h1V9h-1V7h4v2Z"/></svg></span> <a href="web-interface/"><strong>API</strong></a></p>
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7z"/></svg></span> <a href="installation/"><strong>Installation</strong></a></p>
 <hr />
-<p>Web interface, REST API, and command-line tools</p>
+<p>Docker, manual installation, and system requirements</p>
 </li>
 <li>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"/></svg></span> <a href="getting-started/"><strong>Getting Started Guide</strong></a></p>
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m13.13 22.19-1.63-3.83c1.57-.58 3.04-1.36 4.4-2.27zM5.64 12.5l-3.83-1.63 6.1-2.77C7 9.46 6.22 10.93 5.64 12.5M21.61 2.39S16.66.269 11 5.93c-2.19 2.19-3.5 4.6-4.35 6.71-.28.75-.09 1.57.46 2.13l2.13 2.12c.55.56 1.37.74 2.12.46A19.1 19.1 0 0 0 18.07 13c5.66-5.66 3.54-10.61 3.54-10.61m-7.07 7.07c-.78-.78-.78-2.05 0-2.83s2.05-.78 2.83 0c.77.78.78 2.05 0 2.83s-2.05.78-2.83 0m-5.66 7.07-1.41-1.41zM6.24 22l3.64-3.64c-.34-.09-.67-.24-.97-.45L4.83 22zM2 22h1.41l4.77-4.76-1.42-1.41L2 20.59zm0-2.83 4.09-4.08c-.21-.3-.36-.62-.45-.97L2 17.76z"/></svg></span> <a href="getting-started/"><strong>Quick Start</strong></a></p>
 <hr />
-<p>Installation, setup, and your first EEMT calculation</p>
+<p>Get up and running with your first EEMT calculation</p>
 </li>
+<li>
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 7H5a2 2 0 0 0-2 2v8h2v-4h2v4h2V9a2 2 0 0 0-2-2m0 4H5V9h2m7-2h-4v10h2v-4h2a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2m0 4h-2V9h2m6 0v6h1v2h-4v-2h1V9h-1V7h4v2Z"/></svg></span> <a href="api/"><strong>API Documentation</strong></a></p>
+<hr />
+<p>REST endpoints, CLI reference, and Python modules</p>
+</li>
+<li>
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 22a3 3 0 0 1-3-3c0-.6.18-1.16.5-1.63L9 7.81V6a1 1 0 0 1-1-1V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1v1.81l5.5 9.56c.32.47.5 1.03.5 1.63a3 3 0 0 1-3 3zm-1-3a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1c0-.21-.07-.41-.18-.57l-2.29-3.96L14 17l-5.07-5.07-3.75 6.5c-.11.16-.18.36-.18.57m8-9a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1"/></svg></span> <a href="background/"><strong>Scientific Background</strong></a></p>
+<hr />
+<p>Theory, algorithms, and validation approaches</p>
+</li>
+</ul>
+</div>
+<div class="grid cards">
+<ul>
 <li>
 <p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3C7.58 3 4 4.79 4 7s3.58 4 8 4 8-1.79 8-4-3.58-4-8-4M4 9v3c0 2.21 3.58 4 8 4s8-1.79 8-4V9c0 2.21-3.58 4-8 4s-8-1.79-8-4m0 5v3c0 2.21 3.58 4 8 4s8-1.79 8-4v-3c0 2.21-3.58 4-8 4s-8-1.79-8-4"/></svg></span> <a href="data-sources/"><strong>Data Sources</strong></a></p>
 <hr />
 <p>Access elevation and climate data from public repositories</p>
 </li>
 <li>
-<p>:material-workflow: <a href="workflows/"><strong>Calculation Methods</strong></a></p>
+<p>:material-workflow: <a href="workflows/"><strong>Workflows</strong></a></p>
 <hr />
 <p>Step-by-step workflows for all three EEMT approaches</p>
+</li>
+<li>
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 16V4H3v12zm0-14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-7v2h2v2H8v-2h2v-2H3a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2zM5 6h9v5H5zm10 0h4v2h-4zm4 3v5h-4V9zM5 12h4v2H5zm5 0h4v2h-4z"/></svg></span> <a href="web-interface/"><strong>Web Interface</strong></a></p>
+<hr />
+<p>Browser-based job submission and monitoring</p>
+</li>
+<li>
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 19h1a1 1 0 0 1 1 1h7v2h-7a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1H2v-2h7a1 1 0 0 1 1-1h1v-2H4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-7zM4 3h16a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1m5 4h1V5H9zm0 8h1v-2H9zM5 5v2h2V5zm0 8v2h2v-2z"/></svg></span> <a href="distributed-deployment/"><strong>Distributed Deployment</strong></a></p>
+<hr />
+<p>Scale EEMT across HPC and cloud environments</p>
 </li>
 </ul>
 </div>

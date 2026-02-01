@@ -12,9 +12,48 @@
 
 {% block content %}
   {{ super() }}
-  
+
   <!-- Custom footer for EEMT -->
   {% if page.title == "Home" %}
+
+  <!-- Capabilities Showcase -->
+  <div class="eemt-capabilities">
+    <div class="md-grid md-typeset">
+      <h3>Platform Capabilities</h3>
+      <div class="capabilities-grid">
+        <div class="capability-item">
+          <span class="capability-icon">:material-docker:</span>
+          <div class="capability-text">
+            <strong>Docker Ready</strong>
+            <span>One-command deployment</span>
+          </div>
+        </div>
+        <div class="capability-item">
+          <span class="capability-icon">:material-api:</span>
+          <div class="capability-text">
+            <strong>REST API</strong>
+            <span>Full programmatic access</span>
+          </div>
+        </div>
+        <div class="capability-item">
+          <span class="capability-icon">:material-monitor:</span>
+          <div class="capability-text">
+            <strong>Web Interface</strong>
+            <span>Browser-based workflows</span>
+          </div>
+        </div>
+        <div class="capability-item">
+          <span class="capability-icon">:material-chart-timeline:</span>
+          <div class="capability-text">
+            <strong>Time Series</strong>
+            <span>40+ years of climate data</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Section -->
   <div class="eemt-footer-info">
     <div class="md-grid md-typeset">
       <div class="eemt-stats">
@@ -40,21 +79,77 @@
       </div>
     </div>
   </div>
-  
+
   <style>
+    .eemt-capabilities {
+      background-color: var(--md-default-bg-color--light);
+      padding: 2rem 0;
+      margin-top: 2rem;
+      border-top: 1px solid var(--md-default-fg-color--lightest);
+      border-bottom: 1px solid var(--md-default-fg-color--lightest);
+    }
+
+    .eemt-capabilities h3 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: var(--md-default-fg-color);
+    }
+
+    .capabilities-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .capability-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--md-default-bg-color);
+      border-radius: 0.5rem;
+      border: 1px solid var(--md-default-fg-color--lightest);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .capability-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .capability-icon {
+      font-size: 1.8rem;
+      color: var(--md-primary-fg-color);
+    }
+
+    .capability-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .capability-text strong {
+      color: var(--md-default-fg-color);
+    }
+
+    .capability-text span {
+      font-size: 0.85rem;
+      color: var(--md-default-fg-color--light);
+    }
+
     .eemt-footer-info {
       background: linear-gradient(135deg, #2e7d32, #4caf50);
       color: white;
       padding: 3rem 0;
-      margin-top: 3rem;
     }
-    
+
     .eemt-stats h3 {
       text-align: center;
       margin-bottom: 2rem;
       color: white;
     }
-    
+
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -62,20 +157,29 @@
       max-width: 800px;
       margin: 0 auto;
     }
-    
+
     .stat-item {
       text-align: center;
     }
-    
+
     .stat-number {
       font-size: 2.5rem;
       font-weight: bold;
       margin-bottom: 0.5rem;
     }
-    
+
     .stat-label {
       font-size: 1rem;
       opacity: 0.9;
+    }
+
+    /* Dark mode adjustments */
+    [data-md-color-scheme="slate"] .eemt-capabilities {
+      background-color: var(--md-default-bg-color--lighter);
+    }
+
+    [data-md-color-scheme="slate"] .capability-item {
+      background: var(--md-default-bg-color);
     }
   </style>
   {% endif %}
