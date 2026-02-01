@@ -1,0 +1,1262 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="EEMT: An open source framework for quantifying energy and mass flux in Earth's Critical Zone">
+      
+      
+        <meta name="author" content="Tyson L. Swetnam">
+      
+      
+        <link rel="canonical" href="https://tyson-swetnam.github.io/eemt/background/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/favicon.ico">
+      <meta name="generator" content="zensical-0.0.20">
+    
+    
+      
+        <title>Scientific Background - Effective Energy and Mass Transfer (EEMT)</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../assets/stylesheets/modern/main.d4922b3c.min.css">
+      
+        
+          
+        
+        <link rel="stylesheet" href="../assets/stylesheets/modern/palette.dfe2e883.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,500,500i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Open Sans";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,a=__md_scope)=>JSON.parse(t.getItem(a.pathname+"."+e)),__md_set=(e,t,a=localStorage,_=__md_scope)=>{try{a.setItem(_.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config",""),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="light-green">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#scientific-background" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Effective Energy and Mass Transfer (EEMT)" class="md-header__button md-logo" aria-label="Effective Energy and Mass Transfer (EEMT)" data-md-component="logo">
+      
+  <img src="../assets/eemt-logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Effective Energy and Mass Transfer (EEMT)
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Scientific Background
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="light-green"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="slate" data-md-color-primary="green" data-md-color-accent="light-green"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-moon" viewBox="0 0 24 24"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="Search">
+  <button type="button" class="md-search__button">
+    Search
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+    </div>
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Effective Energy and Mass Transfer (EEMT)" class="md-nav__button md-logo" aria-label="Effective Energy and Mass Transfer (EEMT)" data-md-component="logo">
+      
+  <img src="../assets/eemt-logo.svg" alt="logo">
+
+    </a>
+    Effective Energy and Mass Transfer (EEMT)
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../items" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    none
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Page contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Page contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-the-critical-zone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is the Critical Zone?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#energy-and-mass-transfer-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Energy and Mass Transfer Principles
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Energy and Mass Transfer Principles">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#thermodynamic-foundation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Thermodynamic Foundation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#energy-balance-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Energy Balance Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#eemt-focus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EEMT Focus
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#physical-processes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Physical Processes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Physical Processes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#solar-radiation-and-topography" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solar Radiation and Topography
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Solar Radiation and Topography">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#slope-and-aspect-effects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Slope and Aspect Effects
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shading-and-obstruction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shading and Obstruction
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#water-and-energy-coupling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Water and Energy Coupling
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Water and Energy Coupling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#precipitation-energy-eppt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Precipitation Energy (EPPT)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#water-redistribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Water Redistribution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#biological-energy-ebio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Biological Energy (EBIO)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Biological Energy (EBIO)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#photosynthesis-energy-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Photosynthesis Energy Storage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#carbon-energy-coupling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Carbon-Energy Coupling
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#critical-zone-structure-and-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Critical Zone Structure and Function
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Critical Zone Structure and Function">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#emergent-organization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Emergent Organization
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Emergent Organization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#soil-horizons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Soil Horizons
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vegetation-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vegetation Patterns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#landscape-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Landscape Features
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#threshold-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Threshold Behavior
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Threshold Behavior">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#water-vs-energy-limitation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Water vs. Energy Limitation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#system-transitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        System Transitions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#spatial-and-temporal-scales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spatial and Temporal Scales
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Spatial and Temporal Scales">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spatial-scale-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spatial Scale Integration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Spatial Scale Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#local-scale-1-100-m" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Local Scale (1-100 m)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#landscape-scale-100-m-10-km" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Landscape Scale (100 m - 10 km)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#regional-scale-10-1000-km" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Regional Scale (10-1000 km)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#temporal-scale-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Temporal Scale Integration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Temporal Scale Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#short-term-processes-days-to-years" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Short-term Processes (days to years)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#medium-term-dynamics-years-to-centuries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Medium-term Dynamics (years to centuries)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#long-term-evolution-centuries-to-millennia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Long-term Evolution (centuries to millennia)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mathematical-framework" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mathematical Framework
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Mathematical Framework">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#open-system-thermodynamics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Open System Thermodynamics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Open System Thermodynamics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#first-law-energy-conservation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        First Law (Energy Conservation)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#second-law-entropy-increase" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Second Law (Entropy Increase)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exergy-concept" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exergy Concept
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#statistical-relationships" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Statistical Relationships
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Statistical Relationships">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#power-law-scaling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Power Law Scaling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exponential-relationships" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exponential Relationships
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#threshold-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Threshold Functions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#model-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Model Validation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Model Validation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#field-validation-studies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Field Validation Studies
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Field Validation Studies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#soil-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Soil Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vegetation-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vegetation Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geomorphic-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Geomorphic Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+<h1 id="scientific-background">Scientific Background<a class="headerlink" href="#scientific-background" title="Permanent link">&para;</a></h1>
+<h2 id="what-is-the-critical-zone">What is the Critical Zone?<a class="headerlink" href="#what-is-the-critical-zone" title="Permanent link">&para;</a></h2>
+<p>The <strong>Critical Zone</strong> is Earth's near-surface environment extending from the top of the vegetation canopy down to the groundwater. This zone supports all terrestrial life and controls:</p>
+<ul>
+<li>Fresh water availability and quality</li>
+<li>Soil formation and agricultural productivity  </li>
+<li>Carbon storage and climate regulation</li>
+<li>Biodiversity and ecosystem services</li>
+<li>Natural hazard mitigation</li>
+</ul>
+<figure>
+<p><img alt="Critical Zone Diagram" src="../assets/images/critical-zone-diagram.svg" />
+  </p>
+<figcaption>The Critical Zone extends from the vegetation canopy to groundwater, encompassing the zone where rock, soil, water, air, and living organisms interact.</figcaption>
+</figure>
+<h2 id="energy-and-mass-transfer-principles">Energy and Mass Transfer Principles<a class="headerlink" href="#energy-and-mass-transfer-principles" title="Permanent link">&para;</a></h2>
+<h3 id="thermodynamic-foundation">Thermodynamic Foundation<a class="headerlink" href="#thermodynamic-foundation" title="Permanent link">&para;</a></h3>
+<p>The Critical Zone operates as an <strong>open thermodynamic system</strong> where:</p>
+<ul>
+<li>Energy and mass flow down gradients (solar, chemical, gravitational)</li>
+<li>Internal structures develop to optimize energy dissipation</li>
+<li>System organization emerges from energy flux patterns</li>
+<li>Steady-state conditions balance inputs and outputs</li>
+</ul>
+<div class="arithmatex">\[\frac{d\mathcal{U}_{CZ}}{dt} = \mathcal{K} - T\sigma\]</div>
+<p>Where:</p>
+<ul>
+<li>
+<p><strong>𝒰<sub>CZ</sub></strong> = Critical Zone energy storage [J m⁻²]</p>
+</li>
+<li>
+<p><strong>𝒦</strong> = Energy flux through the system [W m⁻²]  </p>
+</li>
+<li>
+<p><strong>T</strong> = System temperature [K]</p>
+</li>
+<li>
+<p><strong>σ</strong> = Entropy production rate [W m⁻² K⁻¹]</p>
+</li>
+</ul>
+<h3 id="energy-balance-components">Energy Balance Components<a class="headerlink" href="#energy-balance-components" title="Permanent link">&para;</a></h3>
+<p>The total energy flux includes multiple components:</p>
+<div class="arithmatex">\[E_{Total} = E_{ET} + E_{PPT} + E_{BIO} + E_{ELEV} + E_{GEO} + \sum E_i\]</div>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Description</th>
+<th>Magnitude</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>E<sub>ET</sub></strong></td>
+<td>Evapotranspiration</td>
+<td>~10⁵ MJ m⁻² yr⁻¹</td>
+<td>Returns to atmosphere</td>
+</tr>
+<tr>
+<td><strong>E<sub>PPT</sub></strong></td>
+<td>Precipitation energy</td>
+<td>~10² MJ m⁻² yr⁻¹</td>
+<td>Subsurface heat transfer</td>
+</tr>
+<tr>
+<td><strong>E<sub>BIO</sub></strong></td>
+<td>Primary production</td>
+<td>~10¹ MJ m⁻² yr⁻¹</td>
+<td>Biological energy storage</td>
+</tr>
+<tr>
+<td><strong>E<sub>ELEV</sub></strong></td>
+<td>Gravitational potential</td>
+<td>~10⁰ MJ m⁻² yr⁻¹</td>
+<td>Physical denudation</td>
+</tr>
+<tr>
+<td><strong>E<sub>GEO</sub></strong></td>
+<td>Chemical potential</td>
+<td>~10⁻¹ MJ m⁻² yr⁻¹</td>
+<td>Chemical weathering</td>
+</tr>
+</tbody>
+</table>
+<h3 id="eemt-focus">EEMT Focus<a class="headerlink" href="#eemt-focus" title="Permanent link">&para;</a></h3>
+<p><strong>Effective Energy and Mass Transfer</strong> focuses on subsurface energy flux:</p>
+<div class="arithmatex">\[\text{EEMT} = E_{BIO} + E_{PPT}\]</div>
+<p>This represents the energy <strong>effectively transferred</strong> to drive:</p>
+<ul>
+<li>Soil formation processes</li>
+<li>Chemical weathering reactions  </li>
+<li>Biological productivity</li>
+<li>Carbon sequestration</li>
+<li>Nutrient cycling</li>
+</ul>
+<h2 id="physical-processes">Physical Processes<a class="headerlink" href="#physical-processes" title="Permanent link">&para;</a></h2>
+<h3 id="solar-radiation-and-topography">Solar Radiation and Topography<a class="headerlink" href="#solar-radiation-and-topography" title="Permanent link">&para;</a></h3>
+<p>Solar radiation provides the primary energy input to the Critical Zone. Topographic effects modify radiation through:</p>
+<h4 id="slope-and-aspect-effects">Slope and Aspect Effects<a class="headerlink" href="#slope-and-aspect-effects" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Pole-facing (N,S) slopes</strong>: Reduced direct radiation, higher soil moisture</li>
+<li><strong>Equator-facing slopes</strong>: Maximum radiation, increased evapotranspiration  </li>
+<li><strong>Slope angle</strong>: Controls radiation intensity and duration</li>
+</ul>
+<h4 id="shading-and-obstruction">Shading and Obstruction<a class="headerlink" href="#shading-and-obstruction" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Horizon effects</strong>: Adjacent terrain blocks incoming radiation</li>
+<li><strong>Vegetation shading</strong>: Canopy intercepts and redistributes energy</li>
+<li><strong>Seasonal variation</strong>: Sun angle changes modify topographic effects</li>
+</ul>
+<h3 id="water-and-energy-coupling">Water and Energy Coupling<a class="headerlink" href="#water-and-energy-coupling" title="Permanent link">&para;</a></h3>
+<p>Water acts as both a mass flux and energy carrier:</p>
+<h4 id="precipitation-energy-eppt">Precipitation Energy (E<sub>PPT</sub>)<a class="headerlink" href="#precipitation-energy-eppt" title="Permanent link">&para;</a></h4>
+<div class="arithmatex">\[E_{PPT} = F \times c_w \times \Delta T \quad \text{[W m}^{-2}\text{]}\]</div>
+<p>Where:</p>
+<ul>
+<li><strong>F</strong> = Effective precipitation flux [kg m⁻² s⁻¹]</li>
+<li><strong>c<sub>w</sub></strong> = Specific heat of water (4,180 J kg⁻¹ K⁻¹)</li>
+<li><strong>ΔT</strong> = Temperature above freezing [K]</li>
+</ul>
+<h4 id="water-redistribution">Water Redistribution<a class="headerlink" href="#water-redistribution" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Infiltration vs. runoff</strong>: Controls subsurface energy delivery</li>
+<li><strong>Topographic convergence</strong>: Concentrates water and energy flux</li>
+<li><strong>Evapotranspiration</strong>: Returns energy to atmosphere</li>
+</ul>
+<h3 id="biological-energy-ebio">Biological Energy (E<sub>BIO</sub>)<a class="headerlink" href="#biological-energy-ebio" title="Permanent link">&para;</a></h3>
+<p>Primary production stores solar energy in chemical bonds:</p>
+<h4 id="photosynthesis-energy-storage">Photosynthesis Energy Storage<a class="headerlink" href="#photosynthesis-energy-storage" title="Permanent link">&para;</a></h4>
+<div class="arithmatex">\[E_{BIO} = NPP \times h_{BIO} \quad \text{[W m}^{-2}\text{]}\]</div>
+<p>Where:</p>
+<ul>
+<li><strong>NPP</strong> = Net Primary Production [kg m⁻² s⁻¹]</li>
+<li><strong>h<sub>BIO</sub></strong> = Specific biomass enthalpy (22 × 10⁶ J kg⁻¹)</li>
+</ul>
+<h4 id="carbon-energy-coupling">Carbon-Energy Coupling<a class="headerlink" href="#carbon-energy-coupling" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>CO₂ fixation</strong>: Solar energy → chemical energy</li>
+<li><strong>Decomposition</strong>: Chemical energy → heat + nutrients</li>
+<li><strong>Root activity</strong>: Drives chemical weathering reactions</li>
+</ul>
+<h2 id="critical-zone-structure-and-function">Critical Zone Structure and Function<a class="headerlink" href="#critical-zone-structure-and-function" title="Permanent link">&para;</a></h2>
+<h3 id="emergent-organization">Emergent Organization<a class="headerlink" href="#emergent-organization" title="Permanent link">&para;</a></h3>
+<p>EEMT drives the formation of organized Critical Zone structures:</p>
+<h4 id="soil-horizons">Soil Horizons<a class="headerlink" href="#soil-horizons" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>O horizon</strong>: Organic matter accumulation</li>
+<li><strong>A horizon</strong>: Mineral-organic mixing</li>
+<li><strong>B horizon</strong>: Clay and nutrient accumulation</li>
+<li><strong>C horizon</strong>: Weathered parent material</li>
+</ul>
+<h4 id="vegetation-patterns">Vegetation Patterns<a class="headerlink" href="#vegetation-patterns" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Productivity gradients</strong>: Follow EEMT patterns</li>
+<li><strong>Species composition</strong>: Adapted to local energy/water balance</li>
+<li><strong>Biomass allocation</strong>: Optimizes energy capture and water access</li>
+</ul>
+<h4 id="landscape-features">Landscape Features<a class="headerlink" href="#landscape-features" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Channel networks</strong>: Organize water and sediment transport</li>
+<li><strong>Slope profiles</strong>: Balance weathering and erosion rates</li>
+<li><strong>Aspect patterns</strong>: Reflect energy-controlled processes</li>
+</ul>
+<h3 id="threshold-behavior">Threshold Behavior<a class="headerlink" href="#threshold-behavior" title="Permanent link">&para;</a></h3>
+<p>EEMT exhibits critical thresholds that control system behavior:</p>
+<h4 id="water-vs-energy-limitation">Water vs. Energy Limitation<a class="headerlink" href="#water-vs-energy-limitation" title="Permanent link">&para;</a></h4>
+<p><strong>Threshold</strong>: ~70 MJ m⁻² yr⁻¹</p>
+<ul>
+<li><strong>Below threshold</strong>: Water-limited, E<sub>BIO</sub> dominates</li>
+<li><strong>Above threshold</strong>: Energy-limited, E<sub>PPT</sub> dominates</li>
+</ul>
+<h4 id="system-transitions">System Transitions<a class="headerlink" href="#system-transitions" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Vegetation shifts</strong>: Grassland ↔ forest transitions</li>
+<li><strong>Soil development</strong>: Entisol ↔ Mollisol ↔ Alfisol progression</li>
+<li><strong>Geomorphic regime</strong>: Weathering-limited ↔ transport-limited</li>
+</ul>
+<h2 id="spatial-and-temporal-scales">Spatial and Temporal Scales<a class="headerlink" href="#spatial-and-temporal-scales" title="Permanent link">&para;</a></h2>
+<h3 id="spatial-scale-integration">Spatial Scale Integration<a class="headerlink" href="#spatial-scale-integration" title="Permanent link">&para;</a></h3>
+<p>EEMT operates across multiple spatial scales:</p>
+<h4 id="local-scale-1-100-m">Local Scale (1-100 m)<a class="headerlink" href="#local-scale-1-100-m" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Process-level understanding</strong>: Individual tree, soil pedon</li>
+<li><strong>High-resolution data</strong>: LiDAR, field measurements</li>
+<li><strong>Detailed process modeling</strong>: Hourly energy/water balance</li>
+</ul>
+<h4 id="landscape-scale-100-m-10-km">Landscape Scale (100 m - 10 km)<a class="headerlink" href="#landscape-scale-100-m-10-km" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Pattern-process relationships</strong>: Topographic controls</li>
+<li><strong>Moderate-resolution data</strong>: Landsat, weather stations</li>
+<li><strong>Statistical modeling</strong>: Spatial correlation analysis</li>
+</ul>
+<h4 id="regional-scale-10-1000-km">Regional Scale (10-1000 km)<a class="headerlink" href="#regional-scale-10-1000-km" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Climate gradient analysis</strong>: Elevation, latitude effects</li>
+<li><strong>Coarse-resolution data</strong>: MODIS, climate models</li>
+<li><strong>Empirical relationships</strong>: Broad pattern identification</li>
+</ul>
+<h3 id="temporal-scale-integration">Temporal Scale Integration<a class="headerlink" href="#temporal-scale-integration" title="Permanent link">&para;</a></h3>
+<h4 id="short-term-processes-days-to-years">Short-term Processes (days to years)<a class="headerlink" href="#short-term-processes-days-to-years" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Weather variability</strong>: Daily climate fluctuations</li>
+<li><strong>Seasonal cycles</strong>: Vegetation phenology, soil temperature</li>
+<li><strong>Extreme events</strong>: Drought, fire, flooding impacts</li>
+</ul>
+<h4 id="medium-term-dynamics-years-to-centuries">Medium-term Dynamics (years to centuries)<a class="headerlink" href="#medium-term-dynamics-years-to-centuries" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Climate oscillations</strong>: El Niño, Pacific Decadal Oscillation</li>
+<li><strong>Vegetation succession</strong>: Post-disturbance recovery</li>
+<li><strong>Soil profile development</strong>: Horizon differentiation</li>
+</ul>
+<h4 id="long-term-evolution-centuries-to-millennia">Long-term Evolution (centuries to millennia)<a class="headerlink" href="#long-term-evolution-centuries-to-millennia" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Climate change</strong>: Holocene environmental shifts</li>
+<li><strong>Landscape evolution</strong>: Erosion, weathering, soil formation</li>
+<li><strong>Ecosystem migration</strong>: Species range shifts</li>
+</ul>
+<h2 id="mathematical-framework">Mathematical Framework<a class="headerlink" href="#mathematical-framework" title="Permanent link">&para;</a></h2>
+<h3 id="open-system-thermodynamics">Open System Thermodynamics<a class="headerlink" href="#open-system-thermodynamics" title="Permanent link">&para;</a></h3>
+<p>The Critical Zone energy balance follows fundamental thermodynamic principles:</p>
+<h4 id="first-law-energy-conservation">First Law (Energy Conservation)<a class="headerlink" href="#first-law-energy-conservation" title="Permanent link">&para;</a></h4>
+<div class="arithmatex">\[\frac{dU}{dt} = Q - W\]</div>
+<p>Where <strong>U</strong> = internal energy, <strong>Q</strong> = heat input, <strong>W</strong> = work done by system</p>
+<h4 id="second-law-entropy-increase">Second Law (Entropy Increase)<a class="headerlink" href="#second-law-entropy-increase" title="Permanent link">&para;</a></h4>
+<div class="arithmatex">\[\frac{dS}{dt} = \frac{Q}{T} + \sigma\]</div>
+<p>Where <strong>S</strong> = entropy, <strong>σ</strong> = irreversible entropy production</p>
+<h4 id="exergy-concept">Exergy Concept<a class="headerlink" href="#exergy-concept" title="Permanent link">&para;</a></h4>
+<div class="arithmatex">\[\text{Exergy} = \text{Energy} - T_0 \times \text{Entropy}\]</div>
+<p>Exergy represents the maximum useful work extractable from the system.</p>
+<h3 id="statistical-relationships">Statistical Relationships<a class="headerlink" href="#statistical-relationships" title="Permanent link">&para;</a></h3>
+<p>EEMT exhibits predictable relationships with Critical Zone properties:</p>
+<h4 id="power-law-scaling">Power Law Scaling<a class="headerlink" href="#power-law-scaling" title="Permanent link">&para;</a></h4>
+<div class="arithmatex">\[\text{Biomass} = \alpha \times \text{EEMT}^{\beta}\]</div>
+<p>Where α = 0.032 kg m² yr ha⁻¹ MJ⁻¹, β = 3.22</p>
+<h4 id="exponential-relationships">Exponential Relationships<a class="headerlink" href="#exponential-relationships" title="Permanent link">&para;</a></h4>
+<div class="arithmatex">\[\text{Soil\_Depth} = \gamma \times \exp(\delta \times \text{EEMT})\]</div>
+<p>For specific lithologies and climate conditions</p>
+<h4 id="threshold-functions">Threshold Functions<a class="headerlink" href="#threshold-functions" title="Permanent link">&para;</a></h4>
+<div class="arithmatex">\[f(\text{EEMT}) = \begin{cases}
+f_1(\text{EEMT}) &amp; \text{if EEMT} &lt; 70 \text{ MJ/m}^2\text{/yr} \\
+f_2(\text{EEMT}) &amp; \text{if EEMT} \geq 70 \text{ MJ/m}^2\text{/yr}
+\end{cases}\]</div>
+<h2 id="model-validation">Model Validation<a class="headerlink" href="#model-validation" title="Permanent link">&para;</a></h2>
+<h3 id="field-validation-studies">Field Validation Studies<a class="headerlink" href="#field-validation-studies" title="Permanent link">&para;</a></h3>
+<p>EEMT has been validated against multiple field datasets:</p>
+<h4 id="soil-properties">Soil Properties<a class="headerlink" href="#soil-properties" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Soil depth</strong>: r² = 0.77 for topographic EEMT</li>
+<li><strong>Clay content</strong>: Significant correlation across climate gradients</li>
+<li><strong>Organic matter</strong>: Strong relationship in temperate systems</li>
+<li><strong>Chemical weathering</strong>: Linear correlation in humid environments</li>
+</ul>
+<h4 id="vegetation-properties">Vegetation Properties<a class="headerlink" href="#vegetation-properties" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Aboveground biomass</strong>: Power law relationship (r² = 0.98)</li>
+<li><strong>Leaf area index</strong>: Moderate correlation in forest systems</li>
+<li><strong>Net primary production</strong>: Good agreement with flux tower data</li>
+<li><strong>Species composition</strong>: Predictive of functional groups</li>
+</ul>
+<h4 id="geomorphic-properties">Geomorphic Properties<a class="headerlink" href="#geomorphic-properties" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Erosion rates</strong>: Inverse relationship in high-EEMT systems</li>
+<li><strong>Chemical denudation</strong>: Linear increase with EEMT</li>
+<li><strong>Regolith thickness</strong>: Exponential relationship</li>
+<li><strong>Landscape relief</strong>: Controls on maximum EEMT values</li>
+</ul>
+<hr />
+<p><em>This framework provides the scientific foundation for understanding how energy drives Critical Zone processes and enables quantitative prediction of landscape evolution and ecosystem function.</em></p>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2025 Tyson L. Swetnam
+    </div>
+  
+  
+    Made with
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/tyson-swetnam" target="_blank" rel="noopener" title="GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://hub.docker.com/u/tswetnam/" target="_blank" rel="noopener" title="Docker Hub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M349.9 236.3h-66.1v-59.4h66.1zm0-204.3h-66.1v60.7h66.1zm78.2 144.8H362v59.4h66.1zm-156.3-72.1h-66.1v60.1h66.1zm78.1 0h-66.1v60.1h66.1zm276.8 100c-14.4-9.7-47.6-13.2-73.1-8.4-3.3-24-16.7-44.9-41.1-63.7l-14-9.3-9.3 14c-18.4 27.8-23.4 73.6-3.7 103.8-8.7 4.7-25.8 11.1-48.4 10.7H2.4c-8.7 50.8 5.8 116.8 44 162.1 37.1 43.9 92.7 66.2 165.4 66.2 157.4 0 273.9-72.5 328.4-204.2 21.4.4 67.6.1 91.3-45.2 1.5-2.5 6.6-13.2 8.5-17.1zm-511.1-27.9h-66v59.4h66.1v-59.4zm78.1 0h-66.1v59.4h66.1zm78.1 0h-66.1v59.4h66.1zm-78.1-72.1h-66.1v60.1h66.1z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://twitter.com/tswetnam" target="_blank" rel="noopener" title="Twitter" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M459.4 151.7c.3 4.5.3 9.1.3 13.6 0 138.7-105.6 298.6-298.6 298.6-59.5 0-114.7-17.2-161.1-47.1 8.4 1 16.6 1.3 25.3 1.3 49.1 0 94.2-16.6 130.3-44.8-46.1-1-84.8-31.2-98.1-72.8 6.5 1 13 1.6 19.8 1.6 9.4 0 18.8-1.3 27.6-3.6-48.1-9.7-84.1-52-84.1-103v-1.3c14 7.8 30.2 12.7 47.4 13.3-28.3-18.8-46.8-51-46.8-87.4 0-19.5 5.2-37.4 14.3-53C87.4 130.8 165 172.4 252.1 176.9c-1.6-7.8-2.6-15.9-2.6-24C249.5 95.1 296.3 48 354.4 48c30.2 0 57.5 12.7 76.7 33.1 23.7-4.5 46.5-13.3 66.6-25.3-7.8 24.4-24.4 44.8-46.1 57.8 21.1-2.3 41.6-8.1 60.4-16.2-14.3 20.8-32.2 39.3-52.6 54.3"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://tysonswetnam.com/" target="_blank" rel="noopener" title="Website" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M351.9 280H161c2.9 64.5 17.2 123.9 37.5 167.4 11.4 24.5 23.7 41.8 35.1 52.4 11.2 10.5 18.9 12.2 22.9 12.2s11.7-1.7 22.9-12.2c11.4-10.6 23.7-28 35.1-52.4 20.3-43.5 34.6-102.9 37.5-167.4zm-191-48h190.9c-2.8-64.5-17.1-123.9-37.4-167.4-11.4-24.4-23.7-41.8-35.1-52.4C268.1 1.7 260.4 0 256.4 0s-11.7 1.7-22.9 12.2c-11.4 10.6-23.7 28-35.1 52.4-20.3 43.5-34.6 102.9-37.5 167.4m-48 0c3.5-85.6 25.6-165.1 57.9-217.3C78.7 47.3 10.9 131.2 1.5 232zM1.5 280c9.4 100.8 77.2 184.7 169.3 217.3-32.3-52.2-54.4-131.7-57.9-217.3zm398.4 0c-3.5 85.6-25.6 165.1-57.9 217.3 92.1-32.7 159.9-116.5 169.3-217.3zm111.4-48C501.9 131.2 434.1 47.3 342 14.7c32.3 52.2 54.4 131.7 57.9 217.3z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      
+      <script id="__config" type="application/json">{"annotate":null,"base":"..","features":["navigation_instant","navigation_tabs","navigation_tabs_sticky","navigation_sections","navigation_expand","navigation_indexes","navigation_top","navigation_footer","search_suggest","search_highlight","content_code_copy","content_code_annotate","content_tabs_link"],"search":"../assets/javascripts/workers/search.e2d2d235.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.8ffeb9c9.min.js"></script>
+      
+    
+  </body>
+</html>

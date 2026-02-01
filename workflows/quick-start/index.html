@@ -1,0 +1,1235 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Get started with EEMT calculations in under 10 minutes">
+      
+      
+        <meta name="author" content="Tyson L. Swetnam">
+      
+      
+        <link rel="canonical" href="https://tyson-swetnam.github.io/eemt/workflows/quick-start/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/favicon.ico">
+      <meta name="generator" content="zensical-0.0.20">
+    
+    
+      
+        <title>Quick Start Guide - Effective Energy and Mass Transfer (EEMT)</title>
+      
+    
+    
+      
+        
+      
+      <link rel="stylesheet" href="../../assets/stylesheets/modern/main.d4922b3c.min.css">
+      
+        
+          
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/modern/palette.dfe2e883.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,500,500i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Open Sans";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,a=__md_scope)=>JSON.parse(t.getItem(a.pathname+"."+e)),__md_set=(e,t,a=localStorage,_=__md_scope)=>{try{a.setItem(_.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config",""),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="light-green">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#quick-start-guide" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Effective Energy and Mass Transfer (EEMT)" class="md-header__button md-logo" aria-label="Effective Energy and Mass Transfer (EEMT)" data-md-component="logo">
+      
+  <img src="../../assets/eemt-logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Effective Energy and Mass Transfer (EEMT)
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Quick Start Guide
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="light-green"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="none" data-md-color-scheme="slate" data-md-color-primary="green" data-md-color-accent="light-green"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-moon" viewBox="0 0 24 24"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog" aria-label="Search">
+  <button type="button" class="md-search__button">
+    Search
+  </button>
+</div>
+      
+    
+    <div class="md-header__source">
+      
+    </div>
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Effective Energy and Mass Transfer (EEMT)" class="md-nav__button md-logo" aria-label="Effective Energy and Mass Transfer (EEMT)" data-md-component="logo">
+      
+  <img src="../../assets/eemt-logo.svg" alt="logo">
+
+    </a>
+    Effective Energy and Mass Transfer (EEMT)
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../items" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    none
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Page contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Page contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-deploy-eemt-with-docker-compose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Deploy EEMT with Docker Compose
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-2-access-the-web-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Access the Web Interface
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-prepare-your-first-dem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Prepare Your First DEM
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 3: Prepare Your First DEM">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dem-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DEM Requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-4-submit-your-first-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Submit Your First Job
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 4: Submit Your First Job">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-the-web-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using the Web Interface
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#understanding-the-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Understanding the Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-5-monitor-job-progress" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Monitor Job Progress
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 5: Monitor Job Progress">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-youll-see" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What You'll See
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#processing-stages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Processing Stages
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-6-view-and-download-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: View and Download Results
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 6: View and Download Results">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#output-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output Files
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-7-visualize-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: Visualize Results
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 7: Visualize Results">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quick-visualization-with-qgis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Visualization with QGIS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#understanding-the-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Understanding the Output
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next Steps
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Next Steps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#run-a-full-eemt-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run a Full EEMT Analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#customize-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Customize Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#process-your-own-study-area" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Process Your Own Study Area
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-issues-and-solutions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Issues and Solutions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Issues and Solutions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#issue-docker-not-starting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue: Docker not starting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issue-port-5000-already-in-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue: Port 5000 already in use
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issue-slow-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue: Slow processing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issue-climate-data-download-fails" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue: Climate data download fails
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tips-for-best-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tips for Best Results
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tips for Best Results">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dem-preparation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DEM Preparation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parameter-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameter Selection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance Optimization
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-complete-5-minute-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: Complete 5-Minute Workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-help" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Getting Help
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Getting Help">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resources
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#support-channels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Support Channels
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Summary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#whats-different-in-v200" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What's Different in v2.0.0?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+<h1 id="quick-start-guide">Quick Start Guide<a class="headerlink" href="#quick-start-guide" title="Permanent link">&para;</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>This guide will help you run your first EEMT calculation using the web interface in under 10 minutes. We'll use a sample DEM file and default parameters to demonstrate the basic workflow.</p>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<p>Before starting, ensure you have:</p>
+<ul>
+<li><strong>Docker Desktop</strong> installed and running (<a href="https://www.docker.com/products/docker-desktop/">Download Docker</a>)</li>
+<li><strong>4GB of available RAM</strong> (8GB recommended)</li>
+<li><strong>10GB of free disk space</strong> for data and results</li>
+<li><strong>Internet connection</strong> for downloading climate data</li>
+</ul>
+<h2 id="step-1-deploy-eemt-with-docker-compose">Step 1: Deploy EEMT with Docker Compose<a class="headerlink" href="#step-1-deploy-eemt-with-docker-compose" title="Permanent link">&para;</a></h2>
+<p>The fastest way to get started is using Docker Compose:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Clone the repository</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/cyverse-gis/eemt.git
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nb">cd</span><span class="w"> </span>eemt
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># Start the EEMT web interface</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>docker-compose<span class="w"> </span>up
+</span></code></pre></div>
+<p>This command will:
+1. Build the EEMT container with all dependencies
+2. Start the web interface on port 5000
+3. Enable job monitoring on the dashboard</p>
+<p>Wait for the message: <code>INFO: Application startup complete</code></p>
+<h2 id="step-2-access-the-web-interface">Step 2: Access the Web Interface<a class="headerlink" href="#step-2-access-the-web-interface" title="Permanent link">&para;</a></h2>
+<p>Open your web browser and navigate to:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>http://127.0.0.1:5000
+</span></code></pre></div>
+<p>You should see the EEMT Web Interface homepage with a job submission form.</p>
+<h2 id="step-3-prepare-your-first-dem">Step 3: Prepare Your First DEM<a class="headerlink" href="#step-3-prepare-your-first-dem" title="Permanent link">&para;</a></h2>
+<p>For this quick start, we'll use the included sample DEM:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># The sample DEM is located at:</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1"># sol/examples/mcn_10m.tif</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># This is a 10m resolution DEM of a small watershed</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># in southeastern Arizona (Marshall Gulch, Santa Catalina Mountains)</span>
+</span></code></pre></div>
+<h3 id="dem-requirements">DEM Requirements<a class="headerlink" href="#dem-requirements" title="Permanent link">&para;</a></h3>
+<p>Your DEM must meet these criteria:
+- <strong>Format</strong>: GeoTIFF (.tif or .tiff)
+- <strong>Projection</strong>: Any valid coordinate system (will be auto-detected)
+- <strong>Resolution</strong>: 1m to 1000m (10-30m recommended for regional analysis)
+- <strong>Size</strong>: Under 100MB for quick processing</p>
+<h2 id="step-4-submit-your-first-job">Step 4: Submit Your First Job<a class="headerlink" href="#step-4-submit-your-first-job" title="Permanent link">&para;</a></h2>
+<h3 id="using-the-web-interface">Using the Web Interface<a class="headerlink" href="#using-the-web-interface" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Select Workflow Type</strong>: Choose "Solar Radiation Only" for a quick test</li>
+<li><strong>Upload DEM</strong>: Click "Choose File" and select <code>mcn_10m.tif</code></li>
+<li><strong>Set Parameters</strong>:</li>
+<li><strong>Step</strong>: 15 (minutes between calculations)</li>
+<li><strong>Threads</strong>: 4 (parallel processes)</li>
+<li><strong>Linke Turbidity</strong>: 3.0 (clear atmosphere)</li>
+<li><strong>Albedo</strong>: 0.2 (typical soil/vegetation)</li>
+<li><strong>Submit</strong>: Click "Submit Job"</li>
+</ol>
+<h3 id="understanding-the-parameters">Understanding the Parameters<a class="headerlink" href="#understanding-the-parameters" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Quick Start Value</th>
+<th>What It Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Step</strong></td>
+<td>15 minutes</td>
+<td>Time interval for solar calculations. Lower = more accurate but slower</td>
+</tr>
+<tr>
+<td><strong>Threads</strong></td>
+<td>4</td>
+<td>Number of parallel processes. Match your CPU cores</td>
+</tr>
+<tr>
+<td><strong>Linke Turbidity</strong></td>
+<td>3.0</td>
+<td>Atmospheric clarity. 1-2 = very clear, 3-4 = average, 5-8 = hazy</td>
+</tr>
+<tr>
+<td><strong>Albedo</strong></td>
+<td>0.2</td>
+<td>Surface reflectance. 0.1 = dark soil, 0.2 = vegetation, 0.8 = snow</td>
+</tr>
+</tbody>
+</table>
+<h2 id="step-5-monitor-job-progress">Step 5: Monitor Job Progress<a class="headerlink" href="#step-5-monitor-job-progress" title="Permanent link">&para;</a></h2>
+<p>After submission, you'll be redirected to the monitoring page:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>http://127.0.0.1:5000/monitor
+</span></code></pre></div>
+<h3 id="what-youll-see">What You'll See<a class="headerlink" href="#what-youll-see" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>Job ID: SOL_20240115_143022
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>Status: Running
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>Progress: Processing day 42 of 365...
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>Estimated Time Remaining: 8 minutes
+</span></code></pre></div>
+<h3 id="processing-stages">Processing Stages<a class="headerlink" href="#processing-stages" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Initialization</strong> (30 seconds)</li>
+<li>Setting up GRASS GIS environment</li>
+<li>Importing DEM</li>
+<li>
+<p>Calculating horizons</p>
+</li>
+<li>
+<p><strong>Daily Calculations</strong> (5-15 minutes)</p>
+</li>
+<li>365 solar radiation maps</li>
+<li>One calculation per day of year</li>
+<li>
+<p>Progress updated in real-time</p>
+</li>
+<li>
+<p><strong>Aggregation</strong> (1 minute)</p>
+</li>
+<li>Monthly summaries</li>
+<li>Annual totals</li>
+<li>Statistics generation</li>
+</ol>
+<h2 id="step-6-view-and-download-results">Step 6: View and Download Results<a class="headerlink" href="#step-6-view-and-download-results" title="Permanent link">&para;</a></h2>
+<p>When complete, the monitoring page will show:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Status: Completed
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>Processing Time: 12 minutes 34 seconds
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>Results: Available for download
+</span></code></pre></div>
+<h3 id="output-files">Output Files<a class="headerlink" href="#output-files" title="Permanent link">&para;</a></h3>
+<p>Click "Download Results" to get a ZIP file containing:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>results_SOL_20240115_143022.zip
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>├── global/
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>│   ├── daily/           # 365 daily solar radiation maps
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>│   │   ├── total_sun_day_001.tif
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>│   │   ├── total_sun_day_002.tif
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>│   │   └── ...
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>│   ├── monthly/         # 12 monthly summaries
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>│   │   ├── total_sun_01_sum.tif
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>│   │   ├── total_sun_02_sum.tif
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>│   │   └── ...
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>│   └── annual/          # Annual total
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>│       └── total_sun_annual.tif
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>├── metadata/
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>│   ├── parameters.json  # Input parameters
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>│   └── statistics.csv   # Summary statistics
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>└── logs/
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>    ├── workflow.log     # Processing log
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>    └── errors.log       # Any errors (should be empty)
+</span></code></pre></div>
+<h2 id="step-7-visualize-results">Step 7: Visualize Results<a class="headerlink" href="#step-7-visualize-results" title="Permanent link">&para;</a></h2>
+<h3 id="quick-visualization-with-qgis">Quick Visualization with QGIS<a class="headerlink" href="#quick-visualization-with-qgis" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Open QGIS</li>
+<li>Drag <code>total_sun_annual.tif</code> into the map window</li>
+<li>Right-click layer → Properties → Symbology</li>
+<li>Choose "Singleband pseudocolor" with "Spectral" color ramp</li>
+<li>Click Apply</li>
+</ol>
+<h3 id="understanding-the-output">Understanding the Output<a class="headerlink" href="#understanding-the-output" title="Permanent link">&para;</a></h3>
+<p>Solar radiation values are in <strong>Wh/m²</strong> (watt-hours per square meter):</p>
+<table>
+<thead>
+<tr>
+<th>Annual Total</th>
+<th>Environment Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&lt; 1,000,000</td>
+<td>Deep valleys, north-facing cliffs</td>
+</tr>
+<tr>
+<td>1,000,000 - 1,500,000</td>
+<td>Shaded slopes, forest</td>
+</tr>
+<tr>
+<td>1,500,000 - 2,000,000</td>
+<td>Open terrain, grassland</td>
+</tr>
+<tr>
+<td>&gt; 2,000,000</td>
+<td>South-facing slopes, ridgetops</td>
+</tr>
+</tbody>
+</table>
+<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
+<h3 id="run-a-full-eemt-analysis">Run a Full EEMT Analysis<a class="headerlink" href="#run-a-full-eemt-analysis" title="Permanent link">&para;</a></h3>
+<p>Now try the complete EEMT workflow with climate data:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># From the web interface, select &quot;Full EEMT&quot;</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1"># This will:</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1"># 1. Calculate solar radiation</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># 2. Download DAYMET climate data</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="c1"># 3. Compute NPP and effective precipitation</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="c1"># 4. Generate EEMT maps</span>
+</span></code></pre></div>
+<h3 id="customize-parameters">Customize Parameters<a class="headerlink" href="#customize-parameters" title="Permanent link">&para;</a></h3>
+<p>Experiment with different settings:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># High-resolution analysis (slower, more accurate)</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">step</span> <span class="o">=</span> <span class="mi">5</span>        <span class="c1"># 5-minute intervals</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">threads</span> <span class="o">=</span> <span class="mi">8</span>     <span class="c1"># Use more cores</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="c1"># Different environments</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="n">linke</span> <span class="o">=</span> <span class="mf">1.5</span>     <span class="c1"># Very clear mountain air</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="n">albedo</span> <span class="o">=</span> <span class="mf">0.8</span>    <span class="c1"># Snow-covered terrain</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="c1"># Arid region</span>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="n">linke</span> <span class="o">=</span> <span class="mf">4.0</span>     <span class="c1"># Dusty atmosphere</span>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="n">albedo</span> <span class="o">=</span> <span class="mf">0.35</span>   <span class="c1"># Desert soil</span>
+</span></code></pre></div>
+<h3 id="process-your-own-study-area">Process Your Own Study Area<a class="headerlink" href="#process-your-own-study-area" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p><strong>Prepare your DEM</strong>:
+   <div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Reproject if needed</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>gdalwarp<span class="w"> </span>-t_srs<span class="w"> </span>EPSG:4326<span class="w"> </span>your_dem.tif<span class="w"> </span>dem_wgs84.tif
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># Clip to study area</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>gdalwarp<span class="w"> </span>-te<span class="w"> </span>xmin<span class="w"> </span>ymin<span class="w"> </span>xmax<span class="w"> </span>ymax<span class="w"> </span>dem_wgs84.tif<span class="w"> </span>study_area.tif
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Submit through web interface</strong> with parameters appropriate for your region</p>
+</li>
+<li>
+<p><strong>Monitor and download</strong> results when complete</p>
+</li>
+</ol>
+<h2 id="common-issues-and-solutions">Common Issues and Solutions<a class="headerlink" href="#common-issues-and-solutions" title="Permanent link">&para;</a></h2>
+<h3 id="issue-docker-not-starting">Issue: Docker not starting<a class="headerlink" href="#issue-docker-not-starting" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Check Docker status</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>docker<span class="w"> </span>--version
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>docker<span class="w"> </span>ps
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="c1"># Restart Docker Desktop</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="c1"># On Mac/Windows: Use the Docker Desktop app</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="c1"># On Linux:</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>docker
+</span></code></pre></div>
+<h3 id="issue-port-5000-already-in-use">Issue: Port 5000 already in use<a class="headerlink" href="#issue-port-5000-already-in-use" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># Use a different port</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>docker-compose<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">5001</span>:5000<span class="w"> </span>eemt-web
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="c1"># Then access at http://127.0.0.1:5001</span>
+</span></code></pre></div>
+<h3 id="issue-slow-processing">Issue: Slow processing<a class="headerlink" href="#issue-slow-processing" title="Permanent link">&para;</a></h3>
+<p><strong>Solutions</strong>:
+- Increase step size (15 → 30 minutes)
+- Reduce DEM resolution
+- Allocate more threads
+- Ensure adequate RAM available</p>
+<h3 id="issue-climate-data-download-fails">Issue: Climate data download fails<a class="headerlink" href="#issue-climate-data-download-fails" title="Permanent link">&para;</a></h3>
+<p><strong>Solutions</strong>:
+- Check internet connection
+- Verify study area is within DAYMET coverage (North America)
+- Try again (ORNL server may be temporarily unavailable)</p>
+<h2 id="tips-for-best-results">Tips for Best Results<a class="headerlink" href="#tips-for-best-results" title="Permanent link">&para;</a></h2>
+<h3 id="dem-preparation">DEM Preparation<a class="headerlink" href="#dem-preparation" title="Permanent link">&para;</a></h3>
+<p>✅ <strong>DO</strong>:
+- Use projected coordinate systems (e.g., UTM)
+- Include buffer area around study region
+- Fill sinks/pits in DEM before processing
+- Use consistent resolution (10-30m recommended)</p>
+<p>❌ <strong>DON'T</strong>:
+- Use geographic coordinates for large areas
+- Include ocean or large water bodies
+- Mix different resolution DEMs
+- Use DEMs with many NoData gaps</p>
+<h3 id="parameter-selection">Parameter Selection<a class="headerlink" href="#parameter-selection" title="Permanent link">&para;</a></h3>
+<p><strong>For Different Regions</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Region Type</th>
+<th>Step</th>
+<th>Linke</th>
+<th>Albedo</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Mountains</strong></td>
+<td>10</td>
+<td>2.0</td>
+<td>0.15</td>
+<td>High resolution for complex terrain</td>
+</tr>
+<tr>
+<td><strong>Desert</strong></td>
+<td>15</td>
+<td>4.0</td>
+<td>0.35</td>
+<td>Account for dust and bright soil</td>
+</tr>
+<tr>
+<td><strong>Forest</strong></td>
+<td>15</td>
+<td>3.0</td>
+<td>0.15</td>
+<td>Dark canopy, moderate atmosphere</td>
+</tr>
+<tr>
+<td><strong>Agricultural</strong></td>
+<td>15</td>
+<td>3.5</td>
+<td>0.20</td>
+<td>Seasonal variation important</td>
+</tr>
+<tr>
+<td><strong>Arctic</strong></td>
+<td>30</td>
+<td>1.5</td>
+<td>0.80</td>
+<td>Very clear air, snow cover</td>
+</tr>
+</tbody>
+</table>
+<h3 id="performance-optimization">Performance Optimization<a class="headerlink" href="#performance-optimization" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># For large areas (&gt;10,000 km²)</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="c1"># Split into tiles and process separately</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1"># Tile your DEM</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="n">gdal_retile</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">ps</span> <span class="mi">5000</span> <span class="mi">5000</span> <span class="o">-</span><span class="n">overlap</span> <span class="mi">100</span> <span class="n">large_dem</span><span class="o">.</span><span class="n">tif</span> <span class="o">-</span><span class="n">targetDir</span> <span class="n">tiles</span><span class="o">/</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="c1"># Process each tile</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="k">for</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">tiles</span><span class="o">/*.</span><span class="n">tif</span><span class="p">:</span>
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>    <span class="n">submit_eemt_job</span><span class="p">(</span><span class="n">tile</span><span class="p">)</span>
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="c1"># Merge results</span>
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="n">gdal_merge</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">o</span> <span class="n">final_eemt</span><span class="o">.</span><span class="n">tif</span> <span class="n">results</span><span class="o">/*/</span><span class="n">eemt</span><span class="o">.</span><span class="n">tif</span>
+</span></code></pre></div>
+<h2 id="example-complete-5-minute-workflow">Example: Complete 5-Minute Workflow<a class="headerlink" href="#example-complete-5-minute-workflow" title="Permanent link">&para;</a></h2>
+<p>Here's a complete workflow you can run in 5 minutes with the sample data:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># 1. Start EEMT (if not already running)</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="nb">cd</span><span class="w"> </span>eemt
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>docker-compose<span class="w"> </span>up<span class="w"> </span>-d
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="c1"># 2. Wait for startup (30 seconds)</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>sleep<span class="w"> </span><span class="m">30</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="c1"># 3. Submit job via curl (alternative to web interface)</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://127.0.0.1:5000/api/submit-job<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;workflow_type=sol&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;dem_file=@sol/examples/mcn_10m.tif&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;step=30&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;num_threads=4&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;linke_value=3.0&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="w">  </span>-F<span class="w"> </span><span class="s2">&quot;albedo_value=0.2&quot;</span>
+</span><span id="__span-13-16"><a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a>
+</span><span id="__span-13-17"><a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="c1"># 4. Monitor progress</span>
+</span><span id="__span-13-18"><a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a><span class="c1"># Job will complete in ~3 minutes with step=30</span>
+</span><span id="__span-13-19"><a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a>
+</span><span id="__span-13-20"><a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a><span class="c1"># 5. Results will be available at:</span>
+</span><span id="__span-13-21"><a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a><span class="c1"># http://127.0.0.1:5000/results/[JOB_ID]/</span>
+</span></code></pre></div>
+<h2 id="getting-help">Getting Help<a class="headerlink" href="#getting-help" title="Permanent link">&para;</a></h2>
+<h3 id="resources">Resources<a class="headerlink" href="#resources" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Documentation</strong>: <a href="http://127.0.0.1:8000">http://127.0.0.1:8000</a> (when running with <code>--profile docs</code>)</li>
+<li><strong>GitHub Issues</strong>: <a href="https://github.com/cyverse-gis/eemt/issues">https://github.com/cyverse-gis/eemt/issues</a></li>
+<li><strong>Algorithm Details</strong>: See <a href="../../algorithms/solar-radiation/">Solar Radiation Algorithms</a></li>
+<li><strong>API Reference</strong>: See <a href="../../web-interface/api-reference/">Web Interface API</a></li>
+</ul>
+<h3 id="support-channels">Support Channels<a class="headerlink" href="#support-channels" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Scientific Questions</strong>: Review <a href="../../about/publications/">EEMT Publications</a></li>
+<li><strong>Technical Issues</strong>: Check <a href="../../development/">Development Guide</a></li>
+<li><strong>Bug Reports</strong>: Use GitHub issue tracker</li>
+</ul>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<p>You've successfully:
+- ✅ Deployed EEMT v2.0.0 with improved reliability
+- ✅ Submitted your first job through the enhanced interface
+- ✅ Monitored job progress with accurate tracking
+- ✅ Downloaded and understood results
+- ✅ Learned to use the new system resource detection</p>
+<h3 id="whats-different-in-v200">What's Different in v2.0.0?<a class="headerlink" href="#whats-different-in-v200" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>No more submission failures</strong> - Robust error handling</li>
+<li><strong>Accurate resource display</strong> - Know your system capabilities</li>
+<li><strong>Reliable progress tracking</strong> - No more hanging at 25%</li>
+<li><strong>Better user experience</strong> - Clear feedback at every step</li>
+</ul>
+<p><strong>Next</strong>: Try the <a href="../data-preparation/">Data Preparation Guide</a> to work with your own study area, or explore <a href="../../algorithms/eemt-calculations/">Full EEMT Calculations</a> for complete energy balance modeling.</p>
+<hr />
+<p><em>Estimated time to complete this guide: Under 5 minutes with v2.0.0 improvements!</em></p>
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2025 Tyson L. Swetnam
+    </div>
+  
+  
+    Made with
+    <a href="https://zensical.org/" target="_blank" rel="noopener">
+      Zensical
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/tyson-swetnam" target="_blank" rel="noopener" title="GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://hub.docker.com/u/tswetnam/" target="_blank" rel="noopener" title="Docker Hub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M349.9 236.3h-66.1v-59.4h66.1zm0-204.3h-66.1v60.7h66.1zm78.2 144.8H362v59.4h66.1zm-156.3-72.1h-66.1v60.1h66.1zm78.1 0h-66.1v60.1h66.1zm276.8 100c-14.4-9.7-47.6-13.2-73.1-8.4-3.3-24-16.7-44.9-41.1-63.7l-14-9.3-9.3 14c-18.4 27.8-23.4 73.6-3.7 103.8-8.7 4.7-25.8 11.1-48.4 10.7H2.4c-8.7 50.8 5.8 116.8 44 162.1 37.1 43.9 92.7 66.2 165.4 66.2 157.4 0 273.9-72.5 328.4-204.2 21.4.4 67.6.1 91.3-45.2 1.5-2.5 6.6-13.2 8.5-17.1zm-511.1-27.9h-66v59.4h66.1v-59.4zm78.1 0h-66.1v59.4h66.1zm78.1 0h-66.1v59.4h66.1zm-78.1-72.1h-66.1v60.1h66.1z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://twitter.com/tswetnam" target="_blank" rel="noopener" title="Twitter" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M459.4 151.7c.3 4.5.3 9.1.3 13.6 0 138.7-105.6 298.6-298.6 298.6-59.5 0-114.7-17.2-161.1-47.1 8.4 1 16.6 1.3 25.3 1.3 49.1 0 94.2-16.6 130.3-44.8-46.1-1-84.8-31.2-98.1-72.8 6.5 1 13 1.6 19.8 1.6 9.4 0 18.8-1.3 27.6-3.6-48.1-9.7-84.1-52-84.1-103v-1.3c14 7.8 30.2 12.7 47.4 13.3-28.3-18.8-46.8-51-46.8-87.4 0-19.5 5.2-37.4 14.3-53C87.4 130.8 165 172.4 252.1 176.9c-1.6-7.8-2.6-15.9-2.6-24C249.5 95.1 296.3 48 354.4 48c30.2 0 57.5 12.7 76.7 33.1 23.7-4.5 46.5-13.3 66.6-25.3-7.8 24.4-24.4 44.8-46.1 57.8 21.1-2.3 41.6-8.1 60.4-16.2-14.3 20.8-32.2 39.3-52.6 54.3"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://tysonswetnam.com/" target="_blank" rel="noopener" title="Website" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M351.9 280H161c2.9 64.5 17.2 123.9 37.5 167.4 11.4 24.5 23.7 41.8 35.1 52.4 11.2 10.5 18.9 12.2 22.9 12.2s11.7-1.7 22.9-12.2c11.4-10.6 23.7-28 35.1-52.4 20.3-43.5 34.6-102.9 37.5-167.4zm-191-48h190.9c-2.8-64.5-17.1-123.9-37.4-167.4-11.4-24.4-23.7-41.8-35.1-52.4C268.1 1.7 260.4 0 256.4 0s-11.7 1.7-22.9 12.2c-11.4 10.6-23.7 28-35.1 52.4-20.3 43.5-34.6 102.9-37.5 167.4m-48 0c3.5-85.6 25.6-165.1 57.9-217.3C78.7 47.3 10.9 131.2 1.5 232zM1.5 280c9.4 100.8 77.2 184.7 169.3 217.3-32.3-52.2-54.4-131.7-57.9-217.3zm398.4 0c-3.5 85.6-25.6 165.1-57.9 217.3 92.1-32.7 159.9-116.5 169.3-217.3zm111.4-48C501.9 131.2 434.1 47.3 342 14.7c32.3 52.2 54.4 131.7 57.9 217.3z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      
+      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["navigation_instant","navigation_tabs","navigation_tabs_sticky","navigation_sections","navigation_expand","navigation_indexes","navigation_top","navigation_footer","search_suggest","search_highlight","content_code_copy","content_code_annotate","content_tabs_link"],"search":"../../assets/javascripts/workers/search.e2d2d235.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.8ffeb9c9.min.js"></script>
+      
+    
+  </body>
+</html>
