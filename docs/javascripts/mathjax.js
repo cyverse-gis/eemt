@@ -6,7 +6,29 @@ window.MathJax = {
     displayMath: [["\\[", "\\]"], ["$$", "$$"]],
     processEscapes: true,
     processEnvironments: true,
-    packages: {'[+]': ['ams', 'physics', 'mhchem']}
+    packages: {'[+]': ['ams', 'physics', 'mhchem']},
+    // Custom macros for EEMT units and symbols
+    macros: {
+      // SI units
+      unit: ["\\text{#1}", 1],
+      si: ["\\,\\text{#1}", 1],
+      SI: ["#1\\,\\text{#2}", 2],
+      // Common EEMT units
+      MJm: "\\text{MJ}\\,\\text{m}^{-2}",
+      MJmyr: "\\text{MJ}\\,\\text{m}^{-2}\\,\\text{yr}^{-1}",
+      kJmol: "\\text{kJ}\\,\\text{mol}^{-1}",
+      mmyr: "\\text{mm}\\,\\text{yr}^{-1}",
+      degC: "°\\text{C}",
+      // EEMT components
+      EEMT: "\\text{EEMT}",
+      Ebio: "E_{\\text{BIO}}",
+      Eppt: "E_{\\text{PPT}}",
+      Etopo: "E_{\\text{TOPO}}",
+      // Greek letters commonly used
+      alpha: "\\alpha",
+      beta: "\\beta",
+      lambda: "\\lambda"
+    }
   },
   options: {
     ignoreHtmlClass: ".*|",
@@ -80,5 +102,45 @@ document$.subscribe(() => {
     } else if (status.includes('pending') || status.includes('todo')) {
       element.classList.add('pending');
     }
+  });
+});
+
+// Auto-format inline units in .unit-value elements
+document$.subscribe(() => {
+  const unitElements = document.querySelectorAll('.unit-value');
+  unitElements.forEach(element => {
+    let text = element.textContent;
+    // Format common unit patterns with proper styling
+    text = text
+      .replace(/MJ\/m²\/yr/g, 'MJ m⁻² yr⁻¹')
+      .replace(/MJ m-2 yr-1/g, 'MJ m⁻² yr⁻¹')
+      .replace(/mm\/yr/g, 'mm yr⁻¹')
+      .replace(/kJ\/mol/g, 'kJ mol⁻¹')
+      .replace(/W\/m²/g, 'W m⁻²')
+      .replace(/kg\/m²/g, 'kg m⁻²')
+      .replace(/m²/g, 'm²')
+      .replace(/m³/g, 'm³');
+    element.textContent = text;
+  });
+});
+
+// Auto-detect and style EEMT range values (e.g., "5-15 MJ/m²/yr")
+document$.subscribe(() => {
+  // Find elements with eemt-range class and format their units
+  const rangeElements = document.querySelectorAll('.eemt-range');
+  rangeElements.forEach(element => {
+    let text = element.innerHTML;
+    // Convert ASCII fractions to proper unit notation
+    text = text
+      .replace(/MJ\/m²\/yr/g, '<span class="unit">MJ m<sup>−2</sup> yr<sup>−1</sup></span>')
+      .replace(/MJ m-2 yr-1/g, '<span class="unit">MJ m<sup>−2</sup> yr<sup>−1</sup></span>')
+      .replace(/(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)/g, '$1–$2'); // en-dash for ranges
+    element.innerHTML = text;
+  });
+
+  // Also handle standalone .unit elements
+  const unitSpans = document.querySelectorAll('.unit:not(.unit-formatted)');
+  unitSpans.forEach(element => {
+    element.classList.add('unit-formatted');
   });
 });

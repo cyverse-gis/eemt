@@ -19,11 +19,18 @@
 
 **Effective Energy and Mass Transfer (EEMT)** is a framework for quantifying energy and mass flux in Earth's Critical Zone. EEMT provides a common energy currency for understanding landscape evolution, soil formation, and biogeochemical processes across spatiotemporal scales.
 
-$$\text{EEMT} = E_{\text{BIO}} + E_{\text{PPT}} \quad \text{[MJ m}^{-2} \text{yr}^{-1}]$$
+<div class="equation-block" markdown>
+
+$$\EEMT = \Ebio + \Eppt \quad [\MJmyr]$$
+
+</div>
 
 Where:
+
 - **E<sub>BIO</sub>** = Energy from net primary production (biological energy)
 - **E<sub>PPT</sub>** = Energy from effective precipitation (thermal energy)
+
+Units: <span class="unit">MJ m<sup>−2</sup> yr<sup>−1</sup></span> (megajoules per square meter per year)
 
 ## Architecture
 
@@ -147,19 +154,19 @@ EEMT calculations are based on peer-reviewed methodologies:
 
 <div class="climate-zone arid">
 <strong>Arid Ecosystems</strong><br>
-<span class="eemt-range">5-15 MJ/m²/yr</span><br>
+<span class="eemt-range">5–15 MJ m<sup>−2</sup> yr<sup>−1</sup></span><br>
 Desert scrub, water-limited systems
 </div>
 
 <div class="climate-zone semiarid">
 <strong>Semiarid Ecosystems</strong><br>
-<span class="eemt-range">15-35 MJ/m²/yr</span><br>
+<span class="eemt-range">15–35 MJ m<sup>−2</sup> yr<sup>−1</sup></span><br>
 Grasslands, oak woodlands, transition zones
 </div>
 
 <div class="climate-zone humid">
 <strong>Humid Ecosystems</strong><br>
-<span class="eemt-range">35-70 MJ/m²/yr</span><br>
+<span class="eemt-range">35–70 MJ m<sup>−2</sup> yr<sup>−1</sup></span><br>
 Coniferous forests, energy-limited systems
 </div>
 

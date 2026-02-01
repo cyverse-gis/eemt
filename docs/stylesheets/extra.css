@@ -271,6 +271,92 @@
   font-weight: bold;
 }
 
+.eemt-range .unit {
+  font-weight: normal;
+  opacity: 0.95;
+}
+
+.eemt-range sup {
+  font-size: 0.7em;
+  vertical-align: super;
+  line-height: 0;
+}
+
+/* Inline unit styling */
+.unit, .unit-value {
+  font-family: var(--md-code-font);
+  font-size: 0.95em;
+  white-space: nowrap;
+}
+
+.unit sup, .unit-value sup {
+  font-size: 0.75em;
+  vertical-align: super;
+  line-height: 0;
+}
+
+/* Unit in running text */
+.md-typeset .unit-inline {
+  font-family: var(--md-code-font);
+  background-color: var(--md-code-bg-color);
+  padding: 0.1em 0.3em;
+  border-radius: 0.2em;
+  font-size: 0.9em;
+}
+
+/* MathJax equation enhancements */
+.MathJax {
+  font-size: 1.1em !important;
+}
+
+/* Display equations */
+.arithmatex {
+  overflow-x: auto;
+  padding: 0.5rem 0;
+}
+
+/* Equation blocks with borders */
+.md-typeset .equation-block {
+  background-color: var(--md-code-bg-color);
+  border-left: 4px solid var(--md-primary-fg-color);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 0 0.3rem 0.3rem 0;
+  overflow-x: auto;
+}
+
+.md-typeset .equation-block .MathJax {
+  font-size: 1.15em !important;
+}
+
+/* Equation labels/numbers */
+.equation-label {
+  float: right;
+  color: var(--md-default-fg-color--light);
+  font-size: 0.9em;
+  font-style: italic;
+}
+
+/* Unit table styling */
+.unit-table {
+  font-size: 0.9rem;
+}
+
+.unit-table td:first-child {
+  font-family: var(--md-code-font);
+  white-space: nowrap;
+}
+
+.unit-table td:nth-child(2) {
+  font-family: var(--md-code-font);
+}
+
+/* Highlight equation variables */
+.var {
+  font-style: italic;
+  color: var(--md-primary-fg-color);
+}
+
 /* Climate zone styling */
 .climate-zone {
   border-left: 4px solid;
