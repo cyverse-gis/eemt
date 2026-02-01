@@ -116,26 +116,23 @@ services:
     volumes:
       - ./data/shared:/data/shared
       - ./data/cache:/data/cache
+      - ./scripts:/scripts:ro
+      - ./web-interface:/web-interface:ro
     environment:
       - MASTER_HOST=eemt-master
       - MASTER_PORT=9123
       - WORKER_CORES=4
       - WORKER_MEMORY=8G
       - WORKER_DISK=50G
+      - PYTHONPATH=/web-interface
     command: >
-      bash -c "
-        if [ '${EEMT_MODE:-local}' = 'distributed' ]; then
-          python /scripts/start-worker.py 
-          --master-host $$MASTER_HOST 
-          --master-port $$MASTER_PORT 
-          --cores $$WORKER_CORES 
-          --memory $$WORKER_MEMORY 
-          --disk $$WORKER_DISK 
-          --work-dir /tmp/eemt-worker
-        else
-          sleep infinity
-        fi
-      "
+      python /scripts/start-worker.py
+      --master-host eemt-master
+      --master-port 9123
+      --cores 4
+      --memory 8G
+      --disk 50G
+      --work-dir /tmp/eemt-worker
     networks:
       - eemt-network
     profiles:
@@ -166,26 +163,23 @@ services:
     volumes:
       - ./data/shared:/data/shared
       - ./data/cache:/data/cache
+      - ./scripts:/scripts:ro
+      - ./web-interface:/web-interface:ro
     environment:
       - MASTER_HOST=eemt-master
       - MASTER_PORT=9123
       - WORKER_CORES=4
       - WORKER_MEMORY=8G
       - WORKER_DISK=50G
+      - PYTHONPATH=/web-interface
     command: >
-      bash -c "
-        if [ '${EEMT_MODE:-local}' = 'distributed' ]; then
-          python /scripts/start-worker.py 
-          --master-host $$MASTER_HOST 
-          --master-port $$MASTER_PORT 
-          --cores $$WORKER_CORES 
-          --memory $$WORKER_MEMORY 
-          --disk $$WORKER_DISK 
-          --work-dir /tmp/eemt-worker
-        else
-          sleep infinity
-        fi
-      "
+      python /scripts/start-worker.py
+      --master-host eemt-master
+      --master-port 9123
+      --cores 4
+      --memory 8G
+      --disk 50G
+      --work-dir /tmp/eemt-worker
     networks:
       - eemt-network
     profiles:

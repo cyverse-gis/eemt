@@ -3,7 +3,7 @@ channels:
   - conda-forge
 dependencies:
   # Core Python
-  - python>=3.12
+  - python=3.11.*
   - pip
   
   # Geospatial Core Stack

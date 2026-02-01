@@ -128,27 +128,11 @@ Press Ctrl+C to stop the master node.
         master.stop_master_node()
         logger.info("Master node stopped")
         return 0
-        
+
     except Exception as e:
         logger.error(f"Master node error: {e}")
         return 1
 
-# Add helper method to get local IP
-def get_local_ip(self):
-    """Get local IP address for worker connection"""
-    import socket
-    try:
-        # Connect to a remote address to determine local IP
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("8.8.8.8", 80))
-        local_ip = s.getsockname()[0]
-        s.close()
-        return local_ip
-    except:
-        return "localhost"
-
-# Monkey patch the method to DistributedWorkflowManager
-DistributedWorkflowManager.get_local_ip = get_local_ip
 
 if __name__ == "__main__":
     sys.exit(main())

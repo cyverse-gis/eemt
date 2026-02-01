@@ -145,7 +145,19 @@ class DistributedWorkflowManager:
             self.docker_available = False
         
         logger.info(f"Initialized {node_type.value} workflow manager")
-    
+
+    def get_local_ip(self) -> str:
+        """Get local IP address for worker connection"""
+        try:
+            # Connect to a remote address to determine local IP
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect(("8.8.8.8", 80))
+            local_ip = s.getsockname()[0]
+            s.close()
+            return local_ip
+        except Exception:
+            return "localhost"
+
     def check_docker_availability(self) -> bool:
         """Check if Docker is available for container execution"""
         return hasattr(self, 'docker_available') and self.docker_available

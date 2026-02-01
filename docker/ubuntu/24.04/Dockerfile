@@ -2,7 +2,7 @@ FROM ubuntu:24.04
 
 LABEL authors="Tyson L Swetnam"
 LABEL maintainer="tswetnam@cyverse.org"
-LABEL description="EEMT Algorithm Suite with GRASS GIS 8.4+, GDAL 3.11, Python 3.12"
+LABEL description="EEMT Algorithm Suite with GRASS GIS 8.4+, GDAL 3.11, Python 3.11"
 LABEL version="2.0"
 
 # System environment
@@ -119,7 +119,7 @@ RUN echo "/opt/eemt/lib" > /etc/ld.so.conf.d/eemt.conf && \
 
 # Set CCTools environment variables
 ENV PATH="/opt/eemt/bin:$PATH"
-ENV PYTHONPATH="/opt/eemt/lib/python3.12/site-packages:$PYTHONPATH"
+ENV PYTHONPATH="/opt/eemt/lib/python3.11/site-packages:$PYTHONPATH"
 ENV PERL5LIB="/opt/eemt/lib/perl5/site_perl:$PERL5LIB"
 
 # Create data directory and set permissions
