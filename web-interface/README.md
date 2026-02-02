@@ -71,7 +71,7 @@ docker run --rm eemt:ubuntu24.04 makeflow --version
 
 ### Legacy Direct Execution (Not Recommended)
 If you prefer direct execution without containers (not recommended):
-- GRASS GIS 8.4+ (with r.sun.mp support)
+- GRASS GIS 8.4+ (with r.sun support)
 - CCTools 7.8+ (Makeflow + Work Queue)
 - GDAL 3.8+
 - Complete Python geospatial environment
@@ -272,7 +272,7 @@ web-interface/
 ├── sol/                               # Solar workflow source
 │   └── sol/
 │       ├── run-workflow               # Original Python orchestrator
-│       ├── rsun.sh                    # GRASS r.sun.mp wrapper
+│       ├── rsun.sh                    # GRASS r.sun wrapper
 │       └── rsum.sh                    # Monthly aggregation
 └── eemt/                              # EEMT workflow source
     └── eemt/

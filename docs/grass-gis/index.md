@@ -11,8 +11,8 @@ GRASS GIS provides the core geospatial analysis capabilities for EEMT calculatio
 ## Contents
 
 1. Installation and Setup
-2. r.sun Solar Radiation Modeling  
-3. Parallel Processing with r.sun.mp
+2. r.sun Solar Radiation Modeling
+3. Parallel Processing with r.sun (nprocs)
 4. Terrain Analysis
 5. Batch Processing Workflows
 6. Performance Optimization
@@ -131,7 +131,10 @@ r.sun elevation=dem day=180 \
       glob_rad=solar_with_shadows
 ```
 
-## Parallel Processing with r.sun.mp
+## Parallel Processing with r.sun (nprocs)
+
+!!! note "r.sun merged into core r.sun"
+    As of GRASS GIS 7.4 (2018), the r.sun addon was merged into the core `r.sun` module. Use the `nprocs` parameter for multi-threaded processing instead of the deprecated `threads` parameter.
 
 ### OpenMP Multi-core Processing
 
@@ -139,10 +142,10 @@ r.sun elevation=dem day=180 \
 # Set number of threads
 export OMP_NUM_THREADS=8
 
-# Run r.sun with multiple threads
-r.sun.mp elevation=dem aspect=aspect_deg slope=slope_deg \
-         day=180 step=0.25 threads=8 \
-         glob_rad=solar_parallel insol_time=hours_parallel
+# Run r.sun with multiple threads using nprocs parameter
+r.sun elevation=dem aspect=aspect_deg slope=slope_deg \
+      day=180 step=0.25 nprocs=8 \
+      glob_rad=solar_parallel insol_time=hours_parallel
 ```
 
 ### Python Wrapper for Parallel Processing
@@ -169,7 +172,7 @@ from pathlib import Path
 class GrassSolarCalculator:
     """GRASS GIS solar radiation calculator with parallel processing"""
     
-    def __init__(self, dem_path, output_dir, num_threads=None):
+    def __init__(self, dem_path, output_dir, num_nprocs=None):
         self.dem_path = Path(dem_path)
         self.output_dir = Path(output_dir)
         self.num_threads = num_threads or mp.cpu_count()
@@ -225,11 +228,11 @@ g.region raster=dem
 # Calculate slope and aspect  
 r.slope.aspect elevation=dem slope=slope_deg aspect=aspect_deg
 
-# Run r.sun.mp with optimal threading
-r.sun.mp elevation=dem aspect=aspect_deg slope=slope_deg \\
+# Run r.sun with optimal threading
+r.sun elevation=dem aspect=aspect_deg slope=slope_deg \\
          day={day} step={step} \\
          linke_value={linke_value} albedo_value={albedo_value} \\
-         threads={min(self.num_threads, 4)} \\
+         nprocs={min(self.num_threads, 4)} \\
          glob_rad=solar_global insol_time=solar_hours
 
 # Export results
@@ -389,7 +392,7 @@ if __name__ == '__main__':
     main()
 ```
 
-### Optimized r.sun.mp Usage
+### Optimized r.sun Configuration
 
 #### Memory Management
 ```bash
@@ -408,7 +411,7 @@ export OMP_NUM_THREADS=$(nproc)
 export GRASS_NUM_THREADS=$(nproc)
 
 # NUMA-aware processing (large systems)
-numactl --cpunodebind=0 --membind=0 r.sun.mp elevation=dem ...
+numactl --cpunodebind=0 --membind=0 r.sun elevation=dem ...
 ```
 
 ### High-Performance r.sun Workflow
@@ -503,11 +506,11 @@ echo "Calculating slope and aspect..."
 r.slope.aspect elevation=dem slope=slope_deg aspect=aspect_deg
 
 # Calculate solar radiation with optimal threading
-echo "Running r.sun.mp for day $DAY..."
-r.sun.mp elevation=dem aspect=aspect_deg slope=slope_deg \\
+echo "Running r.sun for day $DAY..."
+r.sun elevation=dem aspect=aspect_deg slope=slope_deg \\
          day=$DAY step=$STEP \\
          linke_value=$LINKE_VALUE albedo_value=$ALBEDO_VALUE \\
-         threads=$NUM_THREADS \\
+         nprocs=$NUM_THREADS \\
          glob_rad=solar_global insol_time=solar_hours
 
 # Export results with compression
@@ -644,7 +647,7 @@ if __name__ == '__main__':
 ```bash
 # Check OpenCL availability
 grass --text << EOF
-r.sun.mp --help | grep -i opencl
+r.sun --help | grep -i opencl
 EOF
 
 # Enable GPU acceleration (if available)
@@ -653,7 +656,7 @@ grass --text << EOF
 g.gisenv set="GRASS_OPENCL_DEVICE=0"
 
 # Run r.sun with GPU acceleration  
-r.sun.mp elevation=dem aspect=aspect slope=slope \\
+r.sun elevation=dem aspect=aspect slope=slope \\
          day=180 step=0.1 opencl=yes \\
          glob_rad=solar_gpu insol_time=hours_gpu
 EOF

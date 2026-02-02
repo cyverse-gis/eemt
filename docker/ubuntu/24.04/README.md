@@ -51,12 +51,16 @@ The image includes a pre-built conda environment with:
 - **Jupyter**: jupyterlab, ipywidgets, ipyleaflet
 - **Climate Data**: netcdf4, zarr, cfgrib
 
-### GRASS GIS Extensions
+### GRASS GIS Solar Radiation
 
-Pre-installed GRASS extensions for solar radiation modeling:
-- `r.sun.mp` - Multi-processor solar radiation
-- `r.sun.hourly` - Hourly solar calculations  
-- `r.sun.daily` - Daily solar aggregation
+Built-in GRASS modules for solar radiation modeling:
+- `r.sun` - Solar radiation with multi-threaded processing (use `nprocs` parameter)
+- `r.sun.hourly` - Hourly solar calculations (addon)
+- `r.sun.daily` - Daily solar aggregation (addon)
+
+!!! note "r.sun.mp merged into core r.sun"
+    As of GRASS GIS 7.4, the r.sun.mp addon was merged into the core `r.sun` module.
+    Use `r.sun ... nprocs=N` for multi-threaded processing.
 
 ### Paths and Environment
 

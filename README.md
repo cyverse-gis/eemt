@@ -96,7 +96,7 @@ EEMT quantifies energy flux in the Critical Zone by combining:
 
 #### Solar Radiation Modeling
 - Calculates daily solar irradiation for entire year (365 tasks)
-- Uses GRASS GIS r.sun.mp for topographic solar modeling
+- Uses GRASS GIS r.sun for topographic solar modeling
 - Generates monthly aggregated products
 - Runtime: 5-30 minutes depending on DEM resolution
 

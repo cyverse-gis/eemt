@@ -167,9 +167,9 @@ def calculate_eemt_vegetation(dem_file, climate_data, vegetation_data,
 
 ### Solar Radiation (r.sun family)
 
-#### r.sun.mp (Multi-processor version)
+#### r.sun (Multi-processor version)
 ```bash
-r.sun.mp elevation=dem aspect=aspect slope=slope \\
+r.sun elevation=dem aspect=aspect slope=slope \\
          day=180 step=0.25 \\
          linke_value=3.0 albedo_value=0.2 \\
          threads=8 \\

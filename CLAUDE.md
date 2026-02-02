@@ -268,7 +268,7 @@ python run-workflow --start-year 2020 --end-year 2020 --step 15 ../examples/mcn_
 
 ### Solar Radiation Modeling (`/sol/sol/`)
 - **run-workflow** (Python): Main orchestrator for 365-day solar radiation calculations
-- **rsun.sh** (Bash): GRASS GIS r.sun.mp wrapper for daily solar calculations
+- **rsun.sh** (Bash): GRASS GIS r.sun wrapper for daily solar calculations
 - **rsum.sh** (Bash): Monthly aggregation using GRASS r.series
 - **Tiff.py**: GeoTIFF metadata parsing utilities
 - **parser.py**: Projection and coordinate system handling
@@ -438,7 +438,7 @@ Detailed changes:
 
 Files affected:
 - sol/sol/run-workflow: Added GPU detection and configuration
-- sol/sol/rsun.sh: Integrated r.sun.mp GPU mode
+- sol/sol/rsun.sh: Integrated r.sun GPU mode
 - docker/ubuntu/24.04/Dockerfile: Added CUDA runtime dependencies
 - web-interface/containers/workflow_manager.py: GPU container orchestration
 
@@ -539,7 +539,7 @@ git checkout -b hotfix-[issue] [known-good-commit]
 ## Performance Optimization
 
 ### Computational Hotspots
-1. **r.sun.mp**: GPU acceleration available in GRASS 8.x
+1. **r.sun**: GPU acceleration available in GRASS 8.x
 2. **Monthly aggregation**: Parallel r.series operations
 3. **DAYMET downloads**: Concurrent API requests
 4. **GeoTIFF I/O**: Cloud-optimized formats preferred
@@ -623,7 +623,7 @@ The EEMT system supports three distinct execution modes:
 │   └── requirements.txt       # FastAPI dependencies
 ├── sol/sol/                    # Solar radiation workflow components
 │   ├── run-workflow           # Python orchestrator (365-day solar modeling)
-│   ├── rsun.sh               # GRASS r.sun.mp wrapper
+│   ├── rsun.sh               # GRASS r.sun wrapper
 │   ├── rsum.sh               # Monthly aggregation via r.series
 │   ├── Tiff.py               # GeoTIFF utilities
 │   ├── parser.py             # Projection handling

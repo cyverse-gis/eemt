@@ -73,7 +73,7 @@ Where:
   - h_BIO = specific biomass enthalpy (22 × 10⁶ J kg⁻¹)
 
 #### Photosynthetically Active Radiation (PAR)
-- **Source**: r.sun.mp calculations in GRASS GIS
+- **Source**: r.sun calculations in GRASS GIS
 - **Daily integration**: Accounts for topographic shading and atmospheric effects
 - **Solar geometry**: Precise sun angle calculations for each day of year
 

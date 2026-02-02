@@ -168,7 +168,7 @@ The interface automatically checks:
 **Purpose**: Calculate daily solar irradiation for topographic analysis
 
 **Process**:
-1. Processes DEM through GRASS GIS r.sun.mp
+1. Processes DEM through GRASS GIS r.sun
 2. Calculates 365 daily solar radiation maps  
 3. Generates monthly aggregated products
 4. Outputs global and direct solar radiation
@@ -248,7 +248,7 @@ graph TB
 
 #### Base Container (`eemt:ubuntu24.04`)
 Contains all scientific computing dependencies:
-- **GRASS GIS 8.4+**: With r.sun.mp extensions for solar modeling
+- **GRASS GIS 8.4+**: With r.sun extensions for solar modeling
 - **CCTools 7.8.2**: Makeflow + Work Queue for distributed processing
 - **Python 3.12**: Complete geospatial environment with scientific libraries
 - **GDAL 3.11**: Modern geospatial data access and format support

@@ -44,7 +44,7 @@ flowchart LR
     end
 
     subgraph processing[" Processing "]
-        SOL["Solar Radiation<br/>(r.sun.mp)"]
+        SOL["Solar Radiation<br/>(r.sun)"]
         TOPO["Topographic Analysis<br/>(slope, aspect, TWI)"]
         CLIMATE["Climate Processing<br/>(tmin, tmax, prcp)"]
     end
@@ -75,7 +75,7 @@ flowchart LR
 
     ---
 
-    Parallel processing with GRASS GIS r.sun.mp and modern Python workflows for continental-scale analysis
+    Parallel processing with GRASS GIS r.sun and modern Python workflows for continental-scale analysis
 
 -   :material-earth: **Public Data Integration**
 

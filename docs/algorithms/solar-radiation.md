@@ -7,7 +7,7 @@ description: Comprehensive documentation of the solar radiation modeling algorit
 
 ## Overview
 
-Solar radiation is the primary energy input driving all Critical Zone processes. The EEMT framework uses the GRASS GIS `r.sun.mp` module to calculate topographically-modified solar radiation, accounting for slope, aspect, atmospheric conditions, and terrain shadowing effects.
+Solar radiation is the primary energy input driving all Critical Zone processes. The EEMT framework uses the GRASS GIS `r.sun` module with multi-threaded processing (`nprocs` parameter) to calculate topographically-modified solar radiation, accounting for slope, aspect, atmospheric conditions, and terrain shadowing effects.
 
 ## Mathematical Foundation
 
@@ -40,11 +40,11 @@ Typical Linke turbidity values:
 - **4.0-5.0**: Turbid atmosphere (urban, humid areas)
 - **5.0-8.0**: Very turbid (polluted urban, tropical)
 
-## Core Algorithm: r.sun.mp
+## Core Algorithm: r.sun
 
 ### Algorithm Components
 
-The `r.sun.mp` module calculates solar radiation using three primary components:
+The `r.sun` module calculates solar radiation using three primary components:
 
 #### 1. Direct (Beam) Radiation
 
