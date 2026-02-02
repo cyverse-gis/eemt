@@ -3876,7 +3876,7 @@
 <h3 id="solar-radiation-modeling">Solar Radiation Modeling<a class="headerlink" href="#solar-radiation-modeling" title="Permanent link">&para;</a></h3>
 <p><strong>Purpose</strong>: Calculate daily solar irradiation for topographic analysis</p>
 <p><strong>Process</strong>:
-1. Processes DEM through GRASS GIS r.sun.mp
+1. Processes DEM through GRASS GIS r.sun
 2. Calculates 365 daily solar radiation maps<br />
 3. Generates monthly aggregated products
 4. Outputs global and direct solar radiation</p>
@@ -3942,7 +3942,7 @@
 <h3 id="container-images">Container Images<a class="headerlink" href="#container-images" title="Permanent link">&para;</a></h3>
 <h4 id="base-container-eemtubuntu2404">Base Container (<code>eemt:ubuntu24.04</code>)<a class="headerlink" href="#base-container-eemtubuntu2404" title="Permanent link">&para;</a></h4>
 <p>Contains all scientific computing dependencies:
-- <strong>GRASS GIS 8.4+</strong>: With r.sun.mp extensions for solar modeling
+- <strong>GRASS GIS 8.4+</strong>: With r.sun extensions for solar modeling
 - <strong>CCTools 7.8.2</strong>: Makeflow + Work Queue for distributed processing
 - <strong>Python 3.12</strong>: Complete geospatial environment with scientific libraries
 - <strong>GDAL 3.11</strong>: Modern geospatial data access and format support

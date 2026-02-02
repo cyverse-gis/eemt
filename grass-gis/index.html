@@ -1482,15 +1482,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#parallel-processing-with-rsunmp" class="md-nav__link">
+  <a href="#parallel-processing-with-rsun-nprocs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Parallel Processing with r.sun.mp
+        Parallel Processing with r.sun (nprocs)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Parallel Processing with r.sun.mp">
+    <nav class="md-nav" aria-label="Parallel Processing with r.sun (nprocs)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1516,15 +1516,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#optimized-rsunmp-usage" class="md-nav__link">
+  <a href="#optimized-rsun-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Optimized r.sun.mp Usage
+        Optimized r.sun Configuration
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Optimized r.sun.mp Usage">
+    <nav class="md-nav" aria-label="Optimized r.sun Configuration">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3138,15 +3138,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#parallel-processing-with-rsunmp" class="md-nav__link">
+  <a href="#parallel-processing-with-rsun-nprocs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Parallel Processing with r.sun.mp
+        Parallel Processing with r.sun (nprocs)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Parallel Processing with r.sun.mp">
+    <nav class="md-nav" aria-label="Parallel Processing with r.sun (nprocs)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3172,15 +3172,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#optimized-rsunmp-usage" class="md-nav__link">
+  <a href="#optimized-rsun-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Optimized r.sun.mp Usage
+        Optimized r.sun Configuration
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Optimized r.sun.mp Usage">
+    <nav class="md-nav" aria-label="Optimized r.sun Configuration">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3459,8 +3459,8 @@
 <h2 id="contents">Contents<a class="headerlink" href="#contents" title="Permanent link">&para;</a></h2>
 <ol>
 <li>Installation and Setup</li>
-<li>r.sun Solar Radiation Modeling  </li>
-<li>Parallel Processing with r.sun.mp</li>
+<li>r.sun Solar Radiation Modeling</li>
+<li>Parallel Processing with r.sun (nprocs)</li>
 <li>Terrain Analysis</li>
 <li>Batch Processing Workflows</li>
 <li>Performance Optimization</li>
@@ -3555,15 +3555,19 @@
 </span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">      </span><span class="nv">cast_shadow</span><span class="o">=</span>shadow_map<span class="w"> </span><span class="se">\ </span><span class="w"> </span><span class="c1"># Shadow raster output</span>
 </span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="w">      </span><span class="nv">glob_rad</span><span class="o">=</span>solar_with_shadows
 </span></code></pre></div>
-<h2 id="parallel-processing-with-rsunmp">Parallel Processing with r.sun.mp<a class="headerlink" href="#parallel-processing-with-rsunmp" title="Permanent link">&para;</a></h2>
+<h2 id="parallel-processing-with-rsun-nprocs">Parallel Processing with r.sun (nprocs)<a class="headerlink" href="#parallel-processing-with-rsun-nprocs" title="Permanent link">&para;</a></h2>
+<div class="admonition note">
+<p class="admonition-title">r.sun merged into core r.sun</p>
+<p>As of GRASS GIS 7.4 (2018), the r.sun addon was merged into the core <code>r.sun</code> module. Use the <code>nprocs</code> parameter for multi-threaded processing instead of the deprecated <code>threads</code> parameter.</p>
+</div>
 <h3 id="openmp-multi-core-processing">OpenMP Multi-core Processing<a class="headerlink" href="#openmp-multi-core-processing" title="Permanent link">&para;</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Set number of threads</span>
 </span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OMP_NUM_THREADS</span><span class="o">=</span><span class="m">8</span>
 </span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># Run r.sun with multiple threads</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>r.sun.mp<span class="w"> </span><span class="nv">elevation</span><span class="o">=</span>dem<span class="w"> </span><span class="nv">aspect</span><span class="o">=</span>aspect_deg<span class="w"> </span><span class="nv">slope</span><span class="o">=</span>slope_deg<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">         </span><span class="nv">day</span><span class="o">=</span><span class="m">180</span><span class="w"> </span><span class="nv">step</span><span class="o">=</span><span class="m">0</span>.25<span class="w"> </span><span class="nv">threads</span><span class="o">=</span><span class="m">8</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">         </span><span class="nv">glob_rad</span><span class="o">=</span>solar_parallel<span class="w"> </span><span class="nv">insol_time</span><span class="o">=</span>hours_parallel
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># Run r.sun with multiple threads using nprocs parameter</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>r.sun<span class="w"> </span><span class="nv">elevation</span><span class="o">=</span>dem<span class="w"> </span><span class="nv">aspect</span><span class="o">=</span>aspect_deg<span class="w"> </span><span class="nv">slope</span><span class="o">=</span>slope_deg<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">      </span><span class="nv">day</span><span class="o">=</span><span class="m">180</span><span class="w"> </span><span class="nv">step</span><span class="o">=</span><span class="m">0</span>.25<span class="w"> </span><span class="nv">nprocs</span><span class="o">=</span><span class="m">8</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">      </span><span class="nv">glob_rad</span><span class="o">=</span>solar_parallel<span class="w"> </span><span class="nv">insol_time</span><span class="o">=</span>hours_parallel
 </span></code></pre></div>
 <h3 id="python-wrapper-for-parallel-processing">Python Wrapper for Parallel Processing<a class="headerlink" href="#python-wrapper-for-parallel-processing" title="Permanent link">&para;</a></h3>
 <p>Based on the analysis of <code>/sol/rsun.sh</code>, here's the enhanced parallel processing approach:</p>
@@ -3586,7 +3590,7 @@
 </span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="k">class</span><span class="w"> </span><span class="nc">GrassSolarCalculator</span><span class="p">:</span>
 </span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;GRASS GIS solar radiation calculator with parallel processing&quot;&quot;&quot;</span>
 </span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a>
-</span><span id="__span-10-20"><a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dem_path</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">num_threads</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="__span-10-20"><a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dem_path</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">num_nprocs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 </span><span id="__span-10-21"><a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">dem_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">dem_path</span><span class="p">)</span>
 </span><span id="__span-10-22"><a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
 </span><span id="__span-10-23"><a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">num_threads</span> <span class="o">=</span> <span class="n">num_threads</span> <span class="ow">or</span> <span class="n">mp</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
@@ -3642,11 +3646,11 @@
 </span><span id="__span-10-73"><a id="__codelineno-10-73" name="__codelineno-10-73" href="#__codelineno-10-73"></a><span class="s2"># Calculate slope and aspect  </span>
 </span><span id="__span-10-74"><a id="__codelineno-10-74" name="__codelineno-10-74" href="#__codelineno-10-74"></a><span class="s2">r.slope.aspect elevation=dem slope=slope_deg aspect=aspect_deg</span>
 </span><span id="__span-10-75"><a id="__codelineno-10-75" name="__codelineno-10-75" href="#__codelineno-10-75"></a>
-</span><span id="__span-10-76"><a id="__codelineno-10-76" name="__codelineno-10-76" href="#__codelineno-10-76"></a><span class="s2"># Run r.sun.mp with optimal threading</span>
-</span><span id="__span-10-77"><a id="__codelineno-10-77" name="__codelineno-10-77" href="#__codelineno-10-77"></a><span class="s2">r.sun.mp elevation=dem aspect=aspect_deg slope=slope_deg </span><span class="se">\\</span>
+</span><span id="__span-10-76"><a id="__codelineno-10-76" name="__codelineno-10-76" href="#__codelineno-10-76"></a><span class="s2"># Run r.sun with optimal threading</span>
+</span><span id="__span-10-77"><a id="__codelineno-10-77" name="__codelineno-10-77" href="#__codelineno-10-77"></a><span class="s2">r.sun elevation=dem aspect=aspect_deg slope=slope_deg </span><span class="se">\\</span>
 </span><span id="__span-10-78"><a id="__codelineno-10-78" name="__codelineno-10-78" href="#__codelineno-10-78"></a><span class="s2">         day=</span><span class="si">{</span><span class="n">day</span><span class="si">}</span><span class="s2"> step=</span><span class="si">{</span><span class="n">step</span><span class="si">}</span><span class="s2"> </span><span class="se">\\</span>
 </span><span id="__span-10-79"><a id="__codelineno-10-79" name="__codelineno-10-79" href="#__codelineno-10-79"></a><span class="s2">         linke_value=</span><span class="si">{</span><span class="n">linke_value</span><span class="si">}</span><span class="s2"> albedo_value=</span><span class="si">{</span><span class="n">albedo_value</span><span class="si">}</span><span class="s2"> </span><span class="se">\\</span>
-</span><span id="__span-10-80"><a id="__codelineno-10-80" name="__codelineno-10-80" href="#__codelineno-10-80"></a><span class="s2">         threads=</span><span class="si">{</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_threads</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="se">\\</span>
+</span><span id="__span-10-80"><a id="__codelineno-10-80" name="__codelineno-10-80" href="#__codelineno-10-80"></a><span class="s2">         nprocs=</span><span class="si">{</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_threads</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="se">\\</span>
 </span><span id="__span-10-81"><a id="__codelineno-10-81" name="__codelineno-10-81" href="#__codelineno-10-81"></a><span class="s2">         glob_rad=solar_global insol_time=solar_hours</span>
 </span><span id="__span-10-82"><a id="__codelineno-10-82" name="__codelineno-10-82" href="#__codelineno-10-82"></a>
 </span><span id="__span-10-83"><a id="__codelineno-10-83" name="__codelineno-10-83" href="#__codelineno-10-83"></a><span class="s2"># Export results</span>
@@ -3805,7 +3809,7 @@
 </span><span id="__span-10-236"><a id="__codelineno-10-236" name="__codelineno-10-236" href="#__codelineno-10-236"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 </span><span id="__span-10-237"><a id="__codelineno-10-237" name="__codelineno-10-237" href="#__codelineno-10-237"></a>    <span class="n">main</span><span class="p">()</span>
 </span></code></pre></div>
-<h3 id="optimized-rsunmp-usage">Optimized r.sun.mp Usage<a class="headerlink" href="#optimized-rsunmp-usage" title="Permanent link">&para;</a></h3>
+<h3 id="optimized-rsun-configuration">Optimized r.sun Configuration<a class="headerlink" href="#optimized-rsun-configuration" title="Permanent link">&para;</a></h3>
 <h4 id="memory-management">Memory Management<a class="headerlink" href="#memory-management" title="Permanent link">&para;</a></h4>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># For large DEMs, set memory limits</span>
 </span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GRASS_VECTOR_TMPDIR_MAPSET</span><span class="o">=</span>/tmp
@@ -3820,7 +3824,7 @@
 </span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GRASS_NUM_THREADS</span><span class="o">=</span><span class="k">$(</span>nproc<span class="k">)</span>
 </span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>
 </span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="c1"># NUMA-aware processing (large systems)</span>
-</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>numactl<span class="w"> </span>--cpunodebind<span class="o">=</span><span class="m">0</span><span class="w"> </span>--membind<span class="o">=</span><span class="m">0</span><span class="w"> </span>r.sun.mp<span class="w"> </span><span class="nv">elevation</span><span class="o">=</span>dem<span class="w"> </span>...
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>numactl<span class="w"> </span>--cpunodebind<span class="o">=</span><span class="m">0</span><span class="w"> </span>--membind<span class="o">=</span><span class="m">0</span><span class="w"> </span>r.sun<span class="w"> </span><span class="nv">elevation</span><span class="o">=</span>dem<span class="w"> </span>...
 </span></code></pre></div>
 <h3 id="high-performance-rsun-workflow">High-Performance r.sun Workflow<a class="headerlink" href="#high-performance-rsun-workflow" title="Permanent link">&para;</a></h3>
 <p>Based on the <code>/sol/rsun.sh</code> analysis, here's the optimized workflow:</p>
@@ -3911,11 +3915,11 @@
 </span><span id="__span-13-85"><a id="__codelineno-13-85" name="__codelineno-13-85" href="#__codelineno-13-85"></a><span class="s">r.slope.aspect elevation=dem slope=slope_deg aspect=aspect_deg</span>
 </span><span id="__span-13-86"><a id="__codelineno-13-86" name="__codelineno-13-86" href="#__codelineno-13-86"></a>
 </span><span id="__span-13-87"><a id="__codelineno-13-87" name="__codelineno-13-87" href="#__codelineno-13-87"></a><span class="s"># Calculate solar radiation with optimal threading</span>
-</span><span id="__span-13-88"><a id="__codelineno-13-88" name="__codelineno-13-88" href="#__codelineno-13-88"></a><span class="s">echo &quot;Running r.sun.mp for day $DAY...&quot;</span>
-</span><span id="__span-13-89"><a id="__codelineno-13-89" name="__codelineno-13-89" href="#__codelineno-13-89"></a><span class="s">r.sun.mp elevation=dem aspect=aspect_deg slope=slope_deg \\</span>
+</span><span id="__span-13-88"><a id="__codelineno-13-88" name="__codelineno-13-88" href="#__codelineno-13-88"></a><span class="s">echo &quot;Running r.sun for day $DAY...&quot;</span>
+</span><span id="__span-13-89"><a id="__codelineno-13-89" name="__codelineno-13-89" href="#__codelineno-13-89"></a><span class="s">r.sun elevation=dem aspect=aspect_deg slope=slope_deg \\</span>
 </span><span id="__span-13-90"><a id="__codelineno-13-90" name="__codelineno-13-90" href="#__codelineno-13-90"></a><span class="s">         day=$DAY step=$STEP \\</span>
 </span><span id="__span-13-91"><a id="__codelineno-13-91" name="__codelineno-13-91" href="#__codelineno-13-91"></a><span class="s">         linke_value=$LINKE_VALUE albedo_value=$ALBEDO_VALUE \\</span>
-</span><span id="__span-13-92"><a id="__codelineno-13-92" name="__codelineno-13-92" href="#__codelineno-13-92"></a><span class="s">         threads=$NUM_THREADS \\</span>
+</span><span id="__span-13-92"><a id="__codelineno-13-92" name="__codelineno-13-92" href="#__codelineno-13-92"></a><span class="s">         nprocs=$NUM_THREADS \\</span>
 </span><span id="__span-13-93"><a id="__codelineno-13-93" name="__codelineno-13-93" href="#__codelineno-13-93"></a><span class="s">         glob_rad=solar_global insol_time=solar_hours</span>
 </span><span id="__span-13-94"><a id="__codelineno-13-94" name="__codelineno-13-94" href="#__codelineno-13-94"></a>
 </span><span id="__span-13-95"><a id="__codelineno-13-95" name="__codelineno-13-95" href="#__codelineno-13-95"></a><span class="s"># Export results with compression</span>
@@ -4045,7 +4049,7 @@
 <h3 id="opencl-setup-for-rsun">OpenCL Setup for r.sun<a class="headerlink" href="#opencl-setup-for-rsun" title="Permanent link">&para;</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># Check OpenCL availability</span>
 </span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>grass<span class="w"> </span>--text<span class="w"> </span><span class="s">&lt;&lt; EOF</span>
-</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="s">r.sun.mp --help | grep -i opencl</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="s">r.sun --help | grep -i opencl</span>
 </span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="s">EOF</span>
 </span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>
 </span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="c1"># Enable GPU acceleration (if available)</span>
@@ -4054,7 +4058,7 @@
 </span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="s">g.gisenv set=&quot;GRASS_OPENCL_DEVICE=0&quot;</span>
 </span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>
 </span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="s"># Run r.sun with GPU acceleration  </span>
-</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="s">r.sun.mp elevation=dem aspect=aspect slope=slope \\</span>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="s">r.sun elevation=dem aspect=aspect slope=slope \\</span>
 </span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="s">         day=180 step=0.1 opencl=yes \\</span>
 </span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="s">         glob_rad=solar_gpu insol_time=hours_gpu</span>
 </span><span id="__span-15-15"><a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a><span class="s">EOF</span>

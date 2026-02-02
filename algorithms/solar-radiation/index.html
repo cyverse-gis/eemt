@@ -940,15 +940,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#core-algorithm-rsunmp" class="md-nav__link">
+  <a href="#core-algorithm-rsun" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Algorithm: r.sun.mp
+        Core Algorithm: r.sun
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Core Algorithm: r.sun.mp">
+    <nav class="md-nav" aria-label="Core Algorithm: r.sun">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2876,15 +2876,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#core-algorithm-rsunmp" class="md-nav__link">
+  <a href="#core-algorithm-rsun" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Algorithm: r.sun.mp
+        Core Algorithm: r.sun
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Core Algorithm: r.sun.mp">
+    <nav class="md-nav" aria-label="Core Algorithm: r.sun">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3243,7 +3243,7 @@
 
 <h1 id="solar-radiation-algorithms">Solar Radiation Algorithms<a class="headerlink" href="#solar-radiation-algorithms" title="Permanent link">&para;</a></h1>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>Solar radiation is the primary energy input driving all Critical Zone processes. The EEMT framework uses the GRASS GIS <code>r.sun.mp</code> module to calculate topographically-modified solar radiation, accounting for slope, aspect, atmospheric conditions, and terrain shadowing effects.</p>
+<p>Solar radiation is the primary energy input driving all Critical Zone processes. The EEMT framework uses the GRASS GIS <code>r.sun</code> module with multi-threaded processing (<code>nprocs</code> parameter) to calculate topographically-modified solar radiation, accounting for slope, aspect, atmospheric conditions, and terrain shadowing effects.</p>
 <h2 id="mathematical-foundation">Mathematical Foundation<a class="headerlink" href="#mathematical-foundation" title="Permanent link">&para;</a></h2>
 <h3 id="clear-sky-solar-radiation">Clear-Sky Solar Radiation<a class="headerlink" href="#clear-sky-solar-radiation" title="Permanent link">&para;</a></h3>
 <p>The theoretical maximum solar radiation reaching Earth's atmosphere is determined by:</p>
@@ -3265,9 +3265,9 @@
 - <strong>3.0-4.0</strong>: Moderate turbidity (temperate regions)
 - <strong>4.0-5.0</strong>: Turbid atmosphere (urban, humid areas)
 - <strong>5.0-8.0</strong>: Very turbid (polluted urban, tropical)</p>
-<h2 id="core-algorithm-rsunmp">Core Algorithm: r.sun.mp<a class="headerlink" href="#core-algorithm-rsunmp" title="Permanent link">&para;</a></h2>
+<h2 id="core-algorithm-rsun">Core Algorithm: r.sun<a class="headerlink" href="#core-algorithm-rsun" title="Permanent link">&para;</a></h2>
 <h3 id="algorithm-components">Algorithm Components<a class="headerlink" href="#algorithm-components" title="Permanent link">&para;</a></h3>
-<p>The <code>r.sun.mp</code> module calculates solar radiation using three primary components:</p>
+<p>The <code>r.sun</code> module calculates solar radiation using three primary components:</p>
 <h4 id="1-direct-beam-radiation">1. Direct (Beam) Radiation<a class="headerlink" href="#1-direct-beam-radiation" title="Permanent link">&para;</a></h4>
 <p>Direct radiation reaching a tilted surface:</p>
 <div class="arithmatex">\[I_{direct} = I_0 \cdot \tau_b \cdot \cos(\theta_i)\]</div>
