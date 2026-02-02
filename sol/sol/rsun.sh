@@ -171,9 +171,9 @@ g.region -sa raster=dem
 echo "Calculate Slope and Aspect (decimal degrees) with GRASS r.slope.aspect"
 r.slope.aspect elevation=dem slope=slope_dec aspect=aspect_dec
 
-# Run r.sun.mp - set to 4 threads for OpenScienceGrid - can be scaled to the # of cores per node
-echo "Running Open MP r.sun.mp for global radiation and hours insolation time with step=$STEP linke_value=$LINKE_VALUE albedo_value=$ALBEDO_VALUE"
-r.sun.mp elevation=dem aspect=aspect_dec slope=slope_dec day=$DAY step=$STEP linke_value=$LINKE_VALUE albedo_value=$ALBEDO_VALUE insol_time=hours_sun glob_rad=total_sun threads=$NUM_THREADS
+# Run r.sun with nprocs for parallel processing - can be scaled to the # of cores per node
+echo "Running r.sun for global radiation and hours insolation time with step=$STEP linke_value=$LINKE_VALUE albedo_value=$ALBEDO_VALUE nprocs=$NUM_THREADS"
+r.sun elevation=dem aspect=aspect_dec slope=slope_dec day=$DAY step=$STEP linke_value=$LINKE_VALUE albedo_value=$ALBEDO_VALUE insol_time=hours_sun glob_rad=total_sun nprocs=$NUM_THREADS
 echo "Day # $DAY done!"
 
 # Export as GeoTiff

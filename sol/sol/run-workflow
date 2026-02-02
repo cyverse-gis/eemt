@@ -162,12 +162,11 @@ def main():
     f.close()
     sys.stdout.flush()
 
-    # Make sure the ~/.eemt-makeflow-password file exists - change this often.
-    if not os.path.exists(os.path.expanduser("~/.eemt-makeflow-password")):
-        print("~/.eemt-makeflow-password does not exist! Unable to submit workflow.")
-        sys.exit(1)
+    # Run makeflow in local mode with parallel execution
+    # Use local-cores to control parallelism (defaults to number of threads specified)
+    local_cores = args.num_threads
 
-    process=Popen("makeflow --retry-count=3 --batch-type=wq --password=" + os.path.expanduser("~/.eemt-makeflow-password") + " --wq-keepalive-interval=180 --port=%d --project=%s workflow.mf" %(port, name), shell=True)
+    process=Popen("makeflow --retry-count=3 --batch-type=local --local-cores=%d workflow.mf" %(local_cores), shell=True)
     process.communicate()
 
 if __name__ == '__main__':
