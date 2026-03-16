@@ -357,7 +357,7 @@ docker volume inspect <volume_name>
 
 ## Support Resources
 
-- [GitHub Issues](https://github.com/cyverse-gis/eemt/issues)
-- [Discussion Forum](https://github.com/cyverse-gis/eemt/discussions)
+- [GitHub Issues](https://github.com/tyson-swetnam/eemt/issues)
+- [Discussion Forum](https://github.com/tyson-swetnam/eemt/discussions)
 - [Container Registry](https://hub.docker.com/r/eemt/ubuntu24.04)
 - [Documentation](https://tyson-swetnam.github.io/eemt/)

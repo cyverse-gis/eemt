@@ -20,7 +20,7 @@ The containerized approach provides the most reliable and reproducible installat
 Direct installation on your system for development or customization:
 - **Advantages**: Full control, easier debugging, native performance
 - **Best for**: Developers, HPC environments, custom integrations
-- **Requirements**: Python 3.12+, GRASS GIS 8.4+, GDAL 3.8+
+- **Requirements**: Python 3.11, GRASS GIS 8.4+, GDAL 3.8+
 
 ### 📋 [Requirements & Dependencies](requirements.md)
 Detailed list of all software dependencies and system requirements:
@@ -42,7 +42,7 @@ For most users, we recommend the Docker deployment:
 
 ```bash
 # Clone the repository
-git clone https://github.com/cyverse-gis/eemt.git
+git clone https://github.com/tyson-swetnam/eemt.git
 cd eemt
 
 # Start with Docker Compose
@@ -86,15 +86,15 @@ After successful installation:
 1. Review the [Quick Start Guide](../workflows/quick-start.md) for your first analysis
 2. Explore [Example Workflows](../examples/index.md) for real-world applications
 3. Check the [API Documentation](../api/index.md) for detailed usage
-4. Join our [community forum](https://github.com/cyverse-gis/eemt/discussions) for support
+4. Join our [community forum](https://github.com/tyson-swetnam/eemt/discussions) for support
 
 ## Support
 
 If you encounter issues during installation:
 
 1. Check the [Troubleshooting Guide](troubleshooting.md)
-2. Search [existing issues](https://github.com/cyverse-gis/eemt/issues)
-3. Create a [new issue](https://github.com/cyverse-gis/eemt/issues/new) with:
+2. Search [existing issues](https://github.com/tyson-swetnam/eemt/issues)
+3. Create a [new issue](https://github.com/tyson-swetnam/eemt/issues/new) with:
    - Your operating system and version
    - Installation method attempted
    - Complete error messages

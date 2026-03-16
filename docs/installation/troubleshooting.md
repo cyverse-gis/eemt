@@ -179,23 +179,23 @@ chcon -Rt svirt_sandbox_file_t ./data
 
 **Symptoms**:
 ```
-ERROR: This package requires Python >=3.12
+ERROR: This package requires Python >=3.11
 ```
 
 **Solutions**:
 
-1. **Install Python 3.12**:
+1. **Install Python 3.11**:
 ```bash
 # Ubuntu/Debian
-sudo apt install python3.12 python3.12-venv
+sudo apt install python3.11 python3.11-venv
 
 # macOS
-brew install python@3.12
+brew install python@3.11
 
 # From source
-wget https://www.python.org/ftp/python/3.12.0/Python-3.12.0.tgz
-tar -xf Python-3.12.0.tgz
-cd Python-3.12.0
+wget https://www.python.org/ftp/python/3.11.0/Python-3.11.0.tgz
+tar -xf Python-3.11.0.tgz
+cd Python-3.11.0
 ./configure --enable-optimizations
 make -j $(nproc)
 sudo make altinstall
@@ -206,9 +206,9 @@ sudo make altinstall
 # Install pyenv
 curl https://pyenv.run | bash
 
-# Install Python 3.12
-pyenv install 3.12.0
-pyenv local 3.12.0
+# Install Python 3.11
+pyenv install 3.11.0
+pyenv local 3.11.0
 ```
 
 ### GRASS GIS Not Found
@@ -611,7 +611,7 @@ If these solutions don't resolve your issue:
    ```
 
 2. **Search Existing Issues**:
-   - [GitHub Issues](https://github.com/cyverse-gis/eemt/issues)
+   - [GitHub Issues](https://github.com/tyson-swetnam/eemt/issues)
    - [Stack Overflow](https://stackoverflow.com/questions/tagged/grass-gis)
 
 3. **Create New Issue** with:
@@ -621,7 +621,7 @@ If these solutions don't resolve your issue:
    - Installation method attempted
 
 4. **Community Support**:
-   - [GitHub Discussions](https://github.com/cyverse-gis/eemt/discussions)
+   - [GitHub Discussions](https://github.com/tyson-swetnam/eemt/discussions)
    - [GRASS GIS Mailing List](https://lists.osgeo.org/mailman/listinfo/grass-user)
 
 ---

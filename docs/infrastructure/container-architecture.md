@@ -34,7 +34,7 @@ graph TD
 
 **Key Components**:
 - Ubuntu 24.04 LTS base operating system
-- Python 3.12 with Miniconda environment management
+- Python 3.11 with Miniconda environment management
 - GDAL 3.11+ with complete geospatial stack
 - GRASS GIS 8.4+ compiled with EEMT extensions
 - CCTools 7.8.2 (Makeflow + Work Queue)

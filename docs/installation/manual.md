@@ -27,7 +27,7 @@ This guide provides instructions for manually installing EEMT and its dependenci
 
 ### 1. Python Environment
 
-EEMT requires Python 3.12 or later:
+EEMT requires Python 3.11:
 
 ```bash
 # Check Python version
@@ -35,13 +35,13 @@ python3 --version
 
 # Ubuntu/Debian
 sudo apt update
-sudo apt install python3.12 python3.12-venv python3.12-dev
+sudo apt install python3.11 python3.11-venv python3.11-dev
 
 # macOS (via Homebrew)
-brew install python@3.12
+brew install python@3.11
 
 # CentOS/RHEL
-sudo yum install python3.12 python3.12-devel
+sudo yum install python3.11 python3.11-devel
 ```
 
 ### 2. GRASS GIS Installation
@@ -130,7 +130,7 @@ work_queue_status --version
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/cyverse-gis/eemt.git
+git clone https://github.com/tyson-swetnam/eemt.git
 cd eemt
 ```
 
@@ -347,9 +347,9 @@ chmod +x eemt/eemt/run-workflow
 If you encounter issues:
 
 1. Check the [FAQ](../about/index.md#faq)
-2. Search [GitHub Issues](https://github.com/cyverse-gis/eemt/issues)
-3. Post on [Discussions](https://github.com/cyverse-gis/eemt/discussions)
-4. Create a [new issue](https://github.com/cyverse-gis/eemt/issues/new) with:
+2. Search [GitHub Issues](https://github.com/tyson-swetnam/eemt/issues)
+3. Post on [Discussions](https://github.com/tyson-swetnam/eemt/discussions)
+4. Create a [new issue](https://github.com/tyson-swetnam/eemt/issues/new) with:
    - System information (OS, versions)
    - Complete error messages
    - Steps to reproduce

@@ -20,7 +20,7 @@ The easiest way to deploy EEMT is using Docker Compose, which handles all depend
 
 ```bash
 # Clone repository
-git clone https://github.com/cyverse-gis/eemt.git
+git clone https://github.com/tyson-swetnam/eemt.git
 cd eemt
 
 # Start local mode (web interface + single worker)
@@ -250,7 +250,7 @@ graph TB
 Contains all scientific computing dependencies:
 - **GRASS GIS 8.4+**: With r.sun extensions for solar modeling
 - **CCTools 7.8.2**: Makeflow + Work Queue for distributed processing
-- **Python 3.12**: Complete geospatial environment with scientific libraries
+- **Python 3.11**: Complete geospatial environment with scientific libraries
 - **GDAL 3.11**: Modern geospatial data access and format support
 - **Workflow Scripts**: Container entry points and scientific computing utilities
 
@@ -509,9 +509,6 @@ Cloud integration examples:
 
 - **Kubernetes**: Container orchestration with persistent volumes
 - **AWS/GCP/Azure**: VM clusters with shared storage
-- **Singularity**: HPC container deployment
-
-See [PLAN.md](../../PLAN.md) for complete modernization roadmap.
 
 ## Job Data Management
 

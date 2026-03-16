@@ -48,7 +48,7 @@ This document provides comprehensive details about all hardware requirements, so
 
 | Package | Minimum Version | Purpose |
 |---------|----------------|---------|
-| **Python** | 3.10 | 3.12+ recommended |
+| **Python** | 3.10 | 3.11 recommended |
 | **numpy** | 1.22 | Numerical arrays |
 | **pandas** | 1.5 | Data manipulation |
 | **xarray** | 2023.1 | NetCDF/climate data |
@@ -117,7 +117,7 @@ sudo dnf install [packages]
 **Package Manager**:
 ```bash
 # Homebrew installation
-brew install grass gdal python@3.12
+brew install grass gdal python@3.11
 ```
 
 ### Windows
@@ -287,7 +287,7 @@ services:
 ```bash
 module load grass/8.4
 module load gdal/3.8
-module load python/3.12
+module load python/3.11
 ```
 
 ## Verification Commands

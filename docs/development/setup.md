@@ -13,7 +13,7 @@ This guide helps you set up a complete development environment for contributing 
 ### Required Software
 
 - **Git**: Version control (2.30+)
-- **Python**: 3.12 or later
+- **Python**: 3.11
 - **Docker**: 20.10+ and Docker Compose 2.0+
 - **Make**: Build automation
 - **VS Code** or **PyCharm**: Recommended IDEs
@@ -35,7 +35,7 @@ git clone https://github.com/YOUR_USERNAME/eemt.git
 cd eemt
 
 # Add upstream remote
-git remote add upstream https://github.com/cyverse-gis/eemt.git
+git remote add upstream https://github.com/tyson-swetnam/eemt.git
 
 # Check out development branch
 git checkout 2020_update
@@ -469,7 +469,7 @@ repos:
     rev: 23.7.0
     hooks:
       - id: black
-        language_version: python3.12
+        language_version: python3.11
 
   - repo: https://github.com/pycqa/isort
     rev: 5.12.0
@@ -691,8 +691,8 @@ Follow these guidelines:
 
 ### Getting Help
 
-- Check [existing issues](https://github.com/cyverse-gis/eemt/issues)
-- Ask in [discussions](https://github.com/cyverse-gis/eemt/discussions)
+- Check [existing issues](https://github.com/tyson-swetnam/eemt/issues)
+- Ask in [discussions](https://github.com/tyson-swetnam/eemt/discussions)
 - Review [contribution guidelines](contributing.md)
 
 ---

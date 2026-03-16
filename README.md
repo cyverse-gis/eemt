@@ -1,21 +1,19 @@
 # EEMT Algorithm Suite
 
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/docker-supported-blue.svg)](docker/)
 [![Documentation](https://img.shields.io/badge/docs-mkdocs-blue.svg)](docs/)
-[![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](RELEASE_NOTES.md)
+[![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](.)
 
 The **Effective Energy and Mass Transfer (EEMT) Algorithm Suite** is a comprehensive geospatial modeling toolkit for calculating energy flux in the Critical Zone using topographic solar radiation modeling and climate data integration.
 
-## 🎉 Recent Major Improvements (January 2025)
+## Recent Modernization (2026)
 
-- ✅ **Fixed Web Interface Workflow Submission**: Resolved JSON parsing errors and container preparation hanging issues
-- ✅ **Enhanced System Resource Detection**: Now accurately detects and displays system CPU/memory (255 cores, 1TB RAM on gpu06)
-- ✅ **Improved Container Reliability**: Rebuilt containers with enhanced orchestration and resource management
-- ✅ **Real-time Progress Tracking**: Fixed monitoring dashboard with accurate 0-100% progress updates
-- ✅ **Better Error Handling**: Enhanced error messages and recovery mechanisms throughout the system
-
-[View Full Release Notes](RELEASE_NOTES.md)
+- Migrated from deprecated `r.sun.mp` to GRASS GIS core `r.sun` with `nprocs` parameter
+- Standardized on Python 3.11 for CCTools compatibility
+- Removed legacy Singularity container definitions and deprecated workflow launchers
+- Docker-based deployment with FastAPI web interface and real-time monitoring
+- Automated job cleanup system with configurable retention policies
 
 ## 🚀 Quick Start
 
@@ -24,7 +22,7 @@ Get up and running in under 5 minutes:
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/cyverse-gis/eemt.git
+git clone https://github.com/tyson-swetnam/eemt.git
 cd eemt
 
 # 2. Start with Docker Compose (auto-builds containers)
@@ -112,14 +110,11 @@ EEMT quantifies energy flux in the Critical Zone by combining:
 - **[Web Interface Guide](web-interface/README.md)**: FastAPI interface documentation  
 - **[Algorithm Details](EEMT.md)**: Scientific background and methodology
 - **[Distributed Deployment](docs/distributed-deployment/)**: Multi-node setup guide
-- **[Development Plan](PLAN.md)**: Modernization roadmap
-- **[Workflow Plan](WORKFLOW_PLAN.md)**: Container execution architecture
-
 ## 🔧 Installation
 
 ### Prerequisites
 - **Docker**: Version 20.0+ with daemon running
-- **Python 3.8+**: For web interface dependencies
+- **Python 3.11+**: For web interface dependencies
 - **4GB+ RAM**: 8GB+ recommended for larger DEMs
 - **20GB+ Disk**: For container images and workflow outputs
 
@@ -205,7 +200,7 @@ curl -X POST "http://127.0.0.1:5000/api/submit-job" \
 
 ## 📄 License
 
-This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the BSD 3-Clause License - see the [LICENSE](LICENSE) file for details.
 
 ## 📚 Citations
 
@@ -216,8 +211,8 @@ If you use EEMT in your research, please cite:
 ## 🆘 Support
 
 - 📖 [Documentation](docs/)
-- 🐛 [Issue Tracker](https://github.com/cyverse-gis/eemt/issues)
-- 💬 [Discussions](https://github.com/cyverse-gis/eemt/discussions)
+- 🐛 [Issue Tracker](https://github.com/tyson-swetnam/eemt/issues)
+- 💬 [Discussions](https://github.com/tyson-swetnam/eemt/discussions)
 - 📧 Email: [tswetnam@cyverse.org](mailto:tswetnam@cyverse.org)
 
 ---

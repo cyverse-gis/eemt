@@ -99,7 +99,7 @@ graph TB
 - **Software**:
   - Docker or Podman
   - CCTools (Makeflow + Work Queue)
-  - Python 3.8+
+  - Python 3.11+
 
 ### Worker Node Requirements
 
@@ -109,7 +109,7 @@ graph TB
 - **Disk**: 50GB+ temporary storage (configurable)
 - **Network**: Access to master node
 - **Software**:
-  - Docker/Podman OR Singularity/Apptainer
+  - Docker/Podman
   - CCTools work_queue_worker
   - Optional: EEMT container image (for offline environments)
 
@@ -123,7 +123,7 @@ The easiest way to deploy a distributed EEMT cluster:
 
 ```bash
 # Clone repository
-git clone https://github.com/cyverse-gis/eemt.git
+git clone https://github.com/tyson-swetnam/eemt.git
 cd eemt
 
 # Start distributed cluster (master + workers)
@@ -236,7 +236,7 @@ sudo usermod -aG docker $USER
 
 ```bash
 # Clone repository
-git clone https://github.com/cyverse-gis/eemt.git
+git clone https://github.com/tyson-swetnam/eemt.git
 cd eemt
 
 # Build containers
@@ -446,37 +446,6 @@ docker run --rm \
     --cores $SLURM_CPUS_PER_TASK \
     --memory ${SLURM_MEM_PER_NODE}M \
     --work-dir /tmp/eemt-worker-$SLURM_JOB_ID
-```
-
-#### Option 2: Singularity Workers (for HPC without Docker)
-
-Create `eemt-singularity-worker.sbatch`:
-
-```bash
-#!/bin/bash
-#SBATCH --job-name=eemt-singularity-worker
-#SBATCH --nodes=1
-#SBATCH --cpus-per-task=8
-#SBATCH --mem=32GB
-#SBATCH --time=4:00:00
-
-# Load Singularity
-module load singularity/3.8
-
-# Convert Docker image to Singularity (one-time)
-# singularity pull eemt-ubuntu24.04.sif docker://eemt:ubuntu24.04
-
-# Start worker
-singularity exec \
-  --bind $TMPDIR:/tmp \
-  --env MASTER_HOST=$MASTER_HOST \
-  --env MASTER_PORT=$MASTER_PORT \
-  eemt-ubuntu24.04.sif \
-  python /scripts/start-worker.py \
-    --master-host $MASTER_HOST \
-    --master-port $MASTER_PORT \
-    --cores $SLURM_CPUS_PER_TASK \
-    --memory ${SLURM_MEM_PER_NODE}M
 ```
 
 #### Submit Multiple Workers

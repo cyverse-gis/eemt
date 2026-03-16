@@ -98,12 +98,12 @@ The EEMT framework has been applied across multiple Critical Zone Observatory si
 When using the EEMT software framework, please cite:
 
 ```bibtex
-@software{eemt_framework_2025,
+@software{eemt_framework_2026,
   title = {EEMT: Effective Energy and Mass Transfer Calculation Framework},
   author = {Swetnam, Tyson L. and Rasmussen, Craig and Pelletier, Jon D.},
-  year = {2025},
+  year = {2026},
   url = {https://github.com/tyson-swetnam/eemt},
-  version = {2025.1},
+  version = {2026.1},
   doi = {10.5281/zenodo.XXXXXX}
 }
 ```

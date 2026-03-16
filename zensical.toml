@@ -7,7 +7,7 @@ site_description = "EEMT: An open source framework for quantifying energy and ma
 site_author = "Tyson L. Swetnam"
 site_url = "https://tyson-swetnam.github.io/eemt/"
 docs_dir = "docs"
-copyright = "Copyright &copy; 2025 Tyson L. Swetnam"
+copyright = "Copyright &copy; 2026 Tyson L. Swetnam"
 nav = [
     { "Home" = [
         "index.md",
@@ -78,9 +78,7 @@ nav = [
     ]},
     { "Development" = [
         { "Overview" = "development/index.md" },
-        { "Setup" = "development/setup.md" },
-        { "Modernization Plan" = "PLAN.md" },
-        { "Phase 1" = "PHASE1_IMPLEMENTATION.md" }
+        { "Setup" = "development/setup.md" }
     ]},
     { "About" = [
         "about/index.md",

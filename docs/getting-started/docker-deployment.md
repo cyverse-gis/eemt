@@ -83,7 +83,7 @@ docker compose version
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/cyverse-gis/eemt.git
+git clone https://github.com/tyson-swetnam/eemt.git
 cd eemt
 ```
 

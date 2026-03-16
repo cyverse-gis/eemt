@@ -24,7 +24,7 @@ The fastest way to get started is using Docker Compose:
 
 ```bash
 # Clone the repository
-git clone https://github.com/cyverse-gis/eemt.git
+git clone https://github.com/tyson-swetnam/eemt.git
 cd eemt
 
 # Start the EEMT web interface
@@ -344,7 +344,7 @@ curl -X POST http://127.0.0.1:5000/api/submit-job \
 ### Resources
 
 - **Documentation**: http://127.0.0.1:8000 (when running with `--profile docs`)
-- **GitHub Issues**: https://github.com/cyverse-gis/eemt/issues
+- **GitHub Issues**: https://github.com/tyson-swetnam/eemt/issues
 - **Algorithm Details**: See [Solar Radiation Algorithms](../algorithms/solar-radiation.md)
 - **API Reference**: See [Web Interface API](../web-interface/api-reference.md)
 

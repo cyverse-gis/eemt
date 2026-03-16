@@ -225,8 +225,8 @@ For API support:
 
 1. Check the [FAQ](../about/index.md#api-faq)
 2. Review [Examples](../examples/index.md)
-3. Post on [Discussions](https://github.com/cyverse-gis/eemt/discussions)
-4. Report [Issues](https://github.com/cyverse-gis/eemt/issues)
+3. Post on [Discussions](https://github.com/tyson-swetnam/eemt/discussions)
+4. Report [Issues](https://github.com/tyson-swetnam/eemt/issues)
 
 ---
 

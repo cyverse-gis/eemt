@@ -26,7 +26,7 @@ The EEMT Kubernetes deployment provides:
 
 ```bash
 # Clone the repository
-git clone https://github.com/cyverse-gis/eemt.git
+git clone https://github.com/tyson-swetnam/eemt.git
 cd eemt/docker/kubernetes
 
 # Create namespace and basic resources
@@ -581,4 +581,4 @@ For issues with Kubernetes deployment:
 - Review logs and events
 - Check cluster resource availability
 - Verify configuration values
-- Open an issue at https://github.com/cyverse-gis/eemt/issues
+- Open an issue at https://github.com/tyson-swetnam/eemt/issues

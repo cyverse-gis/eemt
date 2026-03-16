@@ -374,8 +374,6 @@ This local interface serves as the foundation for:
 - **OSG Mode**: Integrate with HTCondor job submission
 - **Cloud Mode**: Deploy on cloud infrastructure with persistent storage
 
-See `../PLAN.md` for the complete modernization roadmap.
-
 ## License
 
 Part of the EEMT Algorithm Suite. See main project LICENSE for details.
