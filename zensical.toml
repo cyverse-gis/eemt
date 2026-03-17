@@ -5,9 +5,14 @@
 site_name = "Effective Energy and Mass Transfer (EEMT)"
 site_description = "EEMT: An open source framework for quantifying energy and mass flux in Earth's Critical Zone"
 site_author = "Tyson L. Swetnam"
-site_url = "https://tyson-swetnam.github.io/eemt/"
+site_url = "https://cyverse-gis.github.io/eemt/"
 docs_dir = "docs"
 copyright = "Copyright &copy; 2026 Tyson L. Swetnam"
+extra_css = ["stylesheets/extra.css"]
+extra_javascript = [
+    "javascripts/mathjax.js",
+    "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+]
 nav = [
     { "Home" = [
         "index.md",
@@ -94,23 +99,23 @@ edit_uri = "edit/master/docs/"
 [project.theme]
 variant = "modern"
 logo = "assets/eemt-logo.svg"
-favicon = "assets/favicon.ico"
+favicon = "assets/favicon.svg"
 
 [project.theme.font]
-text = "Open Sans"
-code = "Roboto Mono"
+text = "Inter"
+code = "JetBrains Mono"
 
 [[project.theme.palette]]
 scheme = "default"
-primary = "green"
-accent = "light-green"
+primary = "custom"
+accent = "custom"
 toggle.icon = "lucide/sun"
 toggle.name = "Switch to dark mode"
 
 [[project.theme.palette]]
 scheme = "slate"
-primary = "green"
-accent = "light-green"
+primary = "custom"
+accent = "custom"
 toggle.icon = "lucide/moon"
 toggle.name = "Switch to light mode"
 
@@ -129,13 +134,7 @@ content_code_copy = true
 content_code_annotate = true
 content_tabs_link = true
 
-# Custom assets
 [project.extra]
-css = ["stylesheets/extra.css"]
-javascript = [
-    "javascripts/mathjax.js",
-    "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-]
 
 [project.extra.analytics]
 provider = "google"

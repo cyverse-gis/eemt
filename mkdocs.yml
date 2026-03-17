@@ -1,44 +1,36 @@
 site_name: Effective Energy and Mass Transfer (EEMT)
 site_description: 'EEMT: An open source framework for quantifying energy and mass flux in Earth''s Critical Zone'
 site_author: 'Tyson L. Swetnam'
-site_url: 'https://tyson-swetnam.github.io/eemt/'
+site_url: 'https://cyverse-gis.github.io/eemt/'
 
 repo_name: 'tyson-swetnam/eemt'
 repo_url: 'https://github.com/tyson-swetnam/eemt'
-edit_uri: 'edit/2020_update/docs/'
+edit_uri: 'edit/master/docs/'
 
-copyright: 'Copyright &copy; 2025 Tyson L. Swetnam'
+copyright: 'Copyright &copy; 2026 Tyson L. Swetnam'
 
 theme:
   name: 'material'
+  custom_dir: docs/overrides
   palette:
-    # Palette toggle for automatic mode
-    - media: "(prefers-color-scheme)"
-      toggle:
-        icon: material/brightness-auto
-        name: Switch to light mode
-    # Palette toggle for light mode
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
-      primary: 'green'
-      accent: 'light green'
+    - scheme: default
+      primary: custom
+      accent: custom
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
-    # Palette toggle for dark mode
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      primary: 'green'
-      accent: 'light green'
+    - scheme: slate
+      primary: custom
+      accent: custom
       toggle:
         icon: material/brightness-4
-        name: Switch to system preference
-  
+        name: Switch to light mode
+
   font:
-    text: 'Open Sans'
-    code: 'Roboto Mono'
-  
-  favicon: 'assets/favicon.ico'
+    text: 'Inter'
+    code: 'JetBrains Mono'
+
+  favicon: 'assets/favicon.svg'
   logo: 'assets/eemt-logo.svg'
   
   features:
