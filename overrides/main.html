@@ -13,146 +13,122 @@
 {% block content %}
   {{ super() }}
 
-  <!-- Custom footer for EEMT -->
   {% if page.title == "Home" %}
-
-  <!-- Capabilities Showcase -->
-  <div class="eemt-capabilities">
+  <div class="eemt-home-features">
     <div class="md-grid md-typeset">
-      <h3>Platform Capabilities</h3>
-      <div class="capabilities-grid">
-        <div class="capability-item">
-          <span class="capability-icon">:material-docker:</span>
-          <div class="capability-text">
-            <strong>Docker Ready</strong>
-            <span>One-command deployment</span>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12H2M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
           </div>
+          <strong>Containerized</strong>
+          <span>Docker-based deployment with zero dependency management</span>
         </div>
-        <div class="capability-item">
-          <span class="capability-icon">:material-api:</span>
-          <div class="capability-text">
-            <strong>REST API</strong>
-            <span>Full programmatic access</span>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
           </div>
+          <strong>REST API</strong>
+          <span>Full programmatic access for automated workflows</span>
         </div>
-        <div class="capability-item">
-          <span class="capability-icon">:material-monitor:</span>
-          <div class="capability-text">
-            <strong>Web Interface</strong>
-            <span>Browser-based workflows</span>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
           </div>
+          <strong>Web Interface</strong>
+          <span>Browser-based job submission and monitoring</span>
         </div>
-        <div class="capability-item">
-          <span class="capability-icon">:material-chart-timeline:</span>
-          <div class="capability-text">
-            <strong>Time Series</strong>
-            <span>40+ years of climate data</span>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
           </div>
+          <strong>Time Series</strong>
+          <span>40+ years of integrated DAYMET climate data</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Stats Section -->
-  <div class="eemt-footer-info">
+  <div class="eemt-stats-section">
     <div class="md-grid md-typeset">
-      <div class="eemt-stats">
-        <h3>EEMT by the Numbers</h3>
-        <div class="stats-grid">
-          <div class="stat-item">
-            <div class="stat-number">20+</div>
-            <div class="stat-label">Years of Development</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number">50+</div>
-            <div class="stat-label">Scientific Publications</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number">1000+</div>
-            <div class="stat-label">Study Sites Analyzed</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number">Global</div>
-            <div class="stat-label">Coverage Available</div>
-          </div>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-value">20+</div>
+          <div class="stat-label">Years of Development</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">50+</div>
+          <div class="stat-label">Scientific Publications</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">1000+</div>
+          <div class="stat-label">Study Sites Analyzed</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">Global</div>
+          <div class="stat-label">Coverage Available</div>
         </div>
       </div>
     </div>
   </div>
 
   <style>
-    .eemt-capabilities {
-      background-color: var(--md-default-bg-color--light);
-      padding: 2rem 0;
+    .eemt-home-features {
+      padding: 2.5rem 0;
       margin-top: 2rem;
-      border-top: 1px solid var(--md-default-fg-color--lightest);
-      border-bottom: 1px solid var(--md-default-fg-color--lightest);
+      border-top: 1px solid var(--eemt-border, #e2e8f0);
     }
 
-    .eemt-capabilities h3 {
-      text-align: center;
-      margin-bottom: 1.5rem;
-      color: var(--md-default-fg-color);
-    }
-
-    .capabilities-grid {
+    .features-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.5rem;
-      max-width: 1000px;
+      gap: 1.25rem;
+      max-width: 960px;
       margin: 0 auto;
     }
 
-    .capability-item {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem;
-      background: var(--md-default-bg-color);
-      border-radius: 0.5rem;
-      border: 1px solid var(--md-default-fg-color--lightest);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .capability-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .capability-icon {
-      font-size: 1.8rem;
-      color: var(--md-primary-fg-color);
-    }
-
-    .capability-text {
+    .feature-card {
       display: flex;
       flex-direction: column;
+      gap: 0.5rem;
+      padding: 1.5rem;
+      background: var(--md-default-bg-color);
+      border: 1px solid var(--eemt-border, #e2e8f0);
+      border-radius: 0.75rem;
+      transition: all 0.2s ease;
     }
 
-    .capability-text strong {
+    .feature-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      border-color: var(--md-primary-fg-color);
+    }
+
+    .feature-icon {
+      color: var(--md-primary-fg-color);
+      margin-bottom: 0.25rem;
+    }
+
+    .feature-card strong {
+      font-size: 1rem;
       color: var(--md-default-fg-color);
     }
 
-    .capability-text span {
+    .feature-card span {
       font-size: 0.85rem;
-      color: var(--md-default-fg-color--light);
+      color: var(--eemt-text-secondary, #64748b);
+      line-height: 1.5;
     }
 
-    .eemt-footer-info {
-      background: linear-gradient(135deg, #2e7d32, #4caf50);
-      color: white;
-      padding: 3rem 0;
-    }
-
-    .eemt-stats h3 {
-      text-align: center;
-      margin-bottom: 2rem;
-      color: white;
+    .eemt-stats-section {
+      background: linear-gradient(135deg, #064e32 0%, #0a6847 40%, #10b981 100%);
+      padding: 3.5rem 0;
+      margin-top: 0;
     }
 
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 2rem;
       max-width: 800px;
       margin: 0 auto;
@@ -162,24 +138,35 @@
       text-align: center;
     }
 
-    .stat-number {
-      font-size: 2.5rem;
-      font-weight: bold;
-      margin-bottom: 0.5rem;
+    .stat-value {
+      font-size: 2.75rem;
+      font-weight: 700;
+      color: white;
+      line-height: 1.1;
+      margin-bottom: 0.4rem;
     }
 
     .stat-label {
-      font-size: 1rem;
-      opacity: 0.9;
+      font-size: 0.88rem;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 500;
     }
 
-    /* Dark mode adjustments */
-    [data-md-color-scheme="slate"] .eemt-capabilities {
-      background-color: var(--md-default-bg-color--lighter);
+    [data-md-color-scheme="slate"] .eemt-home-features {
+      border-color: #334155;
     }
 
-    [data-md-color-scheme="slate"] .capability-item {
+    [data-md-color-scheme="slate"] .feature-card {
       background: var(--md-default-bg-color);
+      border-color: #334155;
+    }
+
+    [data-md-color-scheme="slate"] .feature-card span {
+      color: #94a3b8;
+    }
+
+    [data-md-color-scheme="slate"] .eemt-stats-section {
+      background: linear-gradient(135deg, #064e32 0%, #0a6847 50%, #065f46 100%);
     }
   </style>
   {% endif %}

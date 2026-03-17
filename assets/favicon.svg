@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="fbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#064e32"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="6" fill="url(#fbg)"/>
+  <circle cx="16" cy="10" r="3.5" fill="#fbbf24"/>
+  <path d="M4 20 Q8 17 12 18 Q16 15 20 17 Q24 18 28 20 L28 27 Q16 28 4 27 Z" fill="#34d399" opacity="0.85"/>
+  <text x="16" y="30" text-anchor="middle" fill="white" font-family="system-ui" font-size="5" font-weight="700" letter-spacing="0.5">EEMT</text>
+</svg>

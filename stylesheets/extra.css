@@ -1,47 +1,111 @@
-/* EEMT Custom Styles */
+/* ============================================================
+   EEMT Documentation — Modern Design System
+   Inspired by Stripe/Vercel docs aesthetic
+   ============================================================ */
 
+/* --- Custom Properties --- */
 :root {
-  --md-primary-fg-color: #2e7d32;
-  --md-primary-fg-color--light: #4caf50;
-  --md-primary-fg-color--dark: #1b5e20;
-  --md-accent-fg-color: #8bc34a;
+  --md-primary-fg-color: #0a6847;
+  --md-primary-fg-color--light: #16a34a;
+  --md-primary-fg-color--dark: #064e32;
+  --md-accent-fg-color: #10b981;
+  --eemt-gradient: linear-gradient(135deg, #064e32 0%, #0a6847 40%, #10b981 100%);
+  --eemt-surface: #f8fafb;
+  --eemt-border: #e2e8f0;
+  --eemt-text-secondary: #64748b;
+  --eemt-radius: 0.75rem;
+  --eemt-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --eemt-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
+  --eemt-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.08);
 }
 
-/* Hero section styling */
+[data-md-color-scheme="slate"] {
+  --eemt-surface: #1e293b;
+  --eemt-border: #334155;
+  --eemt-text-secondary: #94a3b8;
+  --eemt-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --eemt-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --eemt-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* --- Typography --- */
+.md-typeset {
+  font-size: 0.82rem;
+  line-height: 1.7;
+}
+
+.md-typeset h1 {
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin-bottom: 1rem;
+}
+
+.md-typeset h2 {
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  margin-top: 2.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--eemt-border);
+}
+
+.md-typeset h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* --- Hero Section --- */
 .hero-section {
-  background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 50%, #4caf50 100%);
-  border-radius: 0.5rem;
-  padding: 2rem 2rem;
-  margin: -0.5rem -0.5rem 2rem -0.5rem;
+  background: var(--eemt-gradient);
+  border-radius: var(--eemt-radius);
+  padding: 3rem 2.5rem;
+  margin: -0.6rem -0.6rem 2.5rem -0.6rem;
   color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 60%;
+  height: 200%;
+  background: radial-gradient(ellipse, rgba(255,255,255,0.08) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .hero-section p {
-  color: rgba(255, 255, 255, 0.95);
-  font-size: 1.1rem;
-  line-height: 1.6;
-  max-width: 700px;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 1.15rem;
+  line-height: 1.7;
+  max-width: 640px;
 }
 
 .hero-section .md-button {
-  margin-right: 0.5rem;
-  margin-top: 1rem;
+  margin-right: 0.75rem;
+  margin-top: 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  padding: 0.6rem 1.5rem;
+  transition: all 0.15s ease;
 }
 
 .hero-section .md-button--primary {
   background-color: white;
-  color: #2e7d32;
+  color: #0a6847;
   border-color: white;
 }
 
 .hero-section .md-button--primary:hover {
-  background-color: rgba(255, 255, 255, 0.9);
-  border-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.92);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .hero-section .md-button:not(.md-button--primary) {
   color: white;
-  border-color: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 .hero-section .md-button:not(.md-button--primary):hover {
@@ -49,231 +113,188 @@
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Dark mode hero section */
 [data-md-color-scheme="slate"] .hero-section {
-  background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 50%, #388e3c 100%);
+  background: linear-gradient(135deg, #064e32 0%, #0a6847 50%, #065f46 100%);
 }
 
-/* Mermaid diagram enhancements */
-.mermaid {
-  background-color: var(--md-code-bg-color);
-  border-radius: 0.5rem;
-  padding: 1rem;
-  margin: 1rem 0;
-}
-
-/* Quick start step indicators */
-.quick-start-steps {
-  counter-reset: step-counter;
-}
-
-.quick-start-steps > li {
-  counter-increment: step-counter;
-  position: relative;
-  padding-left: 3rem;
-  margin-bottom: 1.5rem;
-}
-
-.quick-start-steps > li::before {
-  content: counter(step-counter);
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 2rem;
-  height: 2rem;
-  background-color: var(--md-primary-fg-color);
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-}
-
-/* Feature cards hover enhancement */
+/* --- Cards (Grid) --- */
 .md-typeset .grid.cards > ul > li {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid var(--eemt-border);
+  border-radius: var(--eemt-radius);
+  box-shadow: var(--eemt-shadow-sm);
+  transition: all 0.2s ease;
 }
 
 .md-typeset .grid.cards > ul > li:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  box-shadow: var(--eemt-shadow-md);
+  border-color: var(--md-primary-fg-color--light);
 }
 
-/* Capability badges */
-.capability-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.4rem 0.8rem;
-  border-radius: 2rem;
-  font-size: 0.85rem;
-  font-weight: 500;
-  margin: 0.2rem;
-  background-color: var(--md-default-fg-color--lightest);
+/* --- Equations (MathJax) --- */
+.arithmatex {
+  overflow-x: auto;
+  padding: 0.75rem 0;
 }
 
-.capability-badge.docker {
-  background-color: rgba(0, 150, 214, 0.15);
-  color: #0096d6;
+.MathJax {
+  font-size: 1.05em !important;
 }
 
-.capability-badge.api {
-  background-color: rgba(76, 175, 80, 0.15);
-  color: #2e7d32;
-}
-
-.capability-badge.web {
-  background-color: rgba(255, 152, 0, 0.15);
-  color: #e65100;
-}
-
-.capability-badge.timeseries {
-  background-color: rgba(103, 58, 183, 0.15);
-  color: #512da8;
-}
-
-/* Custom styling for EEMT equations */
 .eemt-equation {
-  background-color: var(--md-code-bg-color);
-  border-left: 4px solid var(--md-primary-fg-color);
-  padding: 1rem;
-  margin: 1.5rem 0;
-  border-radius: 0.2rem;
+  background-color: var(--eemt-surface);
+  border-left: 3px solid var(--md-primary-fg-color);
+  padding: 1.25rem 1.5rem;
+  margin: 1.75rem 0;
+  border-radius: 0 var(--eemt-radius) var(--eemt-radius) 0;
+  box-shadow: var(--eemt-shadow-sm);
 }
 
 .eemt-equation .MathJax {
-  font-size: 1.2em !important;
+  font-size: 1.15em !important;
 }
 
-/* Parameter tables */
-.parameter-table {
-  font-size: 0.9rem;
+.equation-block {
+  background-color: var(--eemt-surface);
+  border-left: 3px solid var(--md-primary-fg-color);
+  padding: 1.25rem 1.5rem;
+  margin: 1.75rem 0;
+  border-radius: 0 var(--eemt-radius) var(--eemt-radius) 0;
+  overflow-x: auto;
+  box-shadow: var(--eemt-shadow-sm);
+}
+
+.equation-block .MathJax {
+  font-size: 1.1em !important;
+}
+
+.equation-label {
+  float: right;
+  color: var(--eemt-text-secondary);
+  font-size: 0.85em;
+  font-style: italic;
+}
+
+/* --- Tables --- */
+.md-typeset table:not([class]) {
+  border: 1px solid var(--eemt-border);
+  border-radius: var(--eemt-radius);
+  overflow: hidden;
+  box-shadow: var(--eemt-shadow-sm);
+  font-size: 0.85rem;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.md-typeset table:not([class]) thead {
+  background: var(--eemt-surface);
+}
+
+.md-typeset table:not([class]) th {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  color: var(--eemt-text-secondary);
+  padding: 0.85rem 1rem;
+  border-bottom: 2px solid var(--eemt-border);
+}
+
+.md-typeset table:not([class]) td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--eemt-border);
+}
+
+.md-typeset table:not([class]) tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.md-typeset table:not([class]) tbody tr:hover {
+  background-color: var(--eemt-surface);
 }
 
 .parameter-table th {
-  background-color: var(--md-primary-fg-color--light);
-  color: white;
+  background: var(--md-primary-fg-color) !important;
+  color: white !important;
+  text-transform: none !important;
+  font-size: 0.82rem !important;
+  letter-spacing: normal !important;
 }
 
 .parameter-table td:first-child {
   font-family: var(--md-code-font);
-  font-weight: bold;
+  font-weight: 600;
+  color: var(--md-primary-fg-color);
 }
 
-/* Code block enhancements */
+/* --- Code Blocks --- */
+.md-typeset pre {
+  border-radius: var(--eemt-radius);
+  border: 1px solid var(--eemt-border);
+  box-shadow: var(--eemt-shadow-sm);
+}
+
 .highlight .filename {
   background-color: var(--md-primary-fg-color);
   color: white;
   padding: 0.5rem 1rem;
   margin-bottom: 0;
-  border-radius: 0.2rem 0.2rem 0 0;
+  border-radius: var(--eemt-radius) var(--eemt-radius) 0 0;
   font-family: var(--md-code-font);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
+  font-weight: 500;
 }
 
-/* Workflow status indicators */
-.workflow-status {
-  display: inline-block;
-  padding: 0.2rem 0.6rem;
-  border-radius: 1rem;
-  font-size: 0.8rem;
-  font-weight: bold;
-  text-transform: uppercase;
+/* --- Admonitions --- */
+.md-typeset .admonition,
+.md-typeset details {
+  border-radius: var(--eemt-radius);
+  box-shadow: var(--eemt-shadow-sm);
+  border: 1px solid var(--eemt-border);
+  border-left-width: 3px;
 }
 
-.workflow-status.completed {
-  background-color: #4caf50;
-  color: white;
+/* --- Mermaid Diagrams --- */
+.mermaid {
+  background-color: var(--eemt-surface);
+  border-radius: var(--eemt-radius);
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border: 1px solid var(--eemt-border);
 }
 
-.workflow-status.in-progress {
-  background-color: #ff9800;
-  color: white;
+/* --- Climate Zone Cards --- */
+.climate-zone {
+  border-left: 4px solid;
+  padding: 1rem 1.25rem;
+  margin: 0.75rem 0;
+  border-radius: 0 var(--eemt-radius) var(--eemt-radius) 0;
+  background: var(--eemt-surface);
+  box-shadow: var(--eemt-shadow-sm);
 }
 
-.workflow-status.pending {
-  background-color: #9e9e9e;
-  color: white;
+.climate-zone.arid {
+  border-color: #ef4444;
 }
 
-/* Data source cards */
-.data-source-card {
-  border: 1px solid var(--md-default-fg-color--lightest);
-  border-radius: 0.5rem;
-  padding: 1rem;
-  margin: 1rem 0;
-  transition: box-shadow 0.2s;
+.climate-zone.semiarid {
+  border-color: #f59e0b;
 }
 
-.data-source-card:hover {
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+.climate-zone.humid {
+  border-color: #10b981;
 }
 
-.data-source-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.data-source-icon {
-  width: 2rem;
-  height: 2rem;
-  margin-right: 0.5rem;
-}
-
-.data-source-title {
-  font-weight: bold;
-  font-size: 1.1rem;
-  color: var(--md-primary-fg-color);
-}
-
-.data-source-specs {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
-}
-
-.spec-item {
-  display: flex;
-  justify-content: space-between;
-}
-
-.spec-label {
-  font-weight: bold;
-}
-
-/* Performance indicators */
-.performance-metric {
-  display: inline-flex;
-  align-items: center;
-  background-color: var(--md-default-fg-color--lightest);
-  border-radius: 1rem;
-  padding: 0.3rem 0.8rem;
-  margin: 0.2rem;
-  font-size: 0.85rem;
-}
-
-.performance-metric .icon {
-  margin-right: 0.3rem;
-}
-
-/* EEMT value ranges */
+/* --- EEMT Range Badges --- */
 .eemt-range {
   display: inline-block;
-  background: linear-gradient(90deg, #1976d2, #4caf50, #ff9800, #f44336);
+  background: linear-gradient(135deg, #0369a1, #0a6847, #d97706, #dc2626);
   color: white;
-  padding: 0.3rem 0.6rem;
-  border-radius: 0.3rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.4rem;
   font-family: var(--md-code-font);
-  font-weight: bold;
-}
-
-.eemt-range .unit {
-  font-weight: normal;
-  opacity: 0.95;
+  font-weight: 600;
+  font-size: 0.85em;
 }
 
 .eemt-range sup {
@@ -282,10 +303,29 @@
   line-height: 0;
 }
 
-/* Inline unit styling */
+/* --- Capability Badges --- */
+.capability-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 2rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  margin: 0.2rem;
+  border: 1px solid var(--eemt-border);
+  background: var(--eemt-surface);
+}
+
+.capability-badge.docker { border-color: #0096d6; color: #0284c7; }
+.capability-badge.api { border-color: #10b981; color: #059669; }
+.capability-badge.web { border-color: #f59e0b; color: #d97706; }
+.capability-badge.timeseries { border-color: #8b5cf6; color: #7c3aed; }
+
+/* --- Unit Styling --- */
 .unit, .unit-value {
   font-family: var(--md-code-font);
-  font-size: 0.95em;
+  font-size: 0.92em;
   white-space: nowrap;
 }
 
@@ -295,134 +335,134 @@
   line-height: 0;
 }
 
-/* Unit in running text */
-.md-typeset .unit-inline {
+.unit-inline {
   font-family: var(--md-code-font);
-  background-color: var(--md-code-bg-color);
-  padding: 0.1em 0.3em;
-  border-radius: 0.2em;
-  font-size: 0.9em;
+  background-color: var(--eemt-surface);
+  padding: 0.1em 0.35em;
+  border-radius: 0.25em;
+  font-size: 0.88em;
+  border: 1px solid var(--eemt-border);
 }
 
-/* MathJax equation enhancements */
-.MathJax {
-  font-size: 1.1em !important;
+/* --- Workflow Status --- */
+.workflow-status {
+  display: inline-block;
+  padding: 0.2rem 0.7rem;
+  border-radius: 2rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
-/* Display equations */
-.arithmatex {
-  overflow-x: auto;
-  padding: 0.5rem 0;
+.workflow-status.completed { background-color: #dcfce7; color: #15803d; }
+.workflow-status.in-progress { background-color: #fef3c7; color: #b45309; }
+.workflow-status.pending { background-color: #f1f5f9; color: #64748b; }
+
+[data-md-color-scheme="slate"] .workflow-status.completed { background-color: rgba(16, 185, 129, 0.15); }
+[data-md-color-scheme="slate"] .workflow-status.in-progress { background-color: rgba(245, 158, 11, 0.15); }
+[data-md-color-scheme="slate"] .workflow-status.pending { background-color: rgba(100, 116, 139, 0.15); }
+
+/* --- Data Source Cards --- */
+.data-source-card {
+  border: 1px solid var(--eemt-border);
+  border-radius: var(--eemt-radius);
+  padding: 1.25rem;
+  margin: 1rem 0;
+  transition: all 0.2s ease;
+  background: var(--eemt-surface);
 }
 
-/* Equation blocks with borders */
-.md-typeset .equation-block {
-  background-color: var(--md-code-bg-color);
-  border-left: 4px solid var(--md-primary-fg-color);
-  padding: 1rem 1.5rem;
-  margin: 1.5rem 0;
-  border-radius: 0 0.3rem 0.3rem 0;
-  overflow-x: auto;
+.data-source-card:hover {
+  box-shadow: var(--eemt-shadow-md);
+  border-color: var(--md-primary-fg-color--light);
 }
 
-.md-typeset .equation-block .MathJax {
-  font-size: 1.15em !important;
-}
-
-/* Equation labels/numbers */
-.equation-label {
-  float: right;
-  color: var(--md-default-fg-color--light);
-  font-size: 0.9em;
-  font-style: italic;
-}
-
-/* Unit table styling */
-.unit-table {
-  font-size: 0.9rem;
-}
-
-.unit-table td:first-child {
-  font-family: var(--md-code-font);
-  white-space: nowrap;
-}
-
-.unit-table td:nth-child(2) {
-  font-family: var(--md-code-font);
-}
-
-/* Highlight equation variables */
-.var {
-  font-style: italic;
+.data-source-title {
+  font-weight: 600;
+  font-size: 1.05rem;
   color: var(--md-primary-fg-color);
 }
 
-/* Climate zone styling */
-.climate-zone {
-  border-left: 4px solid;
-  padding: 0.5rem 1rem;
-  margin: 0.5rem 0;
-  border-radius: 0 0.3rem 0.3rem 0;
+.data-source-specs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
 }
 
-.climate-zone.arid {
-  border-color: #ff5722;
-  background-color: rgba(255, 87, 34, 0.1);
+.spec-label {
+  font-weight: 600;
+  color: var(--eemt-text-secondary);
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
 }
 
-.climate-zone.semiarid {
-  border-color: #ff9800;
-  background-color: rgba(255, 152, 0, 0.1);
+/* --- Quick Start Steps --- */
+.quick-start-steps {
+  counter-reset: step-counter;
 }
 
-.climate-zone.humid {
-  border-color: #4caf50;
-  background-color: rgba(76, 175, 80, 0.1);
+.quick-start-steps > li {
+  counter-increment: step-counter;
+  position: relative;
+  padding-left: 3.25rem;
+  margin-bottom: 1.75rem;
 }
 
-/* Responsive improvements */
+.quick-start-steps > li::before {
+  content: counter(step-counter);
+  position: absolute;
+  left: 0;
+  top: 0.1em;
+  width: 2rem;
+  height: 2rem;
+  background-color: var(--md-primary-fg-color);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* --- Navigation polish --- */
+.md-tabs {
+  border-bottom: 1px solid var(--eemt-border);
+}
+
+.md-header {
+  box-shadow: var(--eemt-shadow-sm);
+}
+
+/* --- Responsive --- */
 @media screen and (max-width: 76.1875em) {
   .md-nav--primary .md-nav__title {
     background-color: var(--md-primary-fg-color);
   }
 }
 
-/* Print styles */
+/* --- Print --- */
 @media print {
-  .md-header,
-  .md-tabs,
-  .md-sidebar,
-  .md-footer {
-    display: none;
-  }
-  
-  .md-content {
-    margin: 0;
-  }
-  
-  .eemt-equation {
-    border: 1px solid #ccc;
-    page-break-inside: avoid;
-  }
+  .md-header, .md-tabs, .md-sidebar, .md-footer { display: none; }
+  .md-content { margin: 0; }
+  .eemt-equation, .equation-block { border: 1px solid #ccc; page-break-inside: avoid; }
 }
 
-/* Custom admonition types */
+/* --- Custom Admonition: EEMT --- */
 .md-typeset .admonition.eemt {
   border-color: var(--md-primary-fg-color);
 }
 
 .md-typeset .admonition.eemt > .admonition-title {
-  background-color: rgba(46, 125, 50, 0.1);
+  background-color: rgba(10, 104, 71, 0.08);
   border-color: var(--md-primary-fg-color);
 }
 
-.md-typeset .admonition.eemt > .admonition-title::before {
-  background-color: var(--md-primary-fg-color);
-  -webkit-mask-image: var(--md-admonition-icon--eemt);
-  mask-image: var(--md-admonition-icon--eemt);
-}
-
-/* Loading animation for large datasets */
+/* --- Loading spinner --- */
 .loading-spinner {
   display: inline-block;
   width: 1.2rem;
@@ -430,9 +470,31 @@
   border: 2px solid var(--md-primary-fg-color--light);
   border-radius: 50%;
   border-top-color: var(--md-primary-fg-color);
-  animation: spin 1s ease-in-out infinite;
+  animation: spin 0.8s ease-in-out infinite;
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* --- Variable highlight --- */
+.var {
+  font-style: italic;
+  color: var(--md-primary-fg-color);
+}
+
+/* --- Performance metric --- */
+.performance-metric {
+  display: inline-flex;
+  align-items: center;
+  background: var(--eemt-surface);
+  border: 1px solid var(--eemt-border);
+  border-radius: 2rem;
+  padding: 0.3rem 0.85rem;
+  margin: 0.2rem;
+  font-size: 0.82rem;
+}
+
+.performance-metric .icon {
+  margin-right: 0.3rem;
 }
