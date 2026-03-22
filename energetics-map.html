@@ -169,19 +169,19 @@
   <label><input type="checkbox" id="toggle-chm" checked> Canopy Height</label>
   <label><input type="checkbox" id="toggle-dem"> Elevation (DEM)</label>
   <label><input type="checkbox" id="toggle-energy-raster"> Energy Density</label>
-  <label><input type="checkbox" id="toggle-trees" checked> Tree Stems</label>
+  <label><input type="checkbox" id="toggle-biomass" checked> Biomass Density</label>
 </div>
 
 <div class="legend">
-  <h3>Energy Content</h3>
-  <div class="legend-row"><div class="legend-swatch" style="background:#faf6f0"></div> &lt; 500 MJ</div>
-  <div class="legend-row"><div class="legend-swatch" style="background:#f5d5a0"></div> 500 &ndash; 2,000 MJ</div>
-  <div class="legend-row"><div class="legend-swatch" style="background:#e8a838"></div> 2,000 &ndash; 5,000 MJ</div>
-  <div class="legend-row"><div class="legend-swatch" style="background:#c45b28"></div> 5,000 &ndash; 10,000 MJ</div>
-  <div class="legend-row"><div class="legend-swatch" style="background:#7b2d26"></div> &gt; 10,000 MJ</div>
+  <h3>Biomass Density</h3>
+  <div class="legend-row"><div class="legend-swatch" style="background:#f7fcf5"></div> &lt; 10 Mg/ha</div>
+  <div class="legend-row"><div class="legend-swatch" style="background:#c7e9c0"></div> 10 &ndash; 50 Mg/ha</div>
+  <div class="legend-row"><div class="legend-swatch" style="background:#74c476"></div> 50 &ndash; 100 Mg/ha</div>
+  <div class="legend-row"><div class="legend-swatch" style="background:#238b45"></div> 100 &ndash; 200 Mg/ha</div>
+  <div class="legend-row"><div class="legend-swatch" style="background:#00441b"></div> &gt; 200 Mg/ha</div>
   <div style="margin-top:8px; color: var(--light); font-size: 10px;">
-    HHV = 20.25 MJ/kg<br>
-    Jucker et al. (2017)
+    10 m grid &middot; Jucker et al. (2017)<br>
+    HHV = 20.25 MJ/kg (<em>Pinus</em> spp.)
   </div>
 </div>
 
@@ -266,11 +266,11 @@ map.on('load', () => {
     layout: { visibility: 'none' },
   });
 
-  // Energy density raster
+  // Energy density raster (10m aggregated, MJ/ha)
   map.addSource('energy-raster', {
     type: 'raster',
     tiles: [
-      `${TITILER_BASE}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=${encodeURIComponent(DATA_BASE + '/gordongulch_energy_mj_05m_cog.tif')}&colormap_name=hot_r&rescale=0,15000`
+      `${TITILER_BASE}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=${encodeURIComponent(DATA_BASE + '/gordongulch_energy_density_10m_cog.tif')}&colormap_name=hot_r&rescale=0,2000000&nodata=-9999`
     ],
     tileSize: 256,
   });
@@ -282,158 +282,20 @@ map.on('load', () => {
     layout: { visibility: 'none' },
   });
 
-  // Tree stems — load spatially-tiled GeoJSON on demand
-  // CyVerse WebDAV public URL (requires anonymous read permission on /iplant/home/tswetnam/eemt/)
-  const TILES_BASE = 'https://data.cyverse.org/dav-anon/iplant/home/tswetnam/eemt/tiles';
-  // Alternative: if WebDAV 401s persist, host tiles alongside this HTML
-  // const TILES_BASE = './tiles';
-
-  // Start with empty source, tiles loaded on demand
-  map.addSource('trees', {
-    type: 'geojson',
-    data: { type: 'FeatureCollection', features: [] },
-    cluster: true,
-    clusterMaxZoom: 16,
-    clusterRadius: 30,
+  // Biomass density raster (10m aggregated, Mg/ha)
+  map.addSource('biomass', {
+    type: 'raster',
+    tiles: [
+      `${TITILER_BASE}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=${encodeURIComponent(DATA_BASE + '/gordongulch_biomass_density_10m_cog.tif')}&colormap_name=ylgn&rescale=0,300&nodata=-9999`
+    ],
+    tileSize: 256,
   });
-
-  // Tile index and loaded state
-  let tileIndex = [];
-  let loadedTiles = new Set();
-  let allFeatures = [];
-
-  // Fetch tile index then load visible tiles
-  fetch(`${TILES_BASE}/tile_index.json`)
-    .then(r => r.json())
-    .then(index => {
-      tileIndex = index;
-      loadVisibleTiles();
-    });
-
-  function loadVisibleTiles() {
-    const bounds = map.getBounds();
-    const sw = bounds.getSouthWest();
-    const ne = bounds.getNorthEast();
-
-    tileIndex.forEach(tile => {
-      const [tW, tS, tE, tN] = tile.bounds;
-      const key = tile.file;
-
-      // Skip already loaded or out-of-view tiles
-      if (loadedTiles.has(key)) return;
-      if (tE < sw.lng || tW > ne.lng || tN < sw.lat || tS > ne.lat) return;
-
-      loadedTiles.add(key);
-      fetch(`${TILES_BASE}/${tile.file}`)
-        .then(r => r.json())
-        .then(geojson => {
-          allFeatures = allFeatures.concat(geojson.features);
-          map.getSource('trees').setData({
-            type: 'FeatureCollection',
-            features: allFeatures,
-          });
-        })
-        .catch(err => console.warn(`Failed to load ${tile.file}:`, err));
-    });
-  }
-
-  // Load more tiles as the user pans/zooms
-  map.on('moveend', loadVisibleTiles);
-
-  // Clustered circles
   map.addLayer({
-    id: 'tree-clusters',
-    type: 'circle',
-    source: 'trees',
-    filter: ['has', 'point_count'],
-    paint: {
-      'circle-color': [
-        'step', ['get', 'point_count'],
-        '#7fb069', 50,
-        '#3a7d44', 200,
-        '#1a472a'
-      ],
-      'circle-radius': [
-        'step', ['get', 'point_count'],
-        8, 50, 14, 200, 20
-      ],
-      'circle-opacity': 0.8,
-      'circle-stroke-width': 0.5,
-      'circle-stroke-color': '#333',
-    }
+    id: 'biomass-layer',
+    type: 'raster',
+    source: 'biomass',
+    paint: { 'raster-opacity': 0.7 },
   });
-
-  // Cluster count labels
-  map.addLayer({
-    id: 'tree-cluster-count',
-    type: 'symbol',
-    source: 'trees',
-    filter: ['has', 'point_count'],
-    layout: {
-      'text-field': '{point_count_abbreviated}',
-      'text-size': 10,
-    },
-    paint: { 'text-color': '#fff' }
-  });
-
-  // Individual tree points (unclustered)
-  map.addLayer({
-    id: 'tree-points',
-    type: 'circle',
-    source: 'trees',
-    filter: ['!', ['has', 'point_count']],
-    paint: {
-      'circle-color': [
-        'interpolate', ['linear'], ['get', 'energy_mj'],
-        0, '#faf6f0',
-        500, '#f5d5a0',
-        2000, '#e8a838',
-        5000, '#c45b28',
-        10000, '#7b2d26'
-      ],
-      'circle-radius': [
-        'interpolate', ['linear'], ['zoom'],
-        14, 1.5,
-        17, 4,
-        20, 8
-      ],
-      'circle-opacity': 0.8,
-      'circle-stroke-width': 0.3,
-      'circle-stroke-color': '#333',
-    }
-  });
-
-  // Popup on tree click
-  map.on('click', 'tree-points', (e) => {
-    const p = e.features[0].properties;
-    const coords = e.features[0].geometry.coordinates.slice();
-
-    new maplibregl.Popup({ offset: 10, maxWidth: '220px' })
-      .setLngLat(coords)
-      .setHTML(`
-        <div class="popup-title">Tree #${p.id}</div>
-        <div class="popup-row"><span class="popup-label">Height</span><span class="popup-value">${p.height_m} m</span></div>
-        <div class="popup-row"><span class="popup-label">Crown &empty;</span><span class="popup-value">${p.crown_d_m} m</span></div>
-        <div class="popup-row"><span class="popup-label">Biomass</span><span class="popup-value">${p.agb_kg} kg</span></div>
-        <div class="popup-row"><span class="popup-label">Energy</span><span class="popup-value">${p.energy_mj} MJ</span></div>
-      `)
-      .addTo(map);
-  });
-
-  // Zoom into cluster on click
-  map.on('click', 'tree-clusters', (e) => {
-    const clusterId = e.features[0].properties.cluster_id;
-    map.getSource('trees').getClusterExpansionZoom(clusterId, (err, zoom) => {
-      if (err) return;
-      map.easeTo({ center: e.features[0].geometry.coordinates, zoom });
-    });
-  });
-
-  // Cursor changes
-  map.on('mouseenter', 'tree-points', () => map.getCanvas().style.cursor = 'pointer');
-  map.on('mouseleave', 'tree-points', () => map.getCanvas().style.cursor = '');
-  map.on('mouseenter', 'tree-clusters', () => map.getCanvas().style.cursor = 'pointer');
-  map.on('mouseleave', 'tree-clusters', () => map.getCanvas().style.cursor = '');
 });
 
 // Layer toggles
@@ -449,7 +311,7 @@ function bindToggle(checkboxId, layerIds) {
 bindToggle('toggle-chm', ['chm-layer']);
 bindToggle('toggle-dem', ['dem-layer']);
 bindToggle('toggle-energy-raster', ['energy-raster-layer']);
-bindToggle('toggle-trees', ['tree-clusters', 'tree-cluster-count', 'tree-points']);
+bindToggle('toggle-biomass', ['biomass-layer']);
 </script>
 </body>
 </html>
