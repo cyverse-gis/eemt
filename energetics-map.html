@@ -250,11 +250,27 @@ map.on('load', () => {
     paint: { 'raster-opacity': 0.7 },
   });
 
-  // DEM raster layer
+  // Hillshade underlay (0.5m, grayscale)
+  map.addSource('hillshade', {
+    type: 'raster',
+    tiles: [
+      `${TITILER_BASE}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=${encodeURIComponent(DATA_BASE + '/gordongulch_hillshade_05m_cog.tif')}&colormap_name=gray&rescale=0,255&nodata=0`
+    ],
+    tileSize: 256,
+  });
+  map.addLayer({
+    id: 'hillshade-layer',
+    type: 'raster',
+    source: 'hillshade',
+    paint: { 'raster-opacity': 0.6 },
+    layout: { visibility: 'none' },
+  });
+
+  // DEM elevation gradient (0.5m, layered over hillshade)
   map.addSource('dem', {
     type: 'raster',
     tiles: [
-      `${TITILER_BASE}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=${encodeURIComponent(DATA_BASE + '/gordongulch_dem_10m_3dep_cog.tif')}&colormap_name=terrain&rescale=2376,2800`
+      `${TITILER_BASE}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=${encodeURIComponent(DATA_BASE + '/gordongulch_dem_05m_cog.tif')}&colormap_name=terrain&rescale=2375,2800&nodata=-9999`
     ],
     tileSize: 256,
   });
@@ -262,7 +278,7 @@ map.on('load', () => {
     id: 'dem-layer',
     type: 'raster',
     source: 'dem',
-    paint: { 'raster-opacity': 0.7 },
+    paint: { 'raster-opacity': 0.55 },
     layout: { visibility: 'none' },
   });
 
@@ -309,7 +325,7 @@ function bindToggle(checkboxId, layerIds) {
 }
 
 bindToggle('toggle-chm', ['chm-layer']);
-bindToggle('toggle-dem', ['dem-layer']);
+bindToggle('toggle-dem', ['hillshade-layer', 'dem-layer']);
 bindToggle('toggle-energy-raster', ['energy-raster-layer']);
 bindToggle('toggle-biomass', ['biomass-layer']);
 </script>
