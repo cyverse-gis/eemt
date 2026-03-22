@@ -3055,9 +3055,9 @@
 <h2 id="data-sources">Data Sources<a class="headerlink" href="#data-sources" title="Permanent link">&para;</a></h2>
 <h3 id="dem">DEM<a class="headerlink" href="#dem" title="Permanent link">&para;</a></h3>
 <ul>
-<li><strong>Source</strong>: CyVerse Data Store (<code>/iplant/home/tswetnam/old_backups/swetnam_etal_2017/Boulder_Creek/Gordon/gordongulch_dem_10m_pitremoved.tif</code>)</li>
-<li><strong>Resolution</strong>: 10 m, UTM Zone 13N</li>
-<li><strong>Elevation range</strong>: 2,376 -- 2,800 m</li>
+<li><strong>Source</strong>: Derived from USGS 3DEP DRCOG 2020 ground-classified LiDAR returns, resampled from 0.5 m DTM to 10 m via block averaging with 3x3 pit filling</li>
+<li><strong>Resolution</strong>: 10 m, UTM Zone 13N (NAD83(2011) / EPSG:6342)</li>
+<li><strong>Elevation range</strong>: 2,377 -- 2,792 m</li>
 </ul>
 <h3 id="lidar-point-cloud">LiDAR Point Cloud<a class="headerlink" href="#lidar-point-cloud" title="Permanent link">&para;</a></h3>
 <ul>
@@ -3168,8 +3168,8 @@
 </thead>
 <tbody>
 <tr>
-<td><code>gordongulch_dem_10m_pitremoved.tif</code></td>
-<td>10 m DEM (pit-removed)</td>
+<td><code>gordongulch_dem_10m_3dep_cog.tif</code></td>
+<td>10 m DEM from 3DEP ground returns (COG)</td>
 </tr>
 <tr>
 <td><code>gordongulch_chm_05m.tif</code></td>

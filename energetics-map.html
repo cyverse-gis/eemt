@@ -254,7 +254,7 @@ map.on('load', () => {
   map.addSource('dem', {
     type: 'raster',
     tiles: [
-      `${TITILER_BASE}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=${encodeURIComponent(DATA_BASE + '/gordongulch_dem_10m_pitremoved_cog.tif')}&colormap_name=terrain&rescale=2376,2800`
+      `${TITILER_BASE}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=${encodeURIComponent(DATA_BASE + '/gordongulch_dem_10m_3dep_cog.tif')}&colormap_name=terrain&rescale=2376,2800`
     ],
     tileSize: 256,
   });
