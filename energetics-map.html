@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gordon Gulch — Interactive Energy Map</title>
+
+<!-- MapLibre GL JS -->
+<script src="https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.js"></script>
+<link href="https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.css" rel="stylesheet">
+
+<style>
+  :root {
+    --ink: #333333;
+    --light: #888888;
+    --warm: #c45b28;
+    --bg: #faf8f5;
+    --panel-bg: rgba(250, 248, 245, 0.95);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    color: var(--ink);
+    background: var(--bg);
+  }
+
+  #map { width: 100%; height: 100vh; }
+
+  .header {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    z-index: 10;
+    padding: 12px 20px;
+    background: linear-gradient(to bottom, var(--panel-bg), transparent);
+    pointer-events: none;
+  }
+
+  .header h1 {
+    font-size: 18px;
+    font-weight: normal;
+    letter-spacing: 0.5px;
+  }
+
+  .header .subtitle {
+    font-size: 11px;
+    color: var(--light);
+    margin-top: 2px;
+  }
+
+  .legend {
+    position: absolute;
+    bottom: 30px;
+    right: 10px;
+    z-index: 10;
+    background: var(--panel-bg);
+    border: 1px solid #ddd;
+    padding: 12px 16px;
+    font-size: 11px;
+    line-height: 1.6;
+    max-width: 220px;
+  }
+
+  .legend h3 {
+    font-size: 12px;
+    font-weight: normal;
+    margin-bottom: 6px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 4px;
+  }
+
+  .legend-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .legend-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .layer-toggle {
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    z-index: 10;
+    background: var(--panel-bg);
+    border: 1px solid #ddd;
+    padding: 10px 14px;
+    font-size: 11px;
+    font-family: 'Georgia', serif;
+  }
+
+  .layer-toggle h3 {
+    font-size: 12px;
+    font-weight: normal;
+    margin-bottom: 6px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 4px;
+  }
+
+  .layer-toggle label {
+    display: block;
+    cursor: pointer;
+    padding: 2px 0;
+    color: var(--ink);
+  }
+
+  .layer-toggle input[type="checkbox"] {
+    margin-right: 6px;
+  }
+
+  .maplibregl-popup-content {
+    font-family: 'Georgia', serif;
+    font-size: 12px;
+    padding: 10px 14px;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
+  .popup-title {
+    font-weight: bold;
+    margin-bottom: 4px;
+    color: var(--warm);
+  }
+
+  .popup-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .popup-label { color: var(--light); }
+  .popup-value { font-weight: bold; }
+
+  .stats-bar {
+    position: absolute;
+    bottom: 30px;
+    left: 10px;
+    z-index: 10;
+    background: var(--panel-bg);
+    border: 1px solid #ddd;
+    padding: 10px 14px;
+    font-size: 11px;
+    line-height: 1.6;
+  }
+
+  .stats-bar .stat-value {
+    font-weight: bold;
+    color: var(--warm);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Gordon Gulch Watershed — Landscape Energetics</h1>
+  <div class="subtitle">253,476 trees &middot; 5.82 &times; 10<sup>14</sup> J total energy &middot; 2.6 km&sup2; &middot; CZNet Boulder Creek</div>
+</div>
+
+<div id="map"></div>
+
+<div class="layer-toggle" id="layer-panel">
+  <h3>Layers</h3>
+  <label><input type="checkbox" id="toggle-chm" checked> Canopy Height</label>
+  <label><input type="checkbox" id="toggle-dem"> Elevation (DEM)</label>
+  <label><input type="checkbox" id="toggle-energy-raster"> Energy Density</label>
+  <label><input type="checkbox" id="toggle-trees" checked> Tree Stems</label>
+</div>
+
+<div class="legend">
+  <h3>Energy Content</h3>
+  <div class="legend-row"><div class="legend-swatch" style="background:#faf6f0"></div> &lt; 500 MJ</div>
+  <div class="legend-row"><div class="legend-swatch" style="background:#f5d5a0"></div> 500 &ndash; 2,000 MJ</div>
+  <div class="legend-row"><div class="legend-swatch" style="background:#e8a838"></div> 2,000 &ndash; 5,000 MJ</div>
+  <div class="legend-row"><div class="legend-swatch" style="background:#c45b28"></div> 5,000 &ndash; 10,000 MJ</div>
+  <div class="legend-row"><div class="legend-swatch" style="background:#7b2d26"></div> &gt; 10,000 MJ</div>
+  <div style="margin-top:8px; color: var(--light); font-size: 10px;">
+    HHV = 20.25 MJ/kg<br>
+    Jucker et al. (2017)
+  </div>
+</div>
+
+<div class="stats-bar">
+  <div>Trees: <span class="stat-value">253,476</span></div>
+  <div>Total AGB: <span class="stat-value">28.75 Gg</span></div>
+  <div>Total Energy: <span class="stat-value">5.82 &times; 10<sup>14</sup> J</span></div>
+  <div>Resolution: <span class="stat-value">0.5 m</span></div>
+</div>
+
+<script>
+const TITILER_BASE = 'https://titiler.cyverse.org';
+const DATA_BASE = 'https://data.cyverse.org/dav-anon/iplant/home/tswetnam/eemt';
+
+// TiTiler COG tile URL builder
+function cogTileUrl(filename) {
+  const encoded = encodeURIComponent(`${DATA_BASE}/${filename}`);
+  return `${TITILER_BASE}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=${encoded}`;
+}
+
+// Center of Gordon Gulch
+const CENTER = [-105.474, 40.016];
+
+const map = new maplibregl.Map({
+  container: 'map',
+  style: {
+    version: 8,
+    sources: {
+      'osm': {
+        type: 'raster',
+        tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+        tileSize: 256,
+        attribution: '&copy; OpenStreetMap contributors'
+      }
+    },
+    layers: [{
+      id: 'osm-base',
+      type: 'raster',
+      source: 'osm',
+      paint: { 'raster-opacity': 0.3, 'raster-saturation': -0.5 }
+    }]
+  },
+  center: CENTER,
+  zoom: 14,
+  maxZoom: 20,
+  minZoom: 10,
+});
+
+map.addControl(new maplibregl.NavigationControl(), 'top-left');
+map.addControl(new maplibregl.ScaleControl({ maxWidth: 200 }), 'bottom-left');
+
+map.on('load', () => {
+
+  // CHM raster layer via TiTiler
+  map.addSource('chm', {
+    type: 'raster',
+    tiles: [
+      `${TITILER_BASE}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=${encodeURIComponent(DATA_BASE + '/gordongulch_chm_05m_cog.tif')}&colormap_name=ylgn&rescale=0,30`
+    ],
+    tileSize: 256,
+  });
+  map.addLayer({
+    id: 'chm-layer',
+    type: 'raster',
+    source: 'chm',
+    paint: { 'raster-opacity': 0.7 },
+  });
+
+  // DEM raster layer
+  map.addSource('dem', {
+    type: 'raster',
+    tiles: [
+      `${TITILER_BASE}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=${encodeURIComponent(DATA_BASE + '/gordongulch_dem_10m_pitremoved_cog.tif')}&colormap_name=terrain&rescale=2376,2800`
+    ],
+    tileSize: 256,
+  });
+  map.addLayer({
+    id: 'dem-layer',
+    type: 'raster',
+    source: 'dem',
+    paint: { 'raster-opacity': 0.7 },
+    layout: { visibility: 'none' },
+  });
+
+  // Energy density raster
+  map.addSource('energy-raster', {
+    type: 'raster',
+    tiles: [
+      `${TITILER_BASE}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=${encodeURIComponent(DATA_BASE + '/gordongulch_energy_mj_05m_cog.tif')}&colormap_name=hot_r&rescale=0,15000`
+    ],
+    tileSize: 256,
+  });
+  map.addLayer({
+    id: 'energy-raster-layer',
+    type: 'raster',
+    source: 'energy-raster',
+    paint: { 'raster-opacity': 0.7 },
+    layout: { visibility: 'none' },
+  });
+
+  // Tree stems — load spatially-tiled GeoJSON on demand
+  // CyVerse WebDAV public URL (requires anonymous read permission on /iplant/home/tswetnam/eemt/)
+  const TILES_BASE = 'https://data.cyverse.org/dav-anon/iplant/home/tswetnam/eemt/tiles';
+  // Alternative: if WebDAV 401s persist, host tiles alongside this HTML
+  // const TILES_BASE = './tiles';
+
+  // Start with empty source, tiles loaded on demand
+  map.addSource('trees', {
+    type: 'geojson',
+    data: { type: 'FeatureCollection', features: [] },
+    cluster: true,
+    clusterMaxZoom: 16,
+    clusterRadius: 30,
+  });
+
+  // Tile index and loaded state
+  let tileIndex = [];
+  let loadedTiles = new Set();
+  let allFeatures = [];
+
+  // Fetch tile index then load visible tiles
+  fetch(`${TILES_BASE}/tile_index.json`)
+    .then(r => r.json())
+    .then(index => {
+      tileIndex = index;
+      loadVisibleTiles();
+    });
+
+  function loadVisibleTiles() {
+    const bounds = map.getBounds();
+    const sw = bounds.getSouthWest();
+    const ne = bounds.getNorthEast();
+
+    tileIndex.forEach(tile => {
+      const [tW, tS, tE, tN] = tile.bounds;
+      const key = tile.file;
+
+      // Skip already loaded or out-of-view tiles
+      if (loadedTiles.has(key)) return;
+      if (tE < sw.lng || tW > ne.lng || tN < sw.lat || tS > ne.lat) return;
+
+      loadedTiles.add(key);
+      fetch(`${TILES_BASE}/${tile.file}`)
+        .then(r => r.json())
+        .then(geojson => {
+          allFeatures = allFeatures.concat(geojson.features);
+          map.getSource('trees').setData({
+            type: 'FeatureCollection',
+            features: allFeatures,
+          });
+        })
+        .catch(err => console.warn(`Failed to load ${tile.file}:`, err));
+    });
+  }
+
+  // Load more tiles as the user pans/zooms
+  map.on('moveend', loadVisibleTiles);
+
+  // Clustered circles
+  map.addLayer({
+    id: 'tree-clusters',
+    type: 'circle',
+    source: 'trees',
+    filter: ['has', 'point_count'],
+    paint: {
+      'circle-color': [
+        'step', ['get', 'point_count'],
+        '#7fb069', 50,
+        '#3a7d44', 200,
+        '#1a472a'
+      ],
+      'circle-radius': [
+        'step', ['get', 'point_count'],
+        8, 50, 14, 200, 20
+      ],
+      'circle-opacity': 0.8,
+      'circle-stroke-width': 0.5,
+      'circle-stroke-color': '#333',
+    }
+  });
+
+  // Cluster count labels
+  map.addLayer({
+    id: 'tree-cluster-count',
+    type: 'symbol',
+    source: 'trees',
+    filter: ['has', 'point_count'],
+    layout: {
+      'text-field': '{point_count_abbreviated}',
+      'text-size': 10,
+    },
+    paint: { 'text-color': '#fff' }
+  });
+
+  // Individual tree points (unclustered)
+  map.addLayer({
+    id: 'tree-points',
+    type: 'circle',
+    source: 'trees',
+    filter: ['!', ['has', 'point_count']],
+    paint: {
+      'circle-color': [
+        'interpolate', ['linear'], ['get', 'energy_mj'],
+        0, '#faf6f0',
+        500, '#f5d5a0',
+        2000, '#e8a838',
+        5000, '#c45b28',
+        10000, '#7b2d26'
+      ],
+      'circle-radius': [
+        'interpolate', ['linear'], ['zoom'],
+        14, 1.5,
+        17, 4,
+        20, 8
+      ],
+      'circle-opacity': 0.8,
+      'circle-stroke-width': 0.3,
+      'circle-stroke-color': '#333',
+    }
+  });
+
+  // Popup on tree click
+  map.on('click', 'tree-points', (e) => {
+    const p = e.features[0].properties;
+    const coords = e.features[0].geometry.coordinates.slice();
+
+    new maplibregl.Popup({ offset: 10, maxWidth: '220px' })
+      .setLngLat(coords)
+      .setHTML(`
+        <div class="popup-title">Tree #${p.id}</div>
+        <div class="popup-row"><span class="popup-label">Height</span><span class="popup-value">${p.height_m} m</span></div>
+        <div class="popup-row"><span class="popup-label">Crown &empty;</span><span class="popup-value">${p.crown_d_m} m</span></div>
+        <div class="popup-row"><span class="popup-label">Biomass</span><span class="popup-value">${p.agb_kg} kg</span></div>
+        <div class="popup-row"><span class="popup-label">Energy</span><span class="popup-value">${p.energy_mj} MJ</span></div>
+      `)
+      .addTo(map);
+  });
+
+  // Zoom into cluster on click
+  map.on('click', 'tree-clusters', (e) => {
+    const clusterId = e.features[0].properties.cluster_id;
+    map.getSource('trees').getClusterExpansionZoom(clusterId, (err, zoom) => {
+      if (err) return;
+      map.easeTo({ center: e.features[0].geometry.coordinates, zoom });
+    });
+  });
+
+  // Cursor changes
+  map.on('mouseenter', 'tree-points', () => map.getCanvas().style.cursor = 'pointer');
+  map.on('mouseleave', 'tree-points', () => map.getCanvas().style.cursor = '');
+  map.on('mouseenter', 'tree-clusters', () => map.getCanvas().style.cursor = 'pointer');
+  map.on('mouseleave', 'tree-clusters', () => map.getCanvas().style.cursor = '');
+});
+
+// Layer toggles
+function bindToggle(checkboxId, layerIds) {
+  document.getElementById(checkboxId).addEventListener('change', (e) => {
+    const vis = e.target.checked ? 'visible' : 'none';
+    layerIds.forEach(id => {
+      if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', vis);
+    });
+  });
+}
+
+bindToggle('toggle-chm', ['chm-layer']);
+bindToggle('toggle-dem', ['dem-layer']);
+bindToggle('toggle-energy-raster', ['energy-raster-layer']);
+bindToggle('toggle-trees', ['tree-clusters', 'tree-cluster-count', 'tree-points']);
+</script>
+</body>
+</html>

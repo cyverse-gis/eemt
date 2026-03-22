@@ -93,7 +93,7 @@
 
 .hero-section .md-button--primary {
   background-color: white;
-  color: #0a6847;
+  color: var(--md-primary-fg-color);
   border-color: white;
 }
 
@@ -141,31 +141,23 @@
   font-size: 1.05em !important;
 }
 
-.eemt-equation {
-  background-color: var(--eemt-surface);
-  border-left: 3px solid var(--md-primary-fg-color);
-  padding: 1.25rem 1.5rem;
-  margin: 1.75rem 0;
-  border-radius: 0 var(--eemt-radius) var(--eemt-radius) 0;
-  box-shadow: var(--eemt-shadow-sm);
-}
-
-.eemt-equation .MathJax {
-  font-size: 1.15em !important;
-}
-
+.eemt-equation,
 .equation-block {
   background-color: var(--eemt-surface);
   border-left: 3px solid var(--md-primary-fg-color);
   padding: 1.25rem 1.5rem;
   margin: 1.75rem 0;
   border-radius: 0 var(--eemt-radius) var(--eemt-radius) 0;
-  overflow-x: auto;
   box-shadow: var(--eemt-shadow-sm);
 }
 
+.equation-block {
+  overflow-x: auto;
+}
+
+.eemt-equation .MathJax,
 .equation-block .MathJax {
-  font-size: 1.1em !important;
+  font-size: 1.15em !important;
 }
 
 .equation-label {
@@ -497,4 +489,88 @@
 
 .performance-metric .icon {
   margin-right: 0.3rem;
+}
+
+/* --- Home Page Features & Stats --- */
+.eemt-home-features {
+  padding: 2.5rem 0;
+  margin-top: 2rem;
+  border-top: 1px solid var(--eemt-border);
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.feature-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  background: var(--md-default-bg-color);
+  border: 1px solid var(--eemt-border);
+  border-radius: var(--eemt-radius);
+  transition: all 0.2s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--eemt-shadow-lg);
+  border-color: var(--md-primary-fg-color);
+}
+
+.feature-icon {
+  color: var(--md-primary-fg-color);
+  margin-bottom: 0.25rem;
+}
+
+.feature-card strong {
+  font-size: 1rem;
+  color: var(--md-default-fg-color);
+}
+
+.feature-card span {
+  font-size: 0.85rem;
+  color: var(--eemt-text-secondary);
+  line-height: 1.5;
+}
+
+.eemt-stats-section {
+  background: var(--eemt-gradient);
+  padding: 3.5rem 0;
+  margin-top: 0;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 2.75rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1.1;
+  margin-bottom: 0.4rem;
+}
+
+.stat-label {
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+[data-md-color-scheme="slate"] .eemt-stats-section {
+  background: linear-gradient(135deg, #064e32 0%, #0a6847 50%, #065f46 100%);
 }
