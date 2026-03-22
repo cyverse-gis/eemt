@@ -119,9 +119,9 @@ Energy density was then calculated per unit area for spatial comparison.
 
 ### DEM
 
-- **Source**: CyVerse Data Store (`/iplant/home/tswetnam/old_backups/swetnam_etal_2017/Boulder_Creek/Gordon/gordongulch_dem_10m_pitremoved.tif`)
-- **Resolution**: 10 m, UTM Zone 13N
-- **Elevation range**: 2,376 -- 2,800 m
+- **Source**: Derived from USGS 3DEP DRCOG 2020 ground-classified LiDAR returns, resampled from 0.5 m DTM to 10 m via block averaging with 3x3 pit filling
+- **Resolution**: 10 m, UTM Zone 13N (NAD83(2011) / EPSG:6342)
+- **Elevation range**: 2,377 -- 2,792 m
 
 ### LiDAR Point Cloud
 
@@ -176,7 +176,7 @@ All data products are archived on the [CyVerse Data Store](https://de.cyverse.or
 
 | File | Description |
 |------|-------------|
-| `gordongulch_dem_10m_pitremoved.tif` | 10 m DEM (pit-removed) |
+| `gordongulch_dem_10m_3dep_cog.tif` | 10 m DEM from 3DEP ground returns (COG) |
 | `gordongulch_chm_05m.tif` | 0.5 m Canopy Height Model |
 | `gordongulch_dsm_05m.tif` | 0.5 m Digital Surface Model |
 | `gordongulch_dtm_05m.tif` | 0.5 m Digital Terrain Model |

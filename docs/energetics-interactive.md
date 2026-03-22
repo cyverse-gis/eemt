@@ -23,7 +23,7 @@ Explore the Gordon Gulch landscape energetics dataset interactively. The map dis
 | Layer | Source | Description |
 |-------|--------|-------------|
 | **Canopy Height** | `gordongulch_chm_05m_cog.tif` | 0.5 m CHM from 3DEP DRCOG 2020 LiDAR |
-| **Elevation (DEM)** | `gordongulch_dem_10m_pitremoved_cog.tif` | 10 m pit-removed DEM |
+| **Elevation (DEM)** | `gordongulch_dem_10m_3dep_cog.tif` | 10 m pit-removed DEM |
 | **Energy Density** | `gordongulch_energy_mj_05m_cog.tif` | Per-tree energy content raster |
 | **Tree Stems** | `tiles/*.geojson` | 253,476 segmented trees (54 spatial tiles) |
 
@@ -47,7 +47,7 @@ All COGs and GeoJSON are accessible via WebDAV:
 
 ```
 https://data.cyverse.org/dav-anon/iplant/home/tswetnam/eemt/gordongulch_chm_05m_cog.tif
-https://data.cyverse.org/dav-anon/iplant/home/tswetnam/eemt/gordongulch_dem_10m_pitremoved_cog.tif
+https://data.cyverse.org/dav-anon/iplant/home/tswetnam/eemt/gordongulch_dem_10m_3dep_cog.tif
 https://data.cyverse.org/dav-anon/iplant/home/tswetnam/eemt/gordongulch_energy_mj_05m_cog.tif
 https://data.cyverse.org/dav-anon/iplant/home/tswetnam/eemt/tiles/tile_index.json
 ```
