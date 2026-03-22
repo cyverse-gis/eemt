@@ -38,7 +38,10 @@ nav = [
         { "Solar Radiation" = "algorithms/solar-radiation.md" },
         { "Climate Integration" = "algorithms/climate-integration.md" },
         { "Topographic Analysis" = "algorithms/topographic-analysis.md" },
-        { "EEMT Calculations" = "algorithms/eemt-calculations.md" }
+        { "EEMT Calculations" = "algorithms/eemt-calculations.md" },
+        { "Landscape Energetics" = "energetics.md" },
+        { "Energetics Figures" = "energetics-figures.md" },
+        { "Interactive Map" = "energetics-interactive.md" }
     ]},
     { "Data Sources" = [
         "data-sources/index.md"

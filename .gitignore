@@ -6,6 +6,14 @@
 *.tif
 *.tiff
 
+# LiDAR point cloud files
+*.laz
+*.las
+*.copc.laz
+
+# CSV data files (large)
+data/
+
 # Temporary and output files
 *.pyc
 __pycache__/
