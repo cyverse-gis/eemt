@@ -196,6 +196,180 @@ impl RadiationPipeline {
     }
 }
 
+/// Uniform buffer layout for horizon shader — must match WGSL HorizonParams.
+#[repr(C)]
+#[derive(Copy, Clone, Debug, bytemuck::Pod, bytemuck::Zeroable)]
+struct GpuHorizonParams {
+    n_pixels: u32,
+    cols: u32,
+    rows: u32,
+    n_directions: u32,
+    direction_idx: u32,
+    ew_res: f32,
+    ns_res: f32,
+    _pad: u32,
+}
+
+/// GPU horizon pre-computation pipeline.
+pub struct HorizonPipeline {
+    pipeline: wgpu::ComputePipeline,
+    bind_group_layout: wgpu::BindGroupLayout,
+}
+
+/// GPU horizon buffer — stores pre-computed angles on GPU.
+pub struct GpuHorizonBuffer {
+    pub buffer: wgpu::Buffer,
+    pub staging: wgpu::Buffer,
+    pub n_pixels: u32,
+    pub n_directions: u32,
+}
+
+impl HorizonPipeline {
+    pub fn new(ctx: &GpuContext) -> Self {
+        let shader_source = include_str!("shaders/horizon.wgsl");
+        let shader_module = ctx.device.create_shader_module(wgpu::ShaderModuleDescriptor {
+            label: Some("horizon_shader"),
+            source: wgpu::ShaderSource::Wgsl(shader_source.into()),
+        });
+
+        let bind_group_layout =
+            ctx.device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
+                label: Some("horizon_layout"),
+                entries: &[
+                    bgl_entry(0, wgpu::BufferBindingType::Uniform),
+                    bgl_entry(1, wgpu::BufferBindingType::Storage { read_only: true }),
+                    bgl_entry(2, wgpu::BufferBindingType::Storage { read_only: true }),
+                    bgl_entry(3, wgpu::BufferBindingType::Storage { read_only: false }),
+                ],
+            });
+
+        let pipeline_layout = ctx.device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
+            label: Some("horizon_pipeline_layout"),
+            bind_group_layouts: &[&bind_group_layout],
+            push_constant_ranges: &[],
+        });
+
+        let pipeline = ctx.device.create_compute_pipeline(&wgpu::ComputePipelineDescriptor {
+            label: Some("horizon_pipeline"),
+            layout: Some(&pipeline_layout),
+            module: &shader_module,
+            entry_point: Some("main"),
+            compilation_options: Default::default(),
+            cache: None,
+        });
+
+        HorizonPipeline { pipeline, bind_group_layout }
+    }
+
+    /// Create horizon buffer on GPU.
+    pub fn create_buffer(&self, ctx: &GpuContext, n_pixels: u32, n_directions: u32) -> GpuHorizonBuffer {
+        let buf_size = (n_pixels as u64) * (n_directions as u64) * 4;
+
+        let buffer = ctx.device.create_buffer(&wgpu::BufferDescriptor {
+            label: Some("horizons"),
+            size: buf_size,
+            usage: wgpu::BufferUsages::STORAGE | wgpu::BufferUsages::COPY_SRC,
+            mapped_at_creation: false,
+        });
+
+        let staging = ctx.device.create_buffer(&wgpu::BufferDescriptor {
+            label: Some("horizon_staging"),
+            size: buf_size,
+            usage: wgpu::BufferUsages::MAP_READ | wgpu::BufferUsages::COPY_DST,
+            mapped_at_creation: false,
+        });
+
+        GpuHorizonBuffer { buffer, staging, n_pixels, n_directions }
+    }
+
+    /// Compute horizon angles for all pixels and all directions.
+    ///
+    /// Dispatches the shader once per direction, iterating over N directions.
+    pub fn compute(
+        &self,
+        ctx: &GpuContext,
+        buffers: &GpuBuffers,
+        horizon_buf: &GpuHorizonBuffer,
+        ew_res: f64,
+        ns_res: f64,
+    ) {
+        let workgroups = (buffers.n_pixels + 63) / 64;
+
+        for dir in 0..horizon_buf.n_directions {
+            let params = GpuHorizonParams {
+                n_pixels: buffers.n_pixels,
+                cols: buffers.cols,
+                rows: buffers.rows,
+                n_directions: horizon_buf.n_directions,
+                direction_idx: dir,
+                ew_res: ew_res as f32,
+                ns_res: ns_res as f32,
+                _pad: 0,
+            };
+
+            let params_buffer = ctx.device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+                label: Some("horizon_params"),
+                contents: bytemuck::bytes_of(&params),
+                usage: wgpu::BufferUsages::UNIFORM,
+            });
+
+            let bind_group = ctx.device.create_bind_group(&wgpu::BindGroupDescriptor {
+                label: Some("horizon_bind_group"),
+                layout: &self.bind_group_layout,
+                entries: &[
+                    wgpu::BindGroupEntry { binding: 0, resource: params_buffer.as_entire_binding() },
+                    wgpu::BindGroupEntry { binding: 1, resource: buffers.dem.as_entire_binding() },
+                    wgpu::BindGroupEntry { binding: 2, resource: buffers.validity.as_entire_binding() },
+                    wgpu::BindGroupEntry { binding: 3, resource: horizon_buf.buffer.as_entire_binding() },
+                ],
+            });
+
+            let mut encoder = ctx.device.create_command_encoder(&wgpu::CommandEncoderDescriptor {
+                label: Some("horizon_encoder"),
+            });
+            {
+                let mut pass = encoder.begin_compute_pass(&wgpu::ComputePassDescriptor {
+                    label: Some("horizon_pass"),
+                    timestamp_writes: None,
+                });
+                pass.set_pipeline(&self.pipeline);
+                pass.set_bind_group(0, &bind_group, &[]);
+                pass.dispatch_workgroups(workgroups, 1, 1);
+            }
+            ctx.queue.submit(Some(encoder.finish()));
+        }
+
+        // Wait for all directions to complete
+        ctx.device.poll(wgpu::Maintain::Wait);
+    }
+
+    /// Read back horizon data to CPU.
+    pub fn readback(&self, ctx: &GpuContext, horizon_buf: &GpuHorizonBuffer) -> Vec<f32> {
+        let buf_size = (horizon_buf.n_pixels as u64) * (horizon_buf.n_directions as u64) * 4;
+
+        let mut encoder = ctx.device.create_command_encoder(&wgpu::CommandEncoderDescriptor {
+            label: Some("horizon_readback_encoder"),
+        });
+        encoder.copy_buffer_to_buffer(&horizon_buf.buffer, 0, &horizon_buf.staging, 0, buf_size);
+        ctx.queue.submit(Some(encoder.finish()));
+
+        let buffer_slice = horizon_buf.staging.slice(..);
+        let (tx, rx) = std::sync::mpsc::channel();
+        buffer_slice.map_async(wgpu::MapMode::Read, move |result| {
+            tx.send(result).unwrap();
+        });
+        ctx.device.poll(wgpu::Maintain::Wait);
+        rx.recv().unwrap().expect("Horizon readback failed");
+
+        let data = buffer_slice.get_mapped_range();
+        let result: Vec<f32> = bytemuck::cast_slice(&data).to_vec();
+        drop(data);
+        horizon_buf.staging.unmap();
+
+        result
+    }
+}
+
 /// Helper to create bind group layout entries.
 fn bgl_entry(binding: u32, ty: wgpu::BufferBindingType) -> wgpu::BindGroupLayoutEntry {
     wgpu::BindGroupLayoutEntry {
