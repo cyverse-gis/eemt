@@ -1,0 +1,17 @@
+[package]
+name = "rsun-gpu"
+version = "0.1.0"
+edition = "2021"
+description = "GPU-accelerated solar radiation via wgpu compute shaders"
+license = "GPL-2.0-or-later"
+
+[dependencies]
+rsun-core = { path = "../rsun-core" }
+wgpu = "24"
+pollster = "0.4"  # block on async wgpu calls
+bytemuck = { version = "1", features = ["derive"] }
+log = "0.4"
+env_logger = "0.11"
+
+[dev-dependencies]
+approx = "0.5"
