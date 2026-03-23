@@ -1,0 +1,16 @@
+[package]
+name = "rsun-py"
+version = "0.1.0"
+edition = "2021"
+description = "Python bindings for rsun solar radiation library"
+license = "GPL-2.0-or-later"
+
+[lib]
+name = "rsun"
+crate-type = ["cdylib"]
+
+[dependencies]
+rsun-core = { path = "../rsun-core", features = ["io"] }
+rsun-gpu = { path = "../rsun-gpu" }
+pyo3 = { version = "0.23", features = ["extension-module"] }
+numpy = "0.23"

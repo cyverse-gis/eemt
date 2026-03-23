@@ -4,4 +4,5 @@ members = [
     "rsun-core",
     "rsun-cli",
     "rsun-gpu",
+    "rsun-py",
 ]

@@ -1,0 +1,14 @@
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "rsun"
+version = "0.1.0"
+description = "GPU-accelerated solar radiation modeling (Rust + wgpu)"
+requires-python = ">=3.9"
+license = "GPL-2.0-or-later"
+dependencies = ["numpy"]
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
