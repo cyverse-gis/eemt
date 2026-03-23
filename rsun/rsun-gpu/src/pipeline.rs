@@ -23,7 +23,7 @@ struct GpuParams {
     solar_constant: f32,
     declination: f32,
     g_norm_extra: f32,
-    _pad0: f32,
+    dispatch_x: u32,
     _pad1: f32,
 }
 
@@ -103,6 +103,12 @@ impl RadiationPipeline {
         let g_norm_extra =
             solar::corrected_solar_constant(params.day, params.solar_constant) as f32;
 
+        // Compute 2D dispatch dimensions to stay within 65535 workgroup limit
+        let total_workgroups = (buffers.n_pixels + 63) / 64;
+        let max_wg = 65535u32;
+        let dispatch_x = total_workgroups.min(max_wg);
+        let dispatch_y = (total_workgroups + dispatch_x - 1) / dispatch_x;
+
         let gpu_params = GpuParams {
             day: params.day as u32,
             n_pixels: buffers.n_pixels,
@@ -114,7 +120,7 @@ impl RadiationPipeline {
             solar_constant: params.solar_constant as f32,
             declination: decl,
             g_norm_extra,
-            _pad0: 0.0,
+            dispatch_x,
             _pad1: 0.0,
         };
 
@@ -165,9 +171,7 @@ impl RadiationPipeline {
             ],
         });
 
-        // Dispatch: 64 threads per workgroup
-        let workgroups = (buffers.n_pixels + 63) / 64;
-
+        // Dispatch: 2D grid to handle >65535 workgroups
         let mut encoder =
             ctx.device
                 .create_command_encoder(&wgpu::CommandEncoderDescriptor {
@@ -180,7 +184,7 @@ impl RadiationPipeline {
             });
             pass.set_pipeline(&self.pipeline);
             pass.set_bind_group(0, &bind_group, &[]);
-            pass.dispatch_workgroups(workgroups, 1, 1);
+            pass.dispatch_workgroups(dispatch_x, dispatch_y, 1);
         }
         ctx.queue.submit(Some(encoder.finish()));
 
@@ -207,7 +211,7 @@ struct GpuHorizonParams {
     direction_idx: u32,
     ew_res: f32,
     ns_res: f32,
-    _pad: u32,
+    dispatch_x: u32,
 }
 
 /// GPU horizon pre-computation pipeline.
@@ -293,7 +297,10 @@ impl HorizonPipeline {
         ew_res: f64,
         ns_res: f64,
     ) {
-        let workgroups = (buffers.n_pixels + 63) / 64;
+        let total_workgroups = (buffers.n_pixels + 63) / 64;
+        let max_wg = 65535u32;
+        let h_dispatch_x = total_workgroups.min(max_wg);
+        let h_dispatch_y = (total_workgroups + h_dispatch_x - 1) / h_dispatch_x;
 
         for dir in 0..horizon_buf.n_directions {
             let params = GpuHorizonParams {
@@ -304,7 +311,7 @@ impl HorizonPipeline {
                 direction_idx: dir,
                 ew_res: ew_res as f32,
                 ns_res: ns_res as f32,
-                _pad: 0,
+                dispatch_x: h_dispatch_x,
             };
 
             let params_buffer = ctx.device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
@@ -334,7 +341,7 @@ impl HorizonPipeline {
                 });
                 pass.set_pipeline(&self.pipeline);
                 pass.set_bind_group(0, &bind_group, &[]);
-                pass.dispatch_workgroups(workgroups, 1, 1);
+                pass.dispatch_workgroups(h_dispatch_x, h_dispatch_y, 1);
             }
             ctx.queue.submit(Some(encoder.finish()));
         }

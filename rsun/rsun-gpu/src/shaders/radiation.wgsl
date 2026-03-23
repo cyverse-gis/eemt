@@ -18,7 +18,7 @@ struct Params {
     solar_constant: f32, // W/m² (typically 1367)
     declination: f32,    // solar declination in radians
     g_norm_extra: f32,   // corrected extraterrestrial irradiance
-    _pad0: f32,
+    dispatch_x: u32,     // workgroups in x dimension (for 2D dispatch)
     _pad1: f32,
 }
 
@@ -237,7 +237,8 @@ fn sunrise_sunset(lat: f32, decl: f32) -> vec2<f32> {
 
 @compute @workgroup_size(64)
 fn main(@builtin(global_invocation_id) id: vec3<u32>) {
-    let pixel_idx = id.x;
+    // 2D dispatch: pixel_idx = id.y * (dispatch_x * 64) + id.x
+    let pixel_idx = id.y * params.dispatch_x * 64u + id.x;
     if pixel_idx >= params.n_pixels {
         return;
     }
