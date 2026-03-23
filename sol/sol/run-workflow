@@ -40,7 +40,19 @@ def create_project_directories(proj_dir):
         os.makedirs(os.path.join(proj_dir,"insol","daily"))
         os.makedirs(os.path.join(proj_dir,"insol","monthly"))
 
-# Run r.sun.mp to generate global irradiation and hourly sunlight
+# Pre-compute slope and aspect once (saves ~30-60s per daily task at high resolution)
+def prep_task(args, makeflow, proj_dir, dem):
+    makeflow += "\n\n\n"
+    makeflow += "CATEGORY=\"prep\"\n"
+    makeflow += "CORES=" + str(args.num_threads) + "\n"
+    makeflow += "MEMORY=" + str(args.num_threads * 1000) + "\n"
+    makeflow += "DISK=" + str(args.num_threads * 2000) + "\n"
+    makeflow += "\n"
+    makeflow += "slope_dec.tif aspect_dec.tif : rsun_prep.sh %s \n" % (dem)
+    makeflow += "\t/bin/bash rsun_prep.sh %s -D .\n" % (dem)
+    return makeflow
+
+# Run r.sun for each day using pre-computed slope and aspect
 def rsun_tasks(args, makeflow, proj_dir, days, dem):
     tasks=0
 
@@ -52,8 +64,8 @@ def rsun_tasks(args, makeflow, proj_dir, days, dem):
 
     for day in days: #days is equal to range(1,366)
         makeflow += "\n"
-        makeflow += "global/daily/total_sun_day_%d.tif insol/daily/hours_sun_day_%d.tif : rsun.sh %s \n" %(day, day, dem)
-        makeflow += "\t/bin/bash rsun.sh %s -d %d -D . -s %s -l %s -a %s -n %d\n" % (dem, day, args.step, args.linke_value, args.albedo_value, args.num_threads)
+        makeflow += "global/daily/total_sun_day_%d.tif insol/daily/hours_sun_day_%d.tif : rsun_day.sh %s slope_dec.tif aspect_dec.tif \n" %(day, day, dem)
+        makeflow += "\t/bin/bash rsun_day.sh %s slope_dec.tif aspect_dec.tif -d %d -D . -s %s -l %s -a %s -n %d\n" % (dem, day, args.step, args.linke_value, args.albedo_value, args.num_threads)
         tasks=tasks+1
     return makeflow, tasks
 
@@ -142,18 +154,21 @@ def main():
     makeflow += "DISK=2000\n" # increased disk from 1GB to 2GB
 
     # Create the full workflow - this means makeflow rules for all the compute steps
-    
-    # Copy the DEM into the project directory
-    shutil.copy(dem, proj_dir) 
-    
-    # Call GRASS r.sun and calculate for days 1-365 of the year
-    makeflow,tasks_sun = rsun_tasks(args, makeflow, proj_dir, range(1,366), os.path.basename(dem)) 
-    
-    # Call GRASS and calculate sum global radiation and hours of insolation
-    makeflow,tasks_avg = monthly_sum(makeflow, proj_dir, os.path.basename(dem)) 
 
-    # Copies of binaries
-    for binary in ["rsum.sh", "rsun.sh"]:
+    # Copy the DEM into the project directory
+    shutil.copy(dem, proj_dir)
+
+    # Pre-compute slope and aspect once (all daily tasks depend on this)
+    makeflow = prep_task(args, makeflow, proj_dir, os.path.basename(dem))
+
+    # Call GRASS r.sun and calculate for days 1-365 of the year
+    makeflow,tasks_sun = rsun_tasks(args, makeflow, proj_dir, range(1,366), os.path.basename(dem))
+
+    # Call GRASS and calculate sum global radiation and hours of insolation
+    makeflow,tasks_avg = monthly_sum(makeflow, proj_dir, os.path.basename(dem))
+
+    # Copies of binaries (optimized: prep + day scripts, plus legacy rsun.sh and rsum.sh)
+    for binary in ["rsum.sh", "rsun.sh", "rsun_prep.sh", "rsun_day.sh"]:
         shutil.copy2("%s/%s" %(script_location, binary), "%s/%s" %(proj_dir, binary))
     
     os.chdir(proj_dir)

@@ -363,6 +363,119 @@ def check_physical_limits(radiation):
 3. Use monthly representative days instead of full year
 4. Enable GPU acceleration if available
 
+## Gordon Gulch Multi-Resolution Example
+
+This example demonstrates solar radiation modeling across multiple spatial resolutions using USGS 3DEP LiDAR-derived elevation data from Gordon Gulch, a [Critical Zone Collaborative Network](https://criticalzone.org/) (CZNet) site in the Arapahoe and Roosevelt National Forest, Colorado.
+
+**Study area**: 2.6 km², elevation 2,446--2,737 m, dominated by *Pinus ponderosa* forest. See [Landscape Energetics](../energetics.md) for LiDAR tree census and biomass-energy analysis of this site.
+
+### Input Data
+
+All elevation surfaces are derived from the USGS 3DEP CO DRCOG 2020 LiDAR collection (99 million points, 29.5 million ground-classified). Coordinate system: UTM Zone 13N (NAD83(2011) / EPSG:6342).
+
+| Surface | Resolution | Source | File |
+|---------|-----------|--------|------|
+| DEM | 10 m | 3DEP ground returns, block-averaged with 3x3 pit fill | `gordongulch_dem_10m_3dep_cog.tif` |
+| DTM | 0.5 m | 3DEP ground-classified mean returns | `gordongulch_dtm_05m.tif` |
+| DSM | 0.5 m | 3DEP maximum LiDAR returns (canopy-top surface) | `gordongulch_dsm_05m.tif` |
+| DTM | 5 m, 2 m, 1 m | Bilinear resampling from 0.5 m DTM | Generated via `gdalwarp` |
+
+### Generating Multi-Resolution DEMs
+
+Intermediate resolution DEMs are created by resampling the 0.5 m DTM:
+
+```bash
+# Generate 5m, 2m, and 1m DEMs from the 0.5m DTM
+gdalwarp -tr 5 5 -r bilinear gordongulch_dtm_05m.tif gordongulch_dtm_5m.tif
+gdalwarp -tr 2 2 -r bilinear gordongulch_dtm_05m.tif gordongulch_dtm_2m.tif
+gdalwarp -tr 1 1 -r bilinear gordongulch_dtm_05m.tif gordongulch_dtm_1m.tif
+```
+
+### Running the Solar Workflow
+
+Each resolution requires different parameter tuning. The workflow pre-computes slope and aspect once via `rsun_prep.sh`, then runs 365 daily `r.sun` tasks using the pre-computed surfaces. This optimization eliminates redundant `r.slope.aspect` calls that would otherwise repeat identically for each day.
+
+```bash
+# Example: 10m resolution (fastest, ~1 CPU-hour)
+docker run --rm \
+  -v $(pwd)/data/gordon_gulch:/data/input:ro \
+  -v $(pwd)/output/10m:/data/output:rw \
+  eemt:ubuntu24.04 \
+  python /opt/eemt/bin/run-solar-workflow.py \
+  --dem /data/input/gordongulch_dem_10m_3dep_cog.tif \
+  --output /data/output \
+  --step 15 --num-threads 8 --job-id gg-10m
+
+# Example: 0.5m DTM (highest resolution bare-earth, ~380 CPU-hours)
+docker run --rm \
+  -v $(pwd)/data/gordon_gulch:/data/input:ro \
+  -v $(pwd)/output/05m-dtm:/data/output:rw \
+  eemt:ubuntu24.04 \
+  python /opt/eemt/bin/run-solar-workflow.py \
+  --dem /data/input/gordongulch_dtm_05m.tif \
+  --output /data/output \
+  --step 5 --num-threads 1 --job-id gg-05m-dtm
+
+# Example: 0.5m DSM (canopy-top surface for shadow comparison)
+docker run --rm \
+  -v $(pwd)/data/gordon_gulch:/data/input:ro \
+  -v $(pwd)/output/05m-dsm:/data/output:rw \
+  eemt:ubuntu24.04 \
+  python /opt/eemt/bin/run-solar-workflow.py \
+  --dem /data/input/gordongulch_dsm_05m.tif \
+  --output /data/output \
+  --step 5 --num-threads 1 --job-id gg-05m-dsm
+```
+
+### Computation Scaling
+
+Solar radiation computation scales with the number of raster cells. The table below shows estimated resources for each resolution across the Gordon Gulch study area (2.6 km²):
+
+| Resolution | Raster Cells | Step | Threads | RAM per Task | Total CPU-Hours | Output Size |
+|-----------|-------------|------|---------|-------------|----------------|-------------|
+| 10 m | ~128K | 15 min | 8 | 0.5 GB | ~1 hr | ~50 MB |
+| 5 m | ~510K | 10 min | 4 | 1 GB | ~4 hrs | ~200 MB |
+| 2 m | ~3.2M | 10 min | 2 | 2 GB | ~25 hrs | ~1.2 GB |
+| 1 m | ~12.8M | 5 min | 2 | 5 GB | ~95 hrs | ~5 GB |
+| 0.5 m DTM | ~51.4M | 5 min | 1 | 16 GB | ~380 hrs | ~20 GB |
+| 0.5 m DSM | ~51.4M | 5 min | 1 | 16 GB | ~380 hrs | ~20 GB |
+
+**Memory management**: At 0.5 m resolution, each `r.sun` task requires approximately 16 GB of RAM. Limit `--num-threads` to 1 and set `--local-cores` accordingly to prevent out-of-memory failures. On a machine with 256 GB RAM, up to 16 daily tasks can run concurrently.
+
+**Slope/aspect optimization**: The workflow pre-computes slope and aspect rasters once before the 365 daily tasks begin. At 0.5 m (51.4M cells), this eliminates approximately 3--6 hours of redundant `r.slope.aspect` computation per resolution.
+
+### Resolution Effects on Solar Radiation
+
+Finer spatial resolution captures topographic detail that significantly affects radiation estimates:
+
+- **Shadow patterns**: At 10 m, narrow ravines and ridgelines are smoothed, underestimating shadow duration. At 0.5--1 m, micro-topographic features cast shadows that are resolved in the radiation field.
+- **North-facing slopes**: Fine-resolution DEMs better capture steep north-facing slopes that receive substantially less radiation. At 10 m, these slopes are averaged with adjacent terrain, biasing radiation estimates high.
+- **Diminishing returns**: For gently rolling terrain, the difference between 1 m and 0.5 m may be small. The greatest resolution sensitivity occurs in complex, incised terrain with steep slopes.
+- **Edge effects**: At fine resolution, terrain shadowing from features outside the DEM extent becomes more important. Buffer the DEM beyond the study area boundary to avoid edge artifacts.
+
+### Canopy Effects: DTM vs DSM Comparison
+
+To understand how forest canopy modifies the solar radiation field, run `r.sun` on both the Digital Terrain Model (DTM, bare-earth surface) and the Digital Surface Model (DSM, canopy-top surface) at 0.5 m resolution:
+
+- **DTM solar radiation**: Energy reaching the bare ground surface, as if no vegetation were present. This represents the maximum potential ground-level radiation.
+- **DSM solar radiation**: Energy intercepted at the top of the canopy. Trees are represented as elevated terrain features that cast shadows on neighboring ground and canopy.
+- **DTM -- DSM difference**: Quantifies the canopy shadow effect. Areas behind (north of) tall trees receive substantially less radiation on the DSM surface than on the DTM surface. This difference map reveals the spatial pattern of forest canopy light modification.
+
+!!! note "Why DSM and not CHM?"
+    The Canopy Height Model (CHM = DSM -- DTM) represents *relative* tree heights above ground, not an absolute elevation surface. Running `r.sun` directly on a CHM is not scientifically meaningful because `r.sun` requires true elevation for computing solar geometry, atmospheric path length, and terrain shadows. The DSM is the correct surface for modeling canopy-level radiation interception.
+
+The DTM vs DSM comparison complements the [Landscape Energetics](../energetics.md) analysis, which quantifies the biomass energy stored in the 253,476 individual trees detected across Gordon Gulch. Together, these analyses connect incoming solar radiation to the energy embodied in vegetation structure.
+
+## Resolution Selection Guide
+
+| Use Case | Resolution | Step Size | Notes |
+|----------|-----------|-----------|-------|
+| Regional surveys (>100 km²) | 10--30 m | 15 min | Use 3DEP 10 m or SRTM 30 m DEMs |
+| Watershed analysis (1--100 km²) | 5--10 m | 10--15 min | Good balance of topographic detail and speed |
+| Site-scale studies (<1 km²) | 1--2 m | 5--10 min | LiDAR DTM recommended for terrain detail |
+| Canopy interaction studies | 0.5--1 m DTM + DSM | 5 min | Requires LiDAR-derived surfaces; compare DTM vs DSM |
+| Very large areas (>1000 km²) | 30--90 m | 15--30 min | Consider spatial tiling or representative sampling |
+
 ## References
 
 - Hofierka, J., & Suri, M. (2002). The solar radiation model for Open source GIS: implementation and applications. *Proceedings of the Open source GIS-GRASS users conference*.

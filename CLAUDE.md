@@ -69,7 +69,22 @@ ls test-output/global/monthly/total_sun_*_sum.tif | wc -l  # 12
 
 # Legacy direct execution (requires host GRASS + CCTools)
 cd sol/sol/ && python run-workflow --step 15 --num_threads 2 ../examples/mcn_10m.tif
+
+# Distributed execution (Work Queue)
+python scripts/start-master.py   # Start master node
+python scripts/start-worker.py   # Start worker node (connects to master)
+
+# Linting and testing (dev dependencies in root requirements.txt)
+black --check .
+flake8 .
+mypy .
+pytest
 ```
+
+## Requirements Files
+
+- `requirements.txt` (root) — Zensical docs build + scientific computing libraries + dev tools (pytest, black, flake8, mypy)
+- `web-interface/requirements.txt` — FastAPI, uvicorn, docker SDK, psutil for the web app
 
 ## CI/CD
 
@@ -110,7 +125,7 @@ Only GitHub Pages deployment exists (`.github/workflows/ghpages.yml`). No automa
 
 - Default: `eemt-web` only (local execution)
 - `distributed`: Adds `eemt-master` + `eemt-worker` services (Work Queue on port 9123)
-- `docs`: Adds MkDocs server on port 8000
+- `docs`: Adds Zensical/MkDocs doc server on port 8000
 - `cleanup`: Adds cron-based job cleanup service (daily at 2 AM)
 
 ## Code Style
