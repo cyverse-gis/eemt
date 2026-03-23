@@ -170,6 +170,7 @@
   <label><input type="checkbox" id="toggle-dem"> Elevation (DEM)</label>
   <label><input type="checkbox" id="toggle-energy-raster"> Energy Density</label>
   <label><input type="checkbox" id="toggle-biomass" checked> Biomass Density</label>
+  <label><input type="checkbox" id="toggle-catchment" checked> Watershed Boundary</label>
 </div>
 
 <div class="legend">
@@ -312,6 +313,88 @@ map.on('load', () => {
     source: 'biomass',
     paint: { 'raster-opacity': 0.7 },
   });
+
+  // NHDPlus V2.1 watershed catchments
+  map.addSource('catchments', {
+    type: 'geojson',
+    data: `${DATA_BASE}/gordongulch_catchments_nhdplus.geojson`,
+  });
+
+  // All catchments — subtle fill
+  map.addLayer({
+    id: 'catchments-fill',
+    type: 'fill',
+    source: 'catchments',
+    paint: {
+      'fill-color': [
+        'case',
+        ['==', ['get', 'FEATUREID'], 2889360],
+        'rgba(70, 130, 180, 0.12)',
+        'rgba(70, 130, 180, 0.04)'
+      ],
+      'fill-outline-color': 'rgba(70, 130, 180, 0.3)',
+    },
+  });
+
+  // Catchment outlines
+  map.addLayer({
+    id: 'catchments-line',
+    type: 'line',
+    source: 'catchments',
+    paint: {
+      'line-color': [
+        'case',
+        ['==', ['get', 'FEATUREID'], 2889360],
+        '#2a6496',
+        'rgba(70, 130, 180, 0.4)'
+      ],
+      'line-width': [
+        'case',
+        ['==', ['get', 'FEATUREID'], 2889360],
+        2.5,
+        1
+      ],
+    },
+  });
+
+  // Local catchment label
+  map.addSource('catchment-local', {
+    type: 'geojson',
+    data: `${DATA_BASE}/gordongulch_catchment_nhdplus.geojson`,
+  });
+  map.addLayer({
+    id: 'catchment-label',
+    type: 'symbol',
+    source: 'catchment-local',
+    layout: {
+      'text-field': 'Gordon Gulch\nCOMID 2889360\n1.79 km²',
+      'text-size': 11,
+      'text-anchor': 'center',
+      'text-allow-overlap': true,
+    },
+    paint: {
+      'text-color': '#2a6496',
+      'text-halo-color': 'rgba(255,255,255,0.9)',
+      'text-halo-width': 1.5,
+    },
+  });
+
+  // Popup on catchment click
+  map.on('click', 'catchments-fill', (e) => {
+    const p = e.features[0].properties;
+    const isLocal = p.FEATUREID === 2889360;
+    new maplibregl.Popup({ offset: 10, maxWidth: '240px' })
+      .setLngLat(e.lngLat)
+      .setHTML(`
+        <div class="popup-title">NHDPlus Catchment</div>
+        <div class="popup-row"><span class="popup-label">COMID</span><span class="popup-value">${p.FEATUREID}</span></div>
+        <div class="popup-row"><span class="popup-label">Area</span><span class="popup-value">${p.AREASQKM?.toFixed(2)} km²</span></div>
+        ${isLocal ? '<div style="margin-top:4px; font-size:10px; color:#2a6496;">Gordon Gulch local catchment</div>' : ''}
+      `)
+      .addTo(map);
+  });
+  map.on('mouseenter', 'catchments-fill', () => map.getCanvas().style.cursor = 'pointer');
+  map.on('mouseleave', 'catchments-fill', () => map.getCanvas().style.cursor = '');
 });
 
 // Layer toggles
@@ -328,6 +411,7 @@ bindToggle('toggle-chm', ['chm-layer']);
 bindToggle('toggle-dem', ['hillshade-layer', 'dem-layer']);
 bindToggle('toggle-energy-raster', ['energy-raster-layer']);
 bindToggle('toggle-biomass', ['biomass-layer']);
+bindToggle('toggle-catchment', ['catchments-fill', 'catchments-line', 'catchment-label']);
 </script>
 </body>
 </html>
