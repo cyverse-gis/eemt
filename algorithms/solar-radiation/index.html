@@ -1282,6 +1282,100 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#gordon-gulch-multi-resolution-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gordon Gulch Multi-Resolution Example
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Gordon Gulch Multi-Resolution Example">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#input-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Input Data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generating-multi-resolution-dems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generating Multi-Resolution DEMs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#running-the-solar-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running the Solar Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#computation-scaling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Computation Scaling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-effects-on-solar-radiation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resolution Effects on Solar Radiation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#canopy-effects-dtm-vs-dsm-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Canopy Effects: DTM vs DSM Comparison
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution-selection-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resolution Selection Guide
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#references" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3246,6 +3340,100 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#gordon-gulch-multi-resolution-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gordon Gulch Multi-Resolution Example
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Gordon Gulch Multi-Resolution Example">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#input-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Input Data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generating-multi-resolution-dems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generating Multi-Resolution DEMs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#running-the-solar-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running the Solar Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#computation-scaling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Computation Scaling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resolution-effects-on-solar-radiation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resolution Effects on Solar Radiation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#canopy-effects-dtm-vs-dsm-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Canopy Effects: DTM vs DSM Comparison
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolution-selection-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resolution Selection Guide
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#references" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3615,6 +3803,222 @@
 2. Tile large DEMs for parallel processing
 3. Use monthly representative days instead of full year
 4. Enable GPU acceleration if available</p>
+<h2 id="gordon-gulch-multi-resolution-example">Gordon Gulch Multi-Resolution Example<a class="headerlink" href="#gordon-gulch-multi-resolution-example" title="Permanent link">&para;</a></h2>
+<p>This example demonstrates solar radiation modeling across multiple spatial resolutions using USGS 3DEP LiDAR-derived elevation data from Gordon Gulch, a <a href="https://criticalzone.org/">Critical Zone Collaborative Network</a> (CZNet) site in the Arapahoe and Roosevelt National Forest, Colorado.</p>
+<p><strong>Study area</strong>: 2.6 km², elevation 2,446--2,737 m, dominated by <em>Pinus ponderosa</em> forest. See <a href="../../energetics/">Landscape Energetics</a> for LiDAR tree census and biomass-energy analysis of this site.</p>
+<h3 id="input-data">Input Data<a class="headerlink" href="#input-data" title="Permanent link">&para;</a></h3>
+<p>All elevation surfaces are derived from the USGS 3DEP CO DRCOG 2020 LiDAR collection (99 million points, 29.5 million ground-classified). Coordinate system: UTM Zone 13N (NAD83(2011) / EPSG:6342).</p>
+<table>
+<thead>
+<tr>
+<th>Surface</th>
+<th>Resolution</th>
+<th>Source</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DEM</td>
+<td>10 m</td>
+<td>3DEP ground returns, block-averaged with 3x3 pit fill</td>
+<td><code>gordongulch_dem_10m_3dep_cog.tif</code></td>
+</tr>
+<tr>
+<td>DTM</td>
+<td>0.5 m</td>
+<td>3DEP ground-classified mean returns</td>
+<td><code>gordongulch_dtm_05m.tif</code></td>
+</tr>
+<tr>
+<td>DSM</td>
+<td>0.5 m</td>
+<td>3DEP maximum LiDAR returns (canopy-top surface)</td>
+<td><code>gordongulch_dsm_05m.tif</code></td>
+</tr>
+<tr>
+<td>DTM</td>
+<td>5 m, 2 m, 1 m</td>
+<td>Bilinear resampling from 0.5 m DTM</td>
+<td>Generated via <code>gdalwarp</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="generating-multi-resolution-dems">Generating Multi-Resolution DEMs<a class="headerlink" href="#generating-multi-resolution-dems" title="Permanent link">&para;</a></h3>
+<p>Intermediate resolution DEMs are created by resampling the 0.5 m DTM:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Generate 5m, 2m, and 1m DEMs from the 0.5m DTM</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>gdalwarp<span class="w"> </span>-tr<span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="m">5</span><span class="w"> </span>-r<span class="w"> </span>bilinear<span class="w"> </span>gordongulch_dtm_05m.tif<span class="w"> </span>gordongulch_dtm_5m.tif
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>gdalwarp<span class="w"> </span>-tr<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>-r<span class="w"> </span>bilinear<span class="w"> </span>gordongulch_dtm_05m.tif<span class="w"> </span>gordongulch_dtm_2m.tif
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>gdalwarp<span class="w"> </span>-tr<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>-r<span class="w"> </span>bilinear<span class="w"> </span>gordongulch_dtm_05m.tif<span class="w"> </span>gordongulch_dtm_1m.tif
+</span></code></pre></div>
+<h3 id="running-the-solar-workflow">Running the Solar Workflow<a class="headerlink" href="#running-the-solar-workflow" title="Permanent link">&para;</a></h3>
+<p>Each resolution requires different parameter tuning. The workflow pre-computes slope and aspect once via <code>rsun_prep.sh</code>, then runs 365 daily <code>r.sun</code> tasks using the pre-computed surfaces. This optimization eliminates redundant <code>r.slope.aspect</code> calls that would otherwise repeat identically for each day.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Example: 10m resolution (fastest, ~1 CPU-hour)</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/data/gordon_gulch:/data/input:ro<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/output/10m:/data/output:rw<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span>eemt:ubuntu24.04<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span>python<span class="w"> </span>/opt/eemt/bin/run-solar-workflow.py<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span>--dem<span class="w"> </span>/data/input/gordongulch_dem_10m_3dep_cog.tif<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">  </span>--output<span class="w"> </span>/data/output<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">  </span>--step<span class="w"> </span><span class="m">15</span><span class="w"> </span>--num-threads<span class="w"> </span><span class="m">8</span><span class="w"> </span>--job-id<span class="w"> </span>gg-10m
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="c1"># Example: 0.5m DTM (highest resolution bare-earth, ~380 CPU-hours)</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">  </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/data/gordon_gulch:/data/input:ro<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">  </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/output/05m-dtm:/data/output:rw<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">  </span>eemt:ubuntu24.04<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">  </span>python<span class="w"> </span>/opt/eemt/bin/run-solar-workflow.py<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">  </span>--dem<span class="w"> </span>/data/input/gordongulch_dtm_05m.tif<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="w">  </span>--output<span class="w"> </span>/data/output<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="w">  </span>--step<span class="w"> </span><span class="m">5</span><span class="w"> </span>--num-threads<span class="w"> </span><span class="m">1</span><span class="w"> </span>--job-id<span class="w"> </span>gg-05m-dtm
+</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>
+</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="c1"># Example: 0.5m DSM (canopy-top surface for shadow comparison)</span>
+</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-23"><a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="w">  </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/data/gordon_gulch:/data/input:ro<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-24"><a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a><span class="w">  </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/output/05m-dsm:/data/output:rw<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-25"><a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a><span class="w">  </span>eemt:ubuntu24.04<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-26"><a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a><span class="w">  </span>python<span class="w"> </span>/opt/eemt/bin/run-solar-workflow.py<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-27"><a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a><span class="w">  </span>--dem<span class="w"> </span>/data/input/gordongulch_dsm_05m.tif<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-28"><a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a><span class="w">  </span>--output<span class="w"> </span>/data/output<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-29"><a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a><span class="w">  </span>--step<span class="w"> </span><span class="m">5</span><span class="w"> </span>--num-threads<span class="w"> </span><span class="m">1</span><span class="w"> </span>--job-id<span class="w"> </span>gg-05m-dsm
+</span></code></pre></div>
+<h3 id="computation-scaling">Computation Scaling<a class="headerlink" href="#computation-scaling" title="Permanent link">&para;</a></h3>
+<p>Solar radiation computation scales with the number of raster cells. The table below shows estimated resources for each resolution across the Gordon Gulch study area (2.6 km²):</p>
+<table>
+<thead>
+<tr>
+<th>Resolution</th>
+<th>Raster Cells</th>
+<th>Step</th>
+<th>Threads</th>
+<th>RAM per Task</th>
+<th>Total CPU-Hours</th>
+<th>Output Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10 m</td>
+<td>~128K</td>
+<td>15 min</td>
+<td>8</td>
+<td>0.5 GB</td>
+<td>~1 hr</td>
+<td>~50 MB</td>
+</tr>
+<tr>
+<td>5 m</td>
+<td>~510K</td>
+<td>10 min</td>
+<td>4</td>
+<td>1 GB</td>
+<td>~4 hrs</td>
+<td>~200 MB</td>
+</tr>
+<tr>
+<td>2 m</td>
+<td>~3.2M</td>
+<td>10 min</td>
+<td>2</td>
+<td>2 GB</td>
+<td>~25 hrs</td>
+<td>~1.2 GB</td>
+</tr>
+<tr>
+<td>1 m</td>
+<td>~12.8M</td>
+<td>5 min</td>
+<td>2</td>
+<td>5 GB</td>
+<td>~95 hrs</td>
+<td>~5 GB</td>
+</tr>
+<tr>
+<td>0.5 m DTM</td>
+<td>~51.4M</td>
+<td>5 min</td>
+<td>1</td>
+<td>16 GB</td>
+<td>~380 hrs</td>
+<td>~20 GB</td>
+</tr>
+<tr>
+<td>0.5 m DSM</td>
+<td>~51.4M</td>
+<td>5 min</td>
+<td>1</td>
+<td>16 GB</td>
+<td>~380 hrs</td>
+<td>~20 GB</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Memory management</strong>: At 0.5 m resolution, each <code>r.sun</code> task requires approximately 16 GB of RAM. Limit <code>--num-threads</code> to 1 and set <code>--local-cores</code> accordingly to prevent out-of-memory failures. On a machine with 256 GB RAM, up to 16 daily tasks can run concurrently.</p>
+<p><strong>Slope/aspect optimization</strong>: The workflow pre-computes slope and aspect rasters once before the 365 daily tasks begin. At 0.5 m (51.4M cells), this eliminates approximately 3--6 hours of redundant <code>r.slope.aspect</code> computation per resolution.</p>
+<h3 id="resolution-effects-on-solar-radiation">Resolution Effects on Solar Radiation<a class="headerlink" href="#resolution-effects-on-solar-radiation" title="Permanent link">&para;</a></h3>
+<p>Finer spatial resolution captures topographic detail that significantly affects radiation estimates:</p>
+<ul>
+<li><strong>Shadow patterns</strong>: At 10 m, narrow ravines and ridgelines are smoothed, underestimating shadow duration. At 0.5--1 m, micro-topographic features cast shadows that are resolved in the radiation field.</li>
+<li><strong>North-facing slopes</strong>: Fine-resolution DEMs better capture steep north-facing slopes that receive substantially less radiation. At 10 m, these slopes are averaged with adjacent terrain, biasing radiation estimates high.</li>
+<li><strong>Diminishing returns</strong>: For gently rolling terrain, the difference between 1 m and 0.5 m may be small. The greatest resolution sensitivity occurs in complex, incised terrain with steep slopes.</li>
+<li><strong>Edge effects</strong>: At fine resolution, terrain shadowing from features outside the DEM extent becomes more important. Buffer the DEM beyond the study area boundary to avoid edge artifacts.</li>
+</ul>
+<h3 id="canopy-effects-dtm-vs-dsm-comparison">Canopy Effects: DTM vs DSM Comparison<a class="headerlink" href="#canopy-effects-dtm-vs-dsm-comparison" title="Permanent link">&para;</a></h3>
+<p>To understand how forest canopy modifies the solar radiation field, run <code>r.sun</code> on both the Digital Terrain Model (DTM, bare-earth surface) and the Digital Surface Model (DSM, canopy-top surface) at 0.5 m resolution:</p>
+<ul>
+<li><strong>DTM solar radiation</strong>: Energy reaching the bare ground surface, as if no vegetation were present. This represents the maximum potential ground-level radiation.</li>
+<li><strong>DSM solar radiation</strong>: Energy intercepted at the top of the canopy. Trees are represented as elevated terrain features that cast shadows on neighboring ground and canopy.</li>
+<li><strong>DTM -- DSM difference</strong>: Quantifies the canopy shadow effect. Areas behind (north of) tall trees receive substantially less radiation on the DSM surface than on the DTM surface. This difference map reveals the spatial pattern of forest canopy light modification.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Why DSM and not CHM?</p>
+<p>The Canopy Height Model (CHM = DSM -- DTM) represents <em>relative</em> tree heights above ground, not an absolute elevation surface. Running <code>r.sun</code> directly on a CHM is not scientifically meaningful because <code>r.sun</code> requires true elevation for computing solar geometry, atmospheric path length, and terrain shadows. The DSM is the correct surface for modeling canopy-level radiation interception.</p>
+</div>
+<p>The DTM vs DSM comparison complements the <a href="../../energetics/">Landscape Energetics</a> analysis, which quantifies the biomass energy stored in the 253,476 individual trees detected across Gordon Gulch. Together, these analyses connect incoming solar radiation to the energy embodied in vegetation structure.</p>
+<h2 id="resolution-selection-guide">Resolution Selection Guide<a class="headerlink" href="#resolution-selection-guide" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Use Case</th>
+<th>Resolution</th>
+<th>Step Size</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Regional surveys (&gt;100 km²)</td>
+<td>10--30 m</td>
+<td>15 min</td>
+<td>Use 3DEP 10 m or SRTM 30 m DEMs</td>
+</tr>
+<tr>
+<td>Watershed analysis (1--100 km²)</td>
+<td>5--10 m</td>
+<td>10--15 min</td>
+<td>Good balance of topographic detail and speed</td>
+</tr>
+<tr>
+<td>Site-scale studies (&lt;1 km²)</td>
+<td>1--2 m</td>
+<td>5--10 min</td>
+<td>LiDAR DTM recommended for terrain detail</td>
+</tr>
+<tr>
+<td>Canopy interaction studies</td>
+<td>0.5--1 m DTM + DSM</td>
+<td>5 min</td>
+<td>Requires LiDAR-derived surfaces; compare DTM vs DSM</td>
+</tr>
+<tr>
+<td>Very large areas (&gt;1000 km²)</td>
+<td>30--90 m</td>
+<td>15--30 min</td>
+<td>Consider spatial tiling or representative sampling</td>
+</tr>
+</tbody>
+</table>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
 <ul>
 <li>
