@@ -9,4 +9,5 @@ path = "src/main.rs"
 
 [dependencies]
 rsun-core = { path = "../rsun-core", features = ["io"] }
+rsun-gpu = { path = "../rsun-gpu" }
 clap = { version = "4", features = ["derive"] }
