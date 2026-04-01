@@ -87,7 +87,7 @@ class EEMTReport(FPDF):
             ("Project", "CyVerse / EEMT"),
             ("Repository", "github.com/cyverse-gis/eemt"),
             ("Proof Assistant", "Lean 4 with Mathlib v4.16.0"),
-            ("Equations Verified", "~60 across 6 scientific domains"),
+            ("Theorems Proved", "204 of 212 (96.2%) across 6 scientific domains"),
             ("Implementation Languages", "Rust, WGSL, Bash/GRASS, Python"),
             ("Date", datetime.date.today().strftime("%B %d, %Y")),
         ]
@@ -812,18 +812,17 @@ def build_report():
     pdf.add_page()
     pdf.section_heading("12", "Proof Completeness and Sorry Blocks")
     pdf.body_text(
-        "The verification contains 23 'sorry' statements representing proof gaps. These are "
-        "areas where the theorem is stated but the proof is incomplete, typically requiring "
-        "Mathlib lemmas that are not yet available or complex transcendental function reasoning."
+        "Of 212 theorems, 204 are fully machine-checked (96.2% proof rate). The remaining 8 "
+        "'sorry' statements represent proof gaps where the theorem is stated but the proof is "
+        "incomplete, typically requiring advanced Mathlib lemmas or complex transcendental function reasoning."
     )
 
     pdf.subsection_heading("Categories of Incomplete Proofs")
     gaps = [
-        ("Arcsin/arctan monotonicity", "Requires Mathlib lemmas for strict monotonicity of inverse trigonometric functions on bounded intervals."),
-        ("Power function properties", "RPow (real power) monotonicity and bounds for non-integer exponents, needed for allometric equation proofs."),
-        ("Cauchy-Schwarz inequalities", "Used in solar altitude bounds where sin^2 + cos^2 terms appear."),
-        ("Tan strict monotonicity", "Needed for TWI slope relationship proof; tan is strictly monotone on (0, pi/2)."),
-        ("Budyko power inequality", "Jensen's inequality / power mean arguments for proving f(AI) in [0, 1]."),
+        ("Budyko power mean inequalities (2 sorry)", "Jensen's inequality / subadditivity of x^(1/w) for w > 1. Needed to prove AET <= P and AET >= 0. Not critical for EEMT pipeline correctness."),
+        ("Jenco flat surface identity (2 sorry)", "Requires arcsin(sin(lat)) = lat roundtrip and cos(arcsin(x)) simplification for the CosIncidence flat surface theorem."),
+        ("Solar geometry misc (3 sorry)", "Noon altitude max (needs lat/decl domain restriction), declination January sign (numerical evaluation), day length <= 24 hours (needs sunrise >= 0 bound)."),
+        ("Arcsin helper (1 sorry)", "|arcsin(a*sin(x))| <= arcsin(|a|) -- niche utility lemma not used by main theorems."),
     ]
     for title, desc in gaps:
         pdf.set_font("Helvetica", "B", 9)
@@ -878,12 +877,14 @@ def build_report():
     )
 
     accomplishments = [
+        "212 theorems across 28 Lean files, with 204 fully machine-checked (96.2% proof rate) and 22 of 28 files completely sorry-free.",
         "Verified ~60 equations across 6 scientific domains (solar radiation, climate, topography, ecology, biomass, energy balance).",
-        "Proved 4 conservation laws: precipitation mass, view factors, radiation decomposition, and the EEMT energy balance.",
-        "Established monotonicity invariants for all major physical relationships (temperature-NPP, EEMT-weathering, elevation-temperature, etc.).",
-        "Verified physical bounds ensuring outputs remain within physically realizable ranges.",
-        "Confirmed structural equivalence between Rust (CPU) and WGSL (GPU) solar radiation implementations.",
-        "Identified a critical operator precedence bug in reemt.sh line 199 that causes NPP values to exceed the physical maximum of 3000 g/m^2/yr.",
+        "Proved 6 conservation laws: precipitation mass, sky/terrain view factors, radiation decomposition, EEMT energy balance, regime partition exhaustiveness and exclusivity.",
+        "Established monotonicity invariants: NPP-temperature, EEMT-NPP, EEMT-temperature, soil production-EEMT, chemical denudation-EEMT, elevation-pressure, turbidity-transmittance.",
+        "Verified physical bounds: NPP in (0, 3000), biomass < 50 kg/m^2, solar constant in [1321, 1413] W/m^2, slope in [0, pi/2), soil production <= 0.05 mm/yr.",
+        "Proved sinSolarAltitude_bounded via Cauchy-Schwarz and sun_direction_unit_vector via rotation matrix orthogonality.",
+        "Confirmed structural equivalence between Rust (CPU) and WGSL (GPU) solar radiation implementations with documented cbh/cdh difference.",
+        "Identified and fixed a critical operator precedence bug in reemt.sh line 199 (NPP Lieth formula). Bug formally proved by theorems reemt_npp_exceeds_max and reemt_npp_ne_correct.",
     ]
     for a in accomplishments:
         pdf.bullet(a)
@@ -891,8 +892,8 @@ def build_report():
     pdf.ln(3)
     pdf.subsection_heading("Recommendations")
     recs = [
-        "Fix the NPP formula bug in reemt.sh line 199 by adding explicit parentheses: 3000 / (1 + exp(1.315 - 0.119*T)) or 3000 * (1 + exp(1.315 - 0.119*T))^(-1).",
-        "Complete the 23 remaining sorry blocks as Mathlib lemmas for transcendental functions become available.",
+        "NPP formula bug in reemt.sh line 199 has been fixed: changed 3000*(1+exp(...)^-1) to 3000.0/(1+exp(...)) to match the documented Lieth model. Container rebuild required.",
+        "Complete the 8 remaining sorry blocks as Mathlib lemmas for power mean inequalities and inverse trig roundtrips become available.",
         "Extend verification to the Numerical/ module for floating-point error analysis (Rust f64 vs WGSL f32 precision bounds).",
         "Add the Thermodynamic/ module for additional energy balance consistency checks.",
         "Relax the Magnus formula guard in reemt.sh from T > 0 to T > -40 to cover valid sub-zero temperatures.",
