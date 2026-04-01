@@ -28,22 +28,38 @@ impl GpuContext {
     ///
     /// Returns None if no suitable GPU is found.
     pub fn new() -> Option<Self> {
-        pollster::block_on(Self::new_async())
+        pollster::block_on(Self::new_async(None))
     }
 
-    async fn new_async() -> Option<Self> {
+    /// Create a GPU context using a specific adapter index from `list_adapters()`.
+    pub fn with_index(index: usize) -> Option<Self> {
+        pollster::block_on(Self::new_async(Some(index)))
+    }
+
+    async fn new_async(device_index: Option<usize>) -> Option<Self> {
         let instance = wgpu::Instance::new(&wgpu::InstanceDescriptor {
             backends: wgpu::Backends::VULKAN | wgpu::Backends::METAL | wgpu::Backends::DX12,
             ..Default::default()
         });
 
-        let adapter = instance
-            .request_adapter(&wgpu::RequestAdapterOptions {
-                power_preference: wgpu::PowerPreference::HighPerformance,
-                compatible_surface: None,
-                force_fallback_adapter: false,
-            })
-            .await?;
+        let adapter = if let Some(idx) = device_index {
+            let adapters: Vec<_> = instance
+                .enumerate_adapters(wgpu::Backends::VULKAN | wgpu::Backends::METAL | wgpu::Backends::DX12)
+                .into_iter()
+                .collect();
+            if idx >= adapters.len() {
+                return None;
+            }
+            adapters.into_iter().nth(idx)?
+        } else {
+            instance
+                .request_adapter(&wgpu::RequestAdapterOptions {
+                    power_preference: wgpu::PowerPreference::HighPerformance,
+                    compatible_surface: None,
+                    force_fallback_adapter: false,
+                })
+                .await?
+        };
 
         let info = adapter.get_info();
         let adapter_name = info.name.clone();
@@ -56,8 +72,8 @@ impl GpuContext {
                     label: Some("rsun-gpu"),
                     required_features: wgpu::Features::empty(),
                     required_limits: wgpu::Limits {
-                        max_storage_buffer_binding_size: 1 << 30, // 1 GB
-                        max_buffer_size: 1 << 31,                 // 2 GB
+                        max_storage_buffer_binding_size: 1 << 30, // 1 GB per binding
+                        max_buffer_size: 1 << 34,                  // 16 GB (u64)
                         max_compute_workgroup_size_x: 256,
                         max_compute_workgroup_size_y: 256,
                         max_compute_invocations_per_workgroup: 256,

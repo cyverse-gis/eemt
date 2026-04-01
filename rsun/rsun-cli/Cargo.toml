@@ -7,7 +7,12 @@ edition = "2021"
 name = "rsun"
 path = "src/main.rs"
 
+[features]
+default = ["cuda"]
+cuda = ["dep:rsun-cuda"]
+
 [dependencies]
 rsun-core = { path = "../rsun-core", features = ["io"] }
 rsun-gpu = { path = "../rsun-gpu" }
+rsun-cuda = { path = "../rsun-cuda", optional = true }
 clap = { version = "4", features = ["derive"] }

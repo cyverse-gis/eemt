@@ -36,6 +36,7 @@ nav = [
     ]},
     { "Algorithms" = [
         { "Solar Radiation" = "algorithms/solar-radiation.md" },
+        { "Rust Solar Toolkit (rsun)" = "algorithms/rsun-rust-implementation.md" },
         { "Climate Integration" = "algorithms/climate-integration.md" },
         { "Topographic Analysis" = "algorithms/topographic-analysis.md" },
         { "EEMT Calculations" = "algorithms/eemt-calculations.md" },

@@ -47,8 +47,14 @@ pub fn write_geotiff(
     let driver = DriverManager::get_driver_by_name("GTiff")
         .map_err(|e| format!("GTiff driver not found: {e}"))?;
 
+    let options = gdal::raster::RasterCreationOptions::from_iter([
+        "COMPRESS=LZW",
+        "PREDICTOR=3",  // float predictor for better LZW compression
+        "TILED=YES",
+    ]);
+
     let mut dataset = driver
-        .create_with_band_type::<f32, &str>(path, grid.cols, grid.rows, 1)
+        .create_with_band_type_with_options::<f32, &str>(path, grid.cols, grid.rows, 1, &options)
         .map_err(|e| format!("Failed to create output: {e}"))?;
 
     let transform = [geo.x_origin, geo.x_res, 0.0, geo.y_origin, 0.0, -geo.y_res];

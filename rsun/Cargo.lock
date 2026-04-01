@@ -332,6 +332,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d0a5c400df2834b80a4c3327b3aad3a4c4cd4de0629063962b03235697506a28"
 
 [[package]]
+name = "cudarc"
+version = "0.16.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "17200eb07e7d85a243aa1bf4569a7aa998385ba98d14833973a817a63cc86e92"
+dependencies = [
+ "libloading",
+]
+
+[[package]]
 name = "document-features"
 version = "0.2.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1177,6 +1186,7 @@ version = "0.1.0"
 dependencies = [
  "clap",
  "rsun-core",
+ "rsun-cuda",
  "rsun-gpu",
 ]
 
@@ -1187,6 +1197,16 @@ dependencies = [
  "approx",
  "gdal",
  "rayon",
+]
+
+[[package]]
+name = "rsun-cuda"
+version = "0.1.0"
+dependencies = [
+ "approx",
+ "cudarc",
+ "log",
+ "rsun-core",
 ]
 
 [[package]]

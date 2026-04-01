@@ -15,3 +15,4 @@ env_logger = "0.11"
 
 [dev-dependencies]
 approx = "0.5"
+rsun-core = { path = "../rsun-core", features = ["io"] }

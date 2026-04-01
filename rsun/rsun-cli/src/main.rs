@@ -1,7 +1,8 @@
 use clap::{Parser, Subcommand};
+use rsun_core::horizon::compute_horizons;
 use rsun_core::io::{compute_latlon_grid, read_geotiff, write_geotiff};
 use rsun_core::terrain::slope_aspect;
-use rsun_core::types::SolarParams;
+use rsun_core::types::{Grid, SolarParams, MONTHS, MONTH_DAYS, MONTH_DAYS_LEAP};
 use std::time::Instant;
 
 /// rsun — solar radiation toolkit (Rust port of GRASS GIS r.sun)
@@ -55,6 +56,14 @@ enum Commands {
         /// Calendar year for leap year support
         #[arg(long)]
         year: Option<u16>,
+
+        /// Number of horizon directions for topographic shading (0 = disabled, 36 = typical)
+        #[arg(long, default_value_t = 0)]
+        horizons: usize,
+
+        /// Generate monthly sum GeoTIFFs after daily computation (multi-day mode only)
+        #[arg(long)]
+        monthly_sums: bool,
     },
 
     /// Compute slope and aspect from a DEM
@@ -112,11 +121,27 @@ fn run() -> Result<(), String> {
             println!("GDAL support: enabled");
             println!();
 
+            // CUDA devices
+            #[cfg(feature = "cuda")]
+            {
+                let cuda_devs = rsun_cuda::CudaHorizonContext::list_devices();
+                if cuda_devs.is_empty() {
+                    println!("CUDA: not available");
+                } else {
+                    println!("CUDA devices ({}):", cuda_devs.len());
+                    for d in &cuda_devs {
+                        println!("  {d}");
+                    }
+                }
+                println!();
+            }
+
+            // wgpu/Vulkan adapters
             let adapters = rsun_gpu::context::GpuContext::list_adapters();
             if adapters.is_empty() {
-                println!("GPU: none detected");
+                println!("wgpu: none detected");
             } else {
-                println!("GPU adapters ({}):", adapters.len());
+                println!("wgpu adapters ({}):", adapters.len());
                 for (i, a) in adapters.iter().enumerate() {
                     println!(
                         "  [{i}] {} ({}, {}, max_buffer={}MB)",
@@ -158,6 +183,8 @@ fn run() -> Result<(), String> {
             insol_time,
             output_dir,
             year,
+            horizons,
+            monthly_sums,
         } => {
             let days = parse_days(&day, year)?;
             let multi_day = days.len() > 1;
@@ -177,6 +204,12 @@ fn run() -> Result<(), String> {
                     .map_err(|e| format!("Failed to create output dirs: {e}"))?;
                 std::fs::create_dir_all(format!("{out_dir}/insol/daily"))
                     .map_err(|e| format!("Failed to create output dirs: {e}"))?;
+                if monthly_sums {
+                    std::fs::create_dir_all(format!("{out_dir}/global/monthly"))
+                        .map_err(|e| format!("Failed to create output dirs: {e}"))?;
+                    std::fs::create_dir_all(format!("{out_dir}/insol/monthly"))
+                        .map_err(|e| format!("Failed to create output dirs: {e}"))?;
+                }
             }
 
             // Read DEM
@@ -195,11 +228,18 @@ fn run() -> Result<(), String> {
             eprintln!("Computing slope and aspect...");
             let (slope_grid, aspect_grid) = slope_aspect(&dem_grid, geo.x_res, geo.y_res);
 
+            // Try GPU (need context before horizons so we can use GPU horizon pipeline)
             // Try GPU
             let use_gpu = gpu != "cpu";
             let gpu_ctx = if use_gpu {
                 eprintln!("Initializing GPU...");
-                match rsun_gpu::context::GpuContext::new() {
+                let ctx_opt = if let Ok(idx) = gpu.parse::<usize>() {
+                    eprintln!("  Requesting GPU device index {idx}...");
+                    rsun_gpu::context::GpuContext::with_index(idx)
+                } else {
+                    rsun_gpu::context::GpuContext::new()
+                };
+                match ctx_opt {
                     Some(ctx) => {
                         eprintln!(
                             "GPU: {} ({}, max_buffer={}MB)",
@@ -219,11 +259,33 @@ fn run() -> Result<(), String> {
                 None
             };
 
+            // Horizon pre-computation (optional topographic shading)
+            // Priority: CUDA (no buffer limits) > wgpu (2GB limit) > CPU (rayon)
+            let horizon_grid = if horizons > 0 {
+                eprintln!("Computing horizon angles ({horizons} directions)...");
+                let t0 = Instant::now();
+                let horizon_buf_bytes = (n_pixels as u64) * (horizons as u64) * 4;
+
+                let hg = compute_horizons_best(
+                    &dem_grid, &slope_grid, &aspect_grid, &lat_grid, &lon_grid,
+                    &geo, horizons, horizon_buf_bytes, &gpu, &gpu_ctx,
+                )?;
+
+                eprintln!("  Horizons computed in {:.1}s", t0.elapsed().as_secs_f64());
+                Some(hg)
+            } else {
+                None
+            };
+
             let total_days = days.len();
             let start_time = Instant::now();
 
-            if let Some(ref ctx) = gpu_ctx {
-                // === GPU PATH ===
+            // GPU radiation only when horizons are disabled (GPU shader lacks shadow checks)
+            let use_gpu_radiation = gpu_ctx.is_some() && horizon_grid.is_none();
+
+            if use_gpu_radiation {
+                let ctx = gpu_ctx.as_ref().unwrap();
+                // === GPU RADIATION PATH (no horizons) ===
                 eprintln!("Uploading data to GPU...");
                 let buffers = rsun_gpu::buffers::GpuBuffers::new(
                     ctx,
@@ -234,7 +296,7 @@ fn run() -> Result<(), String> {
                     &lon_grid,
                 );
                 let pipeline = rsun_gpu::pipeline::RadiationPipeline::new(ctx);
-                eprintln!("GPU pipeline ready. Processing {} days...", total_days);
+                eprintln!("GPU radiation pipeline ready. Processing {} days...", total_days);
 
                 for (i, &d) in days.iter().enumerate() {
                     let params = SolarParams {
@@ -262,8 +324,12 @@ fn run() -> Result<(), String> {
                     write_outputs(&result, d, &glob_rad, &insol_time, &output_dir, &geo, &dem)?;
                 }
             } else {
-                // === CPU PATH ===
-                eprintln!("Processing {} days on CPU...", total_days);
+                // === CPU RADIATION PATH (with optional horizon shading) ===
+                if horizon_grid.is_some() {
+                    eprintln!("Processing {} days on CPU with horizon shading...", total_days);
+                } else {
+                    eprintln!("Processing {} days on CPU...", total_days);
+                }
 
                 for (i, &d) in days.iter().enumerate() {
                     let params = SolarParams {
@@ -280,7 +346,7 @@ fn run() -> Result<(), String> {
                         &aspect_grid,
                         &lat_grid,
                         &lon_grid,
-                        None,
+                        horizon_grid.as_ref(),
                         &params,
                     );
 
@@ -318,8 +384,58 @@ fn run() -> Result<(), String> {
                 total_days,
                 total_elapsed.as_secs_f64(),
                 total_days as f64 / total_elapsed.as_secs_f64(),
-                if gpu_ctx.is_some() { "GPU" } else { "CPU" }
+                if use_gpu_radiation { "GPU" } else { "CPU" }
             );
+
+            // Monthly sum generation
+            if monthly_sums {
+                if let Some(ref out_dir) = output_dir {
+                    eprintln!("Generating monthly sums...");
+                    let is_leap = year.map(is_leap_year).unwrap_or(false);
+                    let month_days = if is_leap { &MONTH_DAYS_LEAP } else { &MONTH_DAYS };
+
+                    for (month_idx, &(start_day, end_day)) in month_days.iter().enumerate() {
+                        // Collect daily files for this month that were actually computed
+                        let month_days_in_range: Vec<u16> = (start_day..=end_day)
+                            .filter(|d| days.contains(d))
+                            .collect();
+
+                        if month_days_in_range.is_empty() {
+                            continue;
+                        }
+
+                        let month_name = MONTHS[month_idx];
+
+                        // Sum glob_rad
+                        let glob_sum = sum_daily_geotiffs(
+                            &month_days_in_range,
+                            &format!("{out_dir}/global/daily"),
+                            "total_sun_day",
+                        )?;
+                        let glob_out = format!(
+                            "{out_dir}/global/monthly/total_sun_{month_name}_sum.tif"
+                        );
+                        write_geotiff(&glob_out, &glob_sum, &geo, Some(&dem))?;
+
+                        // Sum insol_time
+                        let insol_sum = sum_daily_geotiffs(
+                            &month_days_in_range,
+                            &format!("{out_dir}/insol/daily"),
+                            "hours_sun_day",
+                        )?;
+                        let insol_out = format!(
+                            "{out_dir}/insol/monthly/hours_sun_{month_name}_sum.tif"
+                        );
+                        write_geotiff(&insol_out, &insol_sum, &geo, Some(&dem))?;
+
+                        eprintln!(
+                            "  {month_name}: {} days summed",
+                            month_days_in_range.len()
+                        );
+                    }
+                    eprintln!("Monthly sums complete.");
+                }
+            }
         }
     }
 
@@ -351,6 +467,96 @@ fn write_outputs(
         write_geotiff(path, &result.insol_time, geo, Some(dem_path))?;
     }
     Ok(())
+}
+
+/// Compute horizons using the best available backend: CUDA > wgpu > CPU.
+fn compute_horizons_best(
+    dem_grid: &Grid,
+    slope_grid: &Grid,
+    aspect_grid: &Grid,
+    lat_grid: &Grid,
+    lon_grid: &Grid,
+    geo: &rsun_core::types::GeoTransform,
+    horizons: usize,
+    horizon_buf_bytes: u64,
+    gpu_flag: &str,
+    gpu_ctx: &Option<rsun_gpu::context::GpuContext>,
+) -> Result<rsun_core::horizon::HorizonGrid, String> {
+    // Try CUDA first (no buffer size limits)
+    #[cfg(feature = "cuda")]
+    {
+        let cuda_device = if let Ok(idx) = gpu_flag.parse::<usize>() {
+            idx
+        } else {
+            0
+        };
+        match rsun_cuda::CudaHorizonContext::new(cuda_device) {
+            Ok(ctx) => {
+                eprintln!("  Using CUDA horizon pipeline ({:.1} GB, {})...",
+                    horizon_buf_bytes as f64 / 1e9, ctx.device_name);
+                return ctx.compute_horizons(dem_grid, geo.x_res, geo.y_res, horizons);
+            }
+            Err(e) => {
+                eprintln!("  CUDA unavailable: {e}");
+            }
+        }
+    }
+
+    // Try wgpu (2 GB buffer limit)
+    let wgpu_ok = gpu_ctx.is_some() && horizon_buf_bytes < (2 << 30);
+    if wgpu_ok {
+        let ctx = gpu_ctx.as_ref().unwrap();
+        eprintln!("  Using wgpu horizon pipeline ({:.1} GB buffer)...",
+            horizon_buf_bytes as f64 / 1e9);
+        let buffers = rsun_gpu::buffers::GpuBuffers::new(
+            ctx, dem_grid, slope_grid, aspect_grid, lat_grid, lon_grid,
+        );
+        let h_pipeline = rsun_gpu::pipeline::HorizonPipeline::new(ctx);
+        let h_buf = h_pipeline.create_buffer(ctx, buffers.n_pixels, horizons as u32);
+        h_pipeline.compute(ctx, &buffers, &h_buf, geo.x_res, geo.y_res);
+        let angles_flat = h_pipeline.readback(ctx, &h_buf);
+
+        use std::f64::consts::PI;
+        let azimuths: Vec<f64> = (0..horizons)
+            .map(|d| 2.0 * PI * d as f64 / horizons as f64)
+            .collect();
+        return Ok(rsun_core::horizon::HorizonGrid {
+            angles: angles_flat,
+            rows: dem_grid.rows,
+            cols: dem_grid.cols,
+            n_directions: horizons,
+            azimuths,
+        });
+    }
+
+    // Fall back to CPU
+    if gpu_ctx.is_some() {
+        eprintln!("  Horizon buffer {:.1} GB exceeds wgpu limit, falling back to CPU...",
+            horizon_buf_bytes as f64 / 1e9);
+    }
+    eprintln!("  Using CPU horizon computation (rayon parallel)...");
+    Ok(compute_horizons(dem_grid, geo.x_res, geo.y_res, horizons))
+}
+
+/// Sum a set of daily GeoTIFFs into a single Grid (pixel-wise addition).
+/// NaN values are propagated: a pixel is NaN if any contributing day is NaN.
+fn sum_daily_geotiffs(days: &[u16], dir: &str, prefix: &str) -> Result<Grid, String> {
+    let first_path = format!("{dir}/{prefix}_{}.tif", days[0]);
+    let (first, _) = read_geotiff(&first_path)?;
+
+    let mut sum_data: Vec<f64> = first.data.iter().map(|&v| v as f64).collect();
+
+    for &day in &days[1..] {
+        let path = format!("{dir}/{prefix}_{day}.tif");
+        let (grid, _) = read_geotiff(&path)?;
+        for (i, &v) in grid.data.iter().enumerate() {
+            sum_data[i] += v as f64;
+        }
+    }
+
+    let mut result = Grid::new(first.rows, first.cols, f32::NAN);
+    result.data = sum_data.iter().map(|&v| v as f32).collect();
+    Ok(result)
 }
 
 fn main() {
