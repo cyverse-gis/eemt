@@ -91,11 +91,15 @@ Literature values for whole-tree energy content were compiled from multiple *Pin
 
 | Species | HHV (MJ/kg) | Source |
 |---------|-------------|--------|
-| *P. ponderosa* | -- | (to be populated) |
-| *P. contorta* | -- | (to be populated) |
-| *P. monticola* | -- | (to be populated) |
-| *P. sylvestris* | -- | (to be populated) |
-| *P. taeda* | -- | (to be populated) |
+| *P. ponderosa* | 20.02 | Ragland et al. (1991) |
+| *P. ponderosa* | 20.42 | Jenkins et al. (1998) |
+| *P. contorta* | 20.89 | Ragland et al. (1991) |
+| *P. contorta* | 21.05 | Howard (1973) |
+| *P. monticola* | 19.95 | Ragland et al. (1991) |
+| *P. sylvestris* | 20.08 | Telmo & Lousada (2011) |
+| *P. sylvestris* | 20.17 | Shafizadeh (1981) |
+| *P. taeda* | 20.30 | Howard (1973) |
+| *P. taeda* | 19.38 | Jenkins et al. (1998) |
 
 We used nine estimates from five species in the genus *Pinus*, returning an average energy content:
 
@@ -188,7 +192,12 @@ See [Energetics Figures](energetics-figures.md) for publication-quality visualiz
 
 ## References
 
+- Howard, E.T. (1973). Heat of combustion of various southern pine materials. *Wood Science*, 5(3), 194--197.
+- Jenkins, B.M., Baxter, L.L., Miles, T.R. Jr. and Miles, T.R. (1998). Combustion properties of biomass. *Fuel Processing Technology*, 54(1--3), 17--46.
 - Jucker, T., et al. (2017). Allometric equations for integrating remote sensing imagery into forest monitoring programmes. *Global Change Biology*, 23(1), 177--190.
 - Lin, H., et al. (2011). Earth's Critical Zone and hydropedology: concepts, characteristics, and advances. *Hydrology and Earth System Sciences*, 15(12), 3895--3910.
+- Ragland, K.W., Aerts, D.J. and Baker, A.J. (1991). Properties of wood for combustion analysis. *Bioresource Technology*, 37(2), 161--168.
+- Shafizadeh, F. (1981). Basic principles of direct combustion. In *Biomass Conversion Processes for Energy and Fuels*, S.S. Sofer and O.R. Zaborsky (eds), Plenum Press, New York, pp. 103--150.
 - Snowdon, P. (1991). A ratio estimator for bias correction in logarithmic regressions. *Canadian Journal of Forest Research*, 21(5), 720--724.
 - Swetnam, T.L. and Falk, D.A. (2014). Application of metabolic scaling theory to reduce error in local maxima tree segmentation from aerial LiDAR. *Forest Ecology and Management*, 323, 158--167.
+- Telmo, C. and Lousada, J. (2011). The explained variation by lignin and extractive contents on higher heating value of wood. *Biomass and Bioenergy*, 35(5), 1663--1667.
