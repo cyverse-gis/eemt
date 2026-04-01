@@ -280,51 +280,84 @@ fn run() -> Result<(), String> {
             let total_days = days.len();
             let start_time = Instant::now();
 
-            // GPU radiation only when horizons are disabled (GPU shader lacks shadow checks)
-            let use_gpu_radiation = gpu_ctx.is_some() && horizon_grid.is_none();
+            // Try CUDA radiation (supports horizons natively)
+            let use_cuda = gpu != "cpu";
+            #[cfg(feature = "cuda")]
+            let cuda_radiation = if use_cuda {
+                let cuda_device = if let Ok(idx) = gpu.parse::<usize>() { idx } else { 0 };
+                match rsun_cuda::CudaRadiationContext::new(
+                    cuda_device, &dem_grid, &slope_grid, &aspect_grid, &lat_grid,
+                    horizon_grid.as_ref(),
+                ) {
+                    Ok(ctx) => {
+                        eprintln!("CUDA radiation pipeline ready on {} ({} pixels uploaded)",
+                            ctx.device_name, n_pixels);
+                        Some(ctx)
+                    }
+                    Err(e) => {
+                        eprintln!("CUDA radiation unavailable: {e}");
+                        None
+                    }
+                }
+            } else {
+                None
+            };
+            #[cfg(not(feature = "cuda"))]
+            let cuda_radiation: Option<()> = None;
 
-            if use_gpu_radiation {
-                let ctx = gpu_ctx.as_ref().unwrap();
-                // === GPU RADIATION PATH (no horizons) ===
-                eprintln!("Uploading data to GPU...");
-                let buffers = rsun_gpu::buffers::GpuBuffers::new(
-                    ctx,
-                    &dem_grid,
-                    &slope_grid,
-                    &aspect_grid,
-                    &lat_grid,
-                    &lon_grid,
-                );
-                let pipeline = rsun_gpu::pipeline::RadiationPipeline::new(ctx);
-                eprintln!("GPU radiation pipeline ready. Processing {} days...", total_days);
+            // Fallback: wgpu GPU radiation (no horizon support)
+            let use_wgpu_radiation = cuda_radiation.is_none()
+                && gpu_ctx.is_some()
+                && horizon_grid.is_none();
+
+            if false { let _ = &cuda_radiation; } // suppress unused warning
+
+            #[cfg(feature = "cuda")]
+            if let Some(ref cuda_ctx) = cuda_radiation {
+                // === CUDA RADIATION PATH (with horizon shading) ===
+                eprintln!("Processing {} days on CUDA{}...", total_days,
+                    if horizon_grid.is_some() { " with horizon shading" } else { "" });
 
                 for (i, &d) in days.iter().enumerate() {
                     let params = SolarParams {
-                        day: d,
-                        step,
-                        linke,
-                        albedo,
-                        solar_constant: 1367.0,
+                        day: d, step, linke, albedo, solar_constant: 1367.0,
                     };
 
+                    let result = cuda_ctx.compute_day(&params)?;
+
+                    if (i + 1) % 50 == 0 || i + 1 == total_days || total_days == 1 {
+                        let elapsed = start_time.elapsed().as_secs_f64();
+                        let rate = (i + 1) as f64 / elapsed;
+                        eprintln!("  Day {}/{} (DOY {}) — {:.1} days/sec", i + 1, total_days, d, rate);
+                    }
+
+                    write_outputs(&result, d, &glob_rad, &insol_time, &output_dir, &geo, &dem)?;
+                }
+            } else if use_wgpu_radiation {
+                let ctx = gpu_ctx.as_ref().unwrap();
+                // === wgpu GPU RADIATION PATH (no horizons) ===
+                eprintln!("Uploading data to wgpu GPU...");
+                let buffers = rsun_gpu::buffers::GpuBuffers::new(
+                    ctx, &dem_grid, &slope_grid, &aspect_grid, &lat_grid, &lon_grid,
+                );
+                let pipeline = rsun_gpu::pipeline::RadiationPipeline::new(ctx);
+                eprintln!("wgpu radiation pipeline ready. Processing {} days...", total_days);
+
+                for (i, &d) in days.iter().enumerate() {
+                    let params = SolarParams {
+                        day: d, step, linke, albedo, solar_constant: 1367.0,
+                    };
                     let result = pipeline.compute_day(ctx, &buffers, &params);
 
                     if (i + 1) % 50 == 0 || i + 1 == total_days || total_days == 1 {
                         let elapsed = start_time.elapsed().as_secs_f64();
                         let rate = (i + 1) as f64 / elapsed;
-                        eprintln!(
-                            "  Day {}/{} (DOY {}) — {:.1} days/sec",
-                            i + 1,
-                            total_days,
-                            d,
-                            rate
-                        );
+                        eprintln!("  Day {}/{} (DOY {}) — {:.1} days/sec", i + 1, total_days, d, rate);
                     }
-
                     write_outputs(&result, d, &glob_rad, &insol_time, &output_dir, &geo, &dem)?;
                 }
             } else {
-                // === CPU RADIATION PATH (with optional horizon shading) ===
+                // === CPU RADIATION PATH ===
                 if horizon_grid.is_some() {
                     eprintln!("Processing {} days on CPU with horizon shading...", total_days);
                 } else {
@@ -384,7 +417,9 @@ fn run() -> Result<(), String> {
                 total_days,
                 total_elapsed.as_secs_f64(),
                 total_days as f64 / total_elapsed.as_secs_f64(),
-                if use_gpu_radiation { "GPU" } else { "CPU" }
+                if cuda_radiation.is_some() { "CUDA" }
+                else if use_wgpu_radiation { "wgpu" }
+                else { "CPU" }
             );
 
             // Monthly sum generation
