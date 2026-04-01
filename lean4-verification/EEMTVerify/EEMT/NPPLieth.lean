@@ -91,13 +91,9 @@ theorem nppTemp_strictMono : StrictMono nppTemp := by
 theorem nppPrecip_nonneg (P : ℝ) (hP : P ≥ 0) : nppPrecip P ≥ 0 := by
   unfold nppPrecip nppMax liethPrecipCoeff
   -- 3000 * (1 - exp(-0.000664*P)) ≥ 0 when exp(-0.000664*P) ≤ 1
-  have harg : -(0.000664 * P) ≤ 0 := by nlinarith
-  have hexp_le : Real.exp (-(0.000664 * P)) ≤ 1 := Real.exp_le_one_iff.mpr harg
-  have hexp_pos := Real.exp_pos (-(0.000664 * P))
-  have harg : -(0.000664 * P) ≤ 0 := by nlinarith
-  have hexp_le : Real.exp (-(0.000664 * P)) ≤ 1 := Real.exp_le_one_iff.mpr harg
-  -- 3000 * (1 - exp(-kP)) ≥ 0: both factors nonneg
-  sorry
+  have : Real.exp (-0.000664 * P) ≤ 1 := by
+    rw [Real.exp_le_one_iff]; nlinarith
+  nlinarith [Real.exp_pos (-0.000664 * P)]
 
 /-- NPP from precipitation is bounded above by 3000. -/
 theorem nppPrecip_lt_max (P : ℝ) : nppPrecip P < nppMax := by

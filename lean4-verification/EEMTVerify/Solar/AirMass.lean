@@ -62,9 +62,8 @@ theorem elevationCorrection_pos (z : ℝ) : elevationCorrection z > 0 := by
 theorem elevationCorrection_le_one (z : ℝ) (hz : z ≥ 0) :
     elevationCorrection z ≤ 1 := by
   unfold elevationCorrection scaleHeight
-  rw [← Real.exp_zero]
-  -- exp(-z/8434.5) ≤ 1 ← exp_le_one_iff ← -z/8434.5 ≤ 0 ← z ≥ 0
-  sorry
+  rw [Real.exp_le_one_iff]
+  exact div_nonpos_of_nonpos_of_nonneg (neg_nonpos.mpr hz) (by norm_num)
 
 /-- Elevation correction decreases with altitude (thinner atmosphere). -/
 theorem elevationCorrection_antitone : Antitone elevationCorrection := by

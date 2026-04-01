@@ -70,8 +70,7 @@ theorem energyDensity_nonneg (E A : ℝ) (hE : E ≥ 0) (hA : A > 0) :
 theorem energyDensity_double_area (E A : ℝ) (_hA : A > 0) :
     energyDensity E (2 * A) = energyDensity E A / 2 := by
   unfold energyDensity
-  -- E/(2A) = (E/A)/2: field_simp with A ≠ 0
-  sorry
+  rw [div_div, mul_comm]
 
 /-! ## Linearity of Energy Summation -/
 

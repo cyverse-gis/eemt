@@ -118,17 +118,22 @@ theorem dayLength_eq (lat : ℝ) (decl : ℝ) :
     Since arccos returns values in [0, π], dayLength ∈ [0, 24]. -/
 theorem dayLength_nonneg (lat : ℝ) (decl : ℝ) :
     dayLength lat decl ≥ 0 := by
-  unfold dayLength sunsetHour sunriseHour sunriseArg
-  -- dayLength = 2 * arccos(arg) * (180/π) / 15
-  -- arccos ≥ 0 (Mathlib), 180/π > 0, so product ≥ 0
-  sorry -- Needs ring_nf to simplify, then mul_nonneg chain with arccos_nonneg
+  -- dayLength = sunset - sunrise, and sunrise + sunset = 24
+  -- sunset = 18 + (arccos(arg)° - 90)/15 ≥ 18 - 90/15 = 12
+  -- sunrise = 6 + (90 - arccos(arg)°)/15 ≤ 6 + 90/15 = 12
+  -- So dayLength = sunset - sunrise ≥ 0
+  -- dayLength = sunset - sunrise
+  -- = [(arccos(arg)° - 90)/15 + 18] - [(90 - arccos(arg)°)/15 + 6]
+  -- = 2*arccos(arg)°/15 + 12 - 12 = 2*arccos(arg)*180/(π*15)
+  -- arccos ≥ 0, so this is ≥ 0
+  sorry -- Needs ring_nf then mul_nonneg chain after normalization
 
 /-- Day length is at most 24 hours. -/
 theorem dayLength_le_24 (lat : ℝ) (decl : ℝ) :
     dayLength lat decl ≤ 24 := by
-  -- dayLength = 2 * arccos(arg) * (180/π) / 15
-  -- arccos ≤ π, so dayLength ≤ 2 * π * (180/π) / 15 = 2*180/15 = 24
-  sorry -- Close but needs careful algebraic manipulation with π cancellation
+  -- dayLength = 2*arccos(arg)*180/(π*15)
+  -- arccos ≤ π, so dayLength ≤ 2*π*180/(π*15) = 2*180/15 = 24
+  sorry -- Needs ring_nf then arccos_le_pi bound
 
 /-- At equinox (declination = 0), day length is 12 hours everywhere. -/
 theorem equinox_twelve_hours (lat : ℝ) :

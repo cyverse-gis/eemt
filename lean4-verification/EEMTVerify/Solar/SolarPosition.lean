@@ -76,7 +76,10 @@ theorem sinSolarAltitude_bounded (lat : ℝ) (decl : ℝ) (ω : ℝ) :
   -- This is cos(φ-δ) when ω=0, and bounded by 1 in general
   -- by the addition formula for cos applied to a rotated coordinate.
   -- Formally: this equals cos(angle between two unit vectors) which is in [-1,1].
-  sorry -- Requires careful trig identity proof
+  -- Use: |a·c + b·d| ≤ 1 when a²+b²=1 and c²+d²≤1
+  -- Here a=cos(lat), b=sin(lat), c=cos(decl)cos(ω), d=sin(decl)
+  -- a²+b² = 1 and c²+d² = cos²(decl)cos²(ω)+sin²(decl) ≤ cos²(decl)+sin²(decl) = 1
+  sorry -- Needs Cauchy-Schwarz or strategic nlinarith with right polynomial witnesses
 
 /-- At solar noon (ω = 0), altitude equals complement of latitude minus declination.
     sin(h_noon) = cos(φ)cos(δ) + sin(φ)sin(δ) = cos(φ - δ) -/
@@ -105,9 +108,12 @@ theorem sun_direction_unit_vector (lat : ℝ) (decl : ℝ) (ω : ℝ) :
     sunDirX decl ω ^ 2 + sunDirY lat decl ω ^ 2 +
     sinSolarAltitude lat decl ω ^ 2 = 1 := by
   unfold sunDirX sunDirY sinSolarAltitude
-  -- This is a rotation matrix identity: columns are orthonormal
-  -- Expanding and using sin²+cos² = 1 repeatedly should work
-  sorry -- Long algebraic proof; ring + simp [sin_sq, cos_sq] should close it
+  -- Expanding: (-cos(δ)sin(ω))² + (sin(φ)cos(δ)cos(ω)-cos(φ)sin(δ))² + (cos(φ)cos(δ)cos(ω)+sin(φ)sin(δ))²
+  -- = cos²(δ)sin²(ω) + sin²(φ)cos²(δ)cos²(ω) - 2sin(φ)cos(φ)cos(δ)sin(δ)cos(ω) + cos²(φ)sin²(δ)
+  --   + cos²(φ)cos²(δ)cos²(ω) + 2sin(φ)cos(φ)cos(δ)sin(δ)cos(ω) + sin²(φ)sin²(δ)
+  -- = cos²(δ)sin²(ω) + cos²(δ)cos²(ω)(sin²(φ)+cos²(φ)) + sin²(δ)(cos²(φ)+sin²(φ))
+  -- = cos²(δ)(sin²(ω)+cos²(ω)) + sin²(δ) = cos²(δ) + sin²(δ) = 1
+  sorry -- Algebraic identity; ring should work after sin²+cos²=1 rewrites
 
 /-! ## Structural Correspondence
 
