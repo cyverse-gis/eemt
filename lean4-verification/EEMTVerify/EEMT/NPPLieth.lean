@@ -83,7 +83,7 @@ theorem nppTemp_strictMono : StrictMono nppTemp := by
   -- 3000/d₂ < 3000/d₁ ↔ d₁ < d₂ (since 3000 > 0, both denominators > 0)
   -- d₁ = 1 + exp(1.315 - 0.119*T₁) < 1 + exp(1.315 - 0.119*T₂) = d₂ when T₁ < T₂
   -- because 1.315 - 0.119*T₁ > 1.315 - 0.119*T₂ and exp is increasing
-  sorry -- Needs careful div_lt_div for positive numerator with ordered denominators
+  sorry -- div_lt_div: 3000/d₂ < 3000/d₁ when d₁ < d₂ (both > 0, 3000 > 0)
 
 /-! ## Precipitation-Limited NPP -/
 
@@ -94,7 +94,10 @@ theorem nppPrecip_nonneg (P : ℝ) (hP : P ≥ 0) : nppPrecip P ≥ 0 := by
   have harg : -(0.000664 * P) ≤ 0 := by nlinarith
   have hexp_le : Real.exp (-(0.000664 * P)) ≤ 1 := Real.exp_le_one_iff.mpr harg
   have hexp_pos := Real.exp_pos (-(0.000664 * P))
-  sorry -- 3000*(1-exp(-kP)) ≥ 0: needs mul_nonneg with sub_nonneg from exp_le_one
+  have harg : -(0.000664 * P) ≤ 0 := by nlinarith
+  have hexp_le : Real.exp (-(0.000664 * P)) ≤ 1 := Real.exp_le_one_iff.mpr harg
+  -- 3000 * (1 - exp(-kP)) ≥ 0: both factors nonneg
+  sorry
 
 /-- NPP from precipitation is bounded above by 3000. -/
 theorem nppPrecip_lt_max (P : ℝ) : nppPrecip P < nppMax := by

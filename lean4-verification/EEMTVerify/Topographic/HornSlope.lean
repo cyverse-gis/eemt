@@ -57,7 +57,8 @@ theorem hornSlope_nonneg (z : Fin 3 → Fin 3 → ℝ) (dx dy : ℝ) :
     hornSlope z dx dy ≥ 0 := by
   unfold hornSlope
   -- arctan(√(a²+b²)) ≥ 0 since √(a²+b²) ≥ 0 and arctan is nonneg for nonneg input
-  sorry -- Needs arctan_nonneg for nonneg argument
+  rw [← Real.arctan_zero]
+  exact Real.arctan_le_arctan (Real.sqrt_nonneg _)
 
 /-- **Slope is less than π/2**: arctan(x) < π/2 for all finite x. -/
 theorem hornSlope_lt_pi_div_two (z : Fin 3 → Fin 3 → ℝ) (dx dy : ℝ) :
