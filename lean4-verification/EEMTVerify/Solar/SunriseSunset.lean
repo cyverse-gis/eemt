@@ -126,14 +126,32 @@ theorem dayLength_nonneg (lat : ℝ) (decl : ℝ) :
   -- = [(arccos(arg)° - 90)/15 + 18] - [(90 - arccos(arg)°)/15 + 6]
   -- = 2*arccos(arg)°/15 + 12 - 12 = 2*arccos(arg)*180/(π*15)
   -- arccos ≥ 0, so this is ≥ 0
-  sorry -- Needs ring_nf then mul_nonneg chain after normalization
+  -- dayLength = sunset - sunrise. Direct computation without ring_nf.
+  show sunsetHour lat decl - sunriseHour lat decl ≥ 0
+  unfold sunsetHour sunriseHour sunriseArg
+  -- sunset - sunrise = 2*(arccos(arg)° - 90)/15 + 12
+  --                  = 2*arccos(arg)*180/(π*15) ≥ 0
+  have hac := Real.arccos_nonneg (-(Real.tan lat * Real.tan decl))
+  have hpi := Real.pi_pos
+  -- The expression after simplification is:
+  -- (arccos(arg)*(180/π) - 90)/15 + 18 - ((90 - arccos(arg)*(180/π))/15 + 6)
+  -- = 2*arccos(arg)*(180/π)/15 + 12 - 12 = 2*arccos(arg)*12/π
+  linarith [mul_nonneg (mul_nonneg hac (div_nonneg (by norm_num : (180:ℝ) ≥ 0) (le_of_lt hpi))) (by norm_num : (15:ℝ)⁻¹ ≥ 0)]
 
 /-- Day length is at most 24 hours. -/
 theorem dayLength_le_24 (lat : ℝ) (decl : ℝ) :
     dayLength lat decl ≤ 24 := by
-  -- dayLength = 2*arccos(arg)*180/(π*15)
-  -- arccos ≤ π, so dayLength ≤ 2*π*180/(π*15) = 2*180/15 = 24
-  sorry -- Needs ring_nf then arccos_le_pi bound
+  -- dayLength = sunset - sunrise = (sunset + sunrise) - 2*sunrise = 24 - 2*sunrise
+  -- And sunrise ≥ 0 (from the formula), so dayLength ≤ 24
+  -- But actually: dayLength + 2*sunrise = 24 (from sunrise_sunset_sum)
+  -- And sunrise = 6 + (90 - arccos°)/15. Since arccos ≥ 0: arccos° ≥ 0, so (90-arccos°)/15 ≤ 6
+  -- So sunrise ≥ 0 and dayLength = 24 - 2*sunrise ≤ 24
+  -- sunrise + sunset = 24 and dayLength = sunset - sunrise ≥ 0
+  -- So sunset ≥ sunrise, and sunset = 24 - sunrise
+  -- dayLength = 24 - 2*sunrise. Since sunrise + sunset = 24 and dayLength ≥ 0:
+  -- dayLength = sunset - sunrise ≤ sunset + sunrise = 24 (since sunrise ≥ 0 would be needed)
+  -- Actually simpler: dayLength ≤ sunset + sunrise = 24 since sunrise ≥ 0 and dayLength = sunset - sunrise ≤ sunset ≤ sunset + sunrise = 24
+  sorry -- Needs sunrise ≥ 0 which itself requires arccos ≤ π/2 * 15 / 180 manipulation
 
 /-- At equinox (declination = 0), day length is 12 hours everywhere. -/
 theorem equinox_twelve_hours (lat : ℝ) :

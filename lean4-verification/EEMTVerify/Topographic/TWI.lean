@@ -52,7 +52,9 @@ theorem twi_decreasing_slope (A β₁ β₂ : ℝ)
   apply Real.log_lt_log
   · exact div_pos hA (Real.tan_pos_of_pos_of_lt_pi_div_two hβ2 hβ2')
   · -- A/tan(β₂) < A/tan(β₁) since tan(β₂) > tan(β₁) (tan increasing on (0,π/2))
-    sorry -- Needs tan strict monotonicity on (0, π/2)
+    exact div_lt_div_of_pos_left hA
+      (Real.tan_pos_of_pos_of_lt_pi_div_two hβ1 hβ1')
+      (Real.tan_lt_tan_of_nonneg_of_lt_pi_div_two (le_of_lt hβ1) hβ2' hlt)
 
 /-- Larger contributing area → higher TWI (more water). -/
 theorem twi_increasing_area (A₁ A₂ β : ℝ)

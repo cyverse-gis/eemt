@@ -65,19 +65,22 @@ theorem agb_nonneg (H CD : ℝ) (hH : H ≥ 0) (hCD : CD ≥ 0) : agb H CD ≥ 0
 /-- **AGB increases with height** (taller trees have more biomass).
     Proof: (H × CD)^β is increasing in H when CD > 0, since
     x^β is increasing for x > 0 and β > 0. -/
-theorem agb_strictMono_height (CD : ℝ) (hCD : CD > 0) :
-    StrictMono (fun H => agb H CD) := by
-  intro a b hab
+theorem agb_strictMono_height (CD : ℝ) (hCD : CD > 0) (a b : ℝ) (ha : 0 ≤ a) (hab : a < b) :
+    agb a CD < agb b CD := by
   unfold agb juckerAlpha juckerBeta snowdonBias
-  -- (a*CD)^1.79 < (b*CD)^1.79 since a < b and CD > 0
-  sorry -- Needs rpow_lt_rpow for strictly increasing power function
+  have h1 : a * CD < b * CD := by nlinarith
+  have h2 : (a * CD) ^ (1.79 : ℝ) < (b * CD) ^ (1.79 : ℝ) :=
+    rpow_lt_rpow (mul_nonneg ha (le_of_lt hCD)) h1 (by norm_num)
+  nlinarith
 
 /-- **AGB increases with crown diameter** (wider crowns → more biomass). -/
-theorem agb_strictMono_crown (H : ℝ) (hH : H > 0) :
-    StrictMono (fun CD => agb H CD) := by
-  intro a b hab
+theorem agb_strictMono_crown (H : ℝ) (hH : H > 0) (a b : ℝ) (ha : 0 ≤ a) (hab : a < b) :
+    agb H a < agb H b := by
   unfold agb juckerAlpha juckerBeta snowdonBias
-  sorry -- Symmetric to height case: (H*a)^1.79 < (H*b)^1.79
+  have h1 : H * a < H * b := by nlinarith
+  have h2 : (H * a) ^ (1.79 : ℝ) < (H * b) ^ (1.79 : ℝ) :=
+    rpow_lt_rpow (mul_nonneg (le_of_lt hH) ha) h1 (by norm_num)
+  nlinarith
 
 /-! ## Tree Energy Content
 

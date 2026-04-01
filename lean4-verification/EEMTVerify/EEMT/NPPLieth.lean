@@ -76,14 +76,10 @@ theorem nppTemp_in_range (T : ℝ) : 0 < nppTemp T ∧ nppTemp T < nppMax :=
 theorem nppTemp_strictMono : StrictMono nppTemp := by
   intro T₁ T₂ hlt
   unfold nppTemp nppMax liethTempIntercept liethTempCoeff
-  have hexp1 := Real.exp_pos (1.315 - 0.119 * T₁)
-  have hexp2 := Real.exp_pos (1.315 - 0.119 * T₂)
-  have hd1 : (0 : ℝ) < 1 + Real.exp (1.315 - 0.119 * T₁) := by linarith
-  have hd2 : (0 : ℝ) < 1 + Real.exp (1.315 - 0.119 * T₂) := by linarith
-  -- 3000/d₂ < 3000/d₁ ↔ d₁ < d₂ (since 3000 > 0, both denominators > 0)
-  -- d₁ = 1 + exp(1.315 - 0.119*T₁) < 1 + exp(1.315 - 0.119*T₂) = d₂ when T₁ < T₂
-  -- because 1.315 - 0.119*T₁ > 1.315 - 0.119*T₂ and exp is increasing
-  sorry -- div_lt_div: 3000/d₂ < 3000/d₁ when d₁ < d₂ (both > 0, 3000 > 0)
+  have hd2 : (0 : ℝ) < 1 + Real.exp (1.315 - 0.119 * T₂) := by linarith [Real.exp_pos (1.315 - 0.119 * T₂)]
+  have hd2_lt_d1 : 1 + Real.exp (1.315 - 0.119 * T₂) < 1 + Real.exp (1.315 - 0.119 * T₁) := by
+    linarith [Real.exp_lt_exp.mpr (show 1.315 - 0.119 * T₂ < 1.315 - 0.119 * T₁ by linarith)]
+  exact div_lt_div_of_pos_left (by norm_num) hd2 hd2_lt_d1
 
 /-! ## Precipitation-Limited NPP -/
 

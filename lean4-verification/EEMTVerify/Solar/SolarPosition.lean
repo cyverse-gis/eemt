@@ -79,7 +79,19 @@ theorem sinSolarAltitude_bounded (lat : ℝ) (decl : ℝ) (ω : ℝ) :
   -- Use: |a·c + b·d| ≤ 1 when a²+b²=1 and c²+d²≤1
   -- Here a=cos(lat), b=sin(lat), c=cos(decl)cos(ω), d=sin(decl)
   -- a²+b² = 1 and c²+d² = cos²(decl)cos²(ω)+sin²(decl) ≤ cos²(decl)+sin²(decl) = 1
-  sorry -- Needs Cauchy-Schwarz or strategic nlinarith with right polynomial witnesses
+  have h1 := Real.sin_sq_add_cos_sq lat
+  have h2 := Real.sin_sq_add_cos_sq decl
+  have h3 := Real.sin_sq_add_cos_sq ω
+  -- Cauchy-Schwarz: (cos(φ)·(cos(δ)cos(ω)) + sin(φ)·sin(δ))² ≤ (cos²φ+sin²φ)(cos²δ·cos²ω+sin²δ) = cos²δ·cos²ω+sin²δ ≤ 1
+  -- Cauchy-Schwarz: (a·c + b·d)² ≤ (a²+b²)(c²+d²)
+  -- With a=cos(φ), b=sin(φ), c=cos(δ)cos(ω), d=sin(δ):
+  -- (...)² ≤ 1·(cos²δ·cos²ω + sin²δ) ≤ 1·(cos²δ + sin²δ) = 1
+  have hCS : (Real.cos lat * Real.cos decl * Real.cos ω + Real.sin lat * Real.sin decl) ^ 2 ≤
+      (Real.cos decl * Real.cos ω) ^ 2 + Real.sin decl ^ 2 := by
+    nlinarith [sq_nonneg (Real.cos lat * Real.sin decl - Real.sin lat * Real.cos decl * Real.cos ω)]
+  have hbound : (Real.cos decl * Real.cos ω) ^ 2 + Real.sin decl ^ 2 ≤ 1 := by
+    nlinarith [sq_nonneg (Real.cos decl), sq_nonneg (Real.cos ω), sq_nonneg (Real.sin decl)]
+  rw [abs_le]; constructor <;> nlinarith [sq_abs (Real.cos lat * Real.cos decl * Real.cos ω + Real.sin lat * Real.sin decl)]
 
 /-- At solar noon (ω = 0), altitude equals complement of latitude minus declination.
     sin(h_noon) = cos(φ)cos(δ) + sin(φ)sin(δ) = cos(φ - δ) -/
@@ -97,7 +109,9 @@ theorem noon_altitude_max (lat : ℝ) (decl : ℝ) (ω : ℝ) :
   simp [Real.cos_zero]
   -- Need: cos(lat)*cos(decl)*cos(ω) ≤ cos(lat)*cos(decl)*1
   -- This holds when cos(lat)*cos(decl) ≥ 0 (true for |lat|,|decl| < π/2)
-  sorry -- Requires sign analysis of cos(lat)*cos(decl)
+  -- cos(lat)*cos(decl)*(cos(ω)-1) ≤ 0 since cos(ω) ≤ 1
+  -- but sign of cos(lat)*cos(decl) is unknown without restricting lat,decl to (-π/2,π/2)
+  sorry -- Needs |lat| < π/2 and |decl| < π/2 as preconditions for cos(lat)*cos(decl) ≥ 0
 
 /-! ## Direction Vector Properties -/
 
@@ -113,7 +127,17 @@ theorem sun_direction_unit_vector (lat : ℝ) (decl : ℝ) (ω : ℝ) :
   --   + cos²(φ)cos²(δ)cos²(ω) + 2sin(φ)cos(φ)cos(δ)sin(δ)cos(ω) + sin²(φ)sin²(δ)
   -- = cos²(δ)sin²(ω) + cos²(δ)cos²(ω)(sin²(φ)+cos²(φ)) + sin²(δ)(cos²(φ)+sin²(φ))
   -- = cos²(δ)(sin²(ω)+cos²(ω)) + sin²(δ) = cos²(δ) + sin²(δ) = 1
-  sorry -- Algebraic identity; ring should work after sin²+cos²=1 rewrites
+  have h1 := Real.sin_sq_add_cos_sq lat
+  have h2 := Real.sin_sq_add_cos_sq decl
+  have h3 := Real.sin_sq_add_cos_sq ω
+  have h12 : Real.sin lat ^ 2 * Real.sin decl ^ 2 + Real.cos lat ^ 2 * Real.sin decl ^ 2 +
+      Real.sin lat ^ 2 * Real.cos decl ^ 2 + Real.cos lat ^ 2 * Real.cos decl ^ 2 = 1 := by nlinarith
+  have h13 : Real.sin lat ^ 2 * Real.sin ω ^ 2 + Real.cos lat ^ 2 * Real.sin ω ^ 2 +
+      Real.sin lat ^ 2 * Real.cos ω ^ 2 + Real.cos lat ^ 2 * Real.cos ω ^ 2 = 1 := by nlinarith
+  have h23 : Real.sin decl ^ 2 * Real.sin ω ^ 2 + Real.cos decl ^ 2 * Real.sin ω ^ 2 +
+      Real.sin decl ^ 2 * Real.cos ω ^ 2 + Real.cos decl ^ 2 * Real.cos ω ^ 2 = 1 := by nlinarith
+  nlinarith [sq_nonneg (Real.sin lat * Real.sin decl * Real.cos ω - Real.cos lat * Real.cos decl),
+             sq_nonneg (Real.cos lat * Real.sin decl * Real.cos ω + Real.sin lat * Real.cos decl)]
 
 /-! ## Structural Correspondence
 

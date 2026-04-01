@@ -39,7 +39,11 @@ theorem abs_mul_sin_lt_one (a : ℝ) (x : ℝ) (ha_pos : 0 < a) (ha_lt : a < 1) 
 /-- Arcsin of a product a*sin(x) where |a| ≤ 1 is bounded by arcsin(|a|). -/
 theorem arcsin_mul_sin_bounded (a : ℝ) (x : ℝ) (ha : |a| ≤ 1) :
     |Real.arcsin (a * Real.sin x)| ≤ Real.arcsin |a| := by
-  sorry -- Requires arcsin monotonicity from Mathlib
+  -- |arcsin(a*sin(x))| ≤ arcsin(|a|) follows from:
+  -- 1. |a*sin(x)| ≤ |a| (proven by abs_mul_sin_le)
+  -- 2. arcsin odd: |arcsin(y)| = arcsin(|y|) for |y| ≤ 1
+  -- 3. arcsin monotone on [-1,1]
+  sorry -- Needs: abs_arcsin = arcsin ∘ abs on [-1,1], which Mathlib may not have
 
 /-! ## Angle Conversion -/
 

@@ -94,7 +94,7 @@ theorem budykoRatio_le_ai (ai : ℝ) (hai : ai ≥ 0) (ω : ℝ) (hω : ω > 1) 
   -- Need: 1 + ai - (1 + ai^ω)^(1/ω) ≤ ai
   -- Equiv: 1 ≤ (1 + ai^ω)^(1/ω)
   -- Since 1 + ai^ω ≥ 1 and 1/ω > 0: (1 + ai^ω)^(1/ω) ≥ 1^(1/ω) = 1
-  sorry -- Requires monotonicity of x^(1/ω) for x ≥ 1
+  linarith [one_le_rpow (le_add_of_nonneg_right (rpow_nonneg hai ω)) (div_nonneg one_pos.le (by linarith : ω ≥ 0))]
 
 /-! ## Limiting Behavior -/
 

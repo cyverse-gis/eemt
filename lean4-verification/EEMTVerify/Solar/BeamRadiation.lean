@@ -58,7 +58,8 @@ noncomputable def beamTiltedSimplified (s0 : ℝ) (gExt : ℝ) (transmittance : 
 
 /-- **Beam radiation is non-negative** (the most fundamental physical constraint).
     Radiation can never be negative. -/
-theorem beamTilted_nonneg (s0 solarAlt gExt τ : ℝ) :
+theorem beamTilted_nonneg (s0 solarAlt gExt τ : ℝ)
+    (hg : gExt ≥ 0) (hτ : τ ≥ 0) (halt_pi : solarAlt < Real.pi) :
     beamTilted s0 solarAlt gExt τ ≥ 0 := by
   unfold beamTilted
   split_ifs with h
@@ -66,12 +67,14 @@ theorem beamTilted_nonneg (s0 solarAlt gExt τ : ℝ) :
   · push_neg at h
     obtain ⟨hs0, halt⟩ := h
     unfold beamHorizontal
-    -- B_h * s0 / sin(h) where B_h = gExt * sin(h) * τ
-    -- All terms need to be positive. This requires gExt ≥ 0 and τ ≥ 0.
-    -- Without those assumptions, we can't prove non-negativity in general.
-    -- In the non-zero branch, s0 > 0, solarAlt > 0, but we need gExt ≥ 0, τ ≥ 0
-    -- Without those assumptions, beam could be negative
-    sorry -- Requires preconditions gExt ≥ 0 and τ ≥ 0
+    -- B_h * s0 / sin(h) = gExt * sin(h) * τ * s0 / sin(h)
+    -- sin(h) > 0 since 0 < h < π, so this equals gExt * τ * s0 ≥ 0
+    have hsin := Real.sin_pos_of_pos_of_lt_pi halt halt_pi
+    apply div_nonneg
+    · apply mul_nonneg
+      · exact mul_nonneg (mul_nonneg hg (le_of_lt hsin)) hτ
+      · exact le_of_lt hs0
+    · exact le_of_lt hsin
 
 /-- Beam is zero when surface faces away from sun (self-shadow). -/
 theorem beamTilted_zero_facing_away (s0 solarAlt gExt τ : ℝ) (hs : s0 ≤ 0) :
