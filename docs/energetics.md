@@ -9,7 +9,7 @@ description: Methods and results for estimating landscape energy content from in
 
 This chapter describes a workflow for estimating landscape-scale energy content from airborne LiDAR data. The approach applies sequential scalar mass-energy transformations at the individual tree scale: from point cloud to segmented trees, from tree dimensions to biomass, and from biomass to energy content.
 
-The complete analytical workflow is implemented in the companion notebook: [`notebooks/energetics.ipynb`](../notebooks/energetics.ipynb).
+The complete analytical workflow is implemented in the companion notebook: [`notebooks/energetics.ipynb`](https://github.com/cyverse-gis/eemt/blob/master/notebooks/energetics.ipynb).
 
 ## Study Area
 

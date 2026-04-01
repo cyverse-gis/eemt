@@ -96,4 +96,4 @@ All data products are archived on the [CyVerse Data Store](https://de.cyverse.or
 └── gordongulch_energy_mj_05m.tif
 ```
 
-The analysis notebook is available at [`notebooks/energetics.ipynb`](https://github.com/tyson-swetnam/eemt/blob/master/notebooks/energetics.ipynb).
+The analysis notebook is available at [`notebooks/energetics.ipynb`](https://github.com/cyverse-gis/eemt/blob/master/notebooks/energetics.ipynb).
