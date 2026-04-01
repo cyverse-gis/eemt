@@ -196,7 +196,7 @@ r.mapcalc "F = if(prcp > 0, a_i*P_eff, 0)"
 echo "Calculating the Effective Precipitation term E_ppt for EEMT-Trad"
 r.mapcalc "E_ppt_trad = if(prcp > 0, (prcp - (PET_Trad*10))*4185.5, 0)" #PET_Trad was in units of cm/month - converted to mm
 echo "Calculating E_bio term for Net Primary Productivity for EEMT-Trad"
-r.mapcalc "NPP_trad = if(tmean_loc > 0,3000*(1+exp(1.315-0.119*(tmax_loc+tmin_loc)/2)^-1), 0)"
+r.mapcalc "NPP_trad = if(tmean_loc > 0, 3000.0/(1+exp(1.315-0.119*(tmax_loc+tmin_loc)/2)), 0)"
 r.mapcalc "E_bio_trad = if(tmean_loc > 0, NPP_trad*(22*10^6), 0)"
 echo "Calculating EEMT-Trad = E_ppt + E_bio"
 r.mapcalc "EEMT_Trad = (E_ppt_trad + E_bio_trad)/1000000"
