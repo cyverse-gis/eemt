@@ -2229,6 +2229,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#gordon-gulch-45-year-analysis-1980-2024" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gordon Gulch 45-Year Analysis (1980-2024)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example-1-arizona-sky-islands-analysis" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2758,6 +2769,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#gordon-gulch-45-year-analysis-1980-2024" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gordon Gulch 45-Year Analysis (1980-2024)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example-1-arizona-sky-islands-analysis" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3014,7 +3036,20 @@
 
 <h1 id="eemt-calculation-examples">EEMT Calculation Examples<a class="headerlink" href="#eemt-calculation-examples" title="Permanent link">&para;</a></h1>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>This section provides complete, working examples for EEMT calculations across different study areas and use cases, integrating public datasets with the GRASS GIS parallel processing framework.</p>
+<p>This section provides complete, working examples for EEMT calculations across different study areas and use cases.</p>
+<h2 id="gordon-gulch-45-year-analysis-1980-2024">Gordon Gulch 45-Year Analysis (1980-2024)<a class="headerlink" href="#gordon-gulch-45-year-analysis-1980-2024" title="Permanent link">&para;</a></h2>
+<p><strong><a href="gordon-gulch-results/">Full Results</a></strong> — Completed analysis of the Boulder Creek CZO site with:</p>
+<ul>
+<li>45 years of daily EEMT at 10 m resolution (USGS 3DEP + DAYMET V4 R1)</li>
+<li>GPU-accelerated solar radiation (NVIDIA A100, 32s for 1.4M pixels)</li>
+<li>Lean 4 formal verification of all equations (8/8 checks pass)</li>
+<li>Mean EEMT: <strong>21.8 &plusmn; 1.9 MJ/m²/yr</strong> (water-limited regime)</li>
+<li>Warming trend: <strong>+0.10 MJ/m²/yr</strong> (R² = 0.54), +4.5 total over record</li>
+<li>No significant ENSO effect (p &gt; 0.5)</li>
+<li><a href="https://github.com/cyverse-gis/eemt/blob/master/notebooks/gordon_gulch_eemt_report.ipynb">Interactive Jupyter notebook</a> with 8 publication figures</li>
+<li><a href="https://data.cyverse.org/dav/iplant/home/tswetnam/eemt/gordon_gulch/eemt/eemt_16km/eemt_zscore_1980_2024.mp4">Z-score animation (MP4)</a></li>
+</ul>
+<hr />
 <h2 id="example-1-arizona-sky-islands-analysis">Example 1: Arizona Sky Islands Analysis<a class="headerlink" href="#example-1-arizona-sky-islands-analysis" title="Permanent link">&para;</a></h2>
 <h3 id="study-area-santa-catalina-mountains">Study Area: Santa Catalina Mountains<a class="headerlink" href="#study-area-santa-catalina-mountains" title="Permanent link">&para;</a></h3>
 <p>Based on the validation case study from Rasmussen et al. (2014).</p>
