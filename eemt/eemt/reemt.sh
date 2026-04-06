@@ -171,7 +171,7 @@ echo "Calculating local vapor pressure"
 r.mapcalc "vp_loc = 6.11*(10^(7.5*tmin_topo)/(237.3+tmin_topo))"
 echo "Calculating average temperature corrected vapor saturation"
 r.mapcalc "f_tmin_topo = if(tmin_topo > 0, 6.108*exp((17.27*tmin_topo)/(tmin_topo+237.3)), 0)"
-r.mapcalc "f_tmax_topo = if(tmax_topo > 0, 6.108*exp((17.27*tmin_topo)/(tmin_topo+237.3)), 0)"
+r.mapcalc "f_tmax_topo = if(tmax_topo > 0, 6.108*exp((17.27*tmax_topo)/(tmax_topo+237.3)), 0)"
 r.mapcalc "vp_s_topo = if(tmean_topo > 0, (f_tmax_topo+f_tmin_topo)/2, 0)"
 echo "Calculating mean air density"
 r.mapcalc "p_a = 101325*exp(-9.80665*0.289644*dem_10m/(8.31447*288.15))/(287.35*tmean_topo*273.125)"
@@ -194,7 +194,7 @@ r.mapcalc "F = if(prcp > 0, a_i*P_eff, 0)"
 
 # EEMT-Traditional
 echo "Calculating the Effective Precipitation term E_ppt for EEMT-Trad"
-r.mapcalc "E_ppt_trad = if(prcp > 0, (prcp - (PET_Trad*10))*4185.5, 0)" #PET_Trad was in units of cm/month - converted to mm
+r.mapcalc "E_ppt_trad = if(prcp > 0 && tmean_loc > 0, (prcp - (PET_Trad*10))*4185.5*tmean_loc, 0)" #E_ppt = P_eff * rho_w * c_w * dT; PET_Trad in cm/month converted to mm
 echo "Calculating E_bio term for Net Primary Productivity for EEMT-Trad"
 r.mapcalc "NPP_trad = if(tmean_loc > 0, 3000.0/(1+exp(1.315-0.119*(tmax_loc+tmin_loc)/2)), 0)"
 r.mapcalc "E_bio_trad = if(tmean_loc > 0, NPP_trad*(22*10^6), 0)"
@@ -212,7 +212,7 @@ r.mapcalc "E_bio_topo = NPP_topo*(22*10^6)"
 echo "Calculating effective energy from precipitation, E_ppt_topo"
 
 # At this point everything is still in Joules [J] - convert back to Mega Joules [MJ] 
-r.mapcalc "E_ppt_topo = if(prcp > 0, F*4185.5*tmean_topo*E_bio_topo, 0)"
+r.mapcalc "E_ppt_topo = if(prcp > 0 && tmean_topo > 0, F*4185.5*tmean_topo, 0)"
 echo "Calculating EEMT_topo"
 r.mapcalc "EEMT_Topo = (E_ppt_topo + E_bio_topo)/1000000"
 
