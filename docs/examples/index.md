@@ -6,7 +6,22 @@ title: Examples
 
 ## Overview
 
-This section provides complete, working examples for EEMT calculations across different study areas and use cases, integrating public datasets with the GRASS GIS parallel processing framework.
+This section provides complete, working examples for EEMT calculations across different study areas and use cases.
+
+## Gordon Gulch 45-Year Analysis (1980-2024)
+
+**[Full Results](gordon-gulch-results.md)** — Completed analysis of the Boulder Creek CZO site with:
+
+- 45 years of daily EEMT at 10 m resolution (USGS 3DEP + DAYMET V4 R1)
+- GPU-accelerated solar radiation (NVIDIA A100, 32s for 1.4M pixels)
+- Lean 4 formal verification of all equations (8/8 checks pass)
+- Mean EEMT: **21.8 +/- 1.9 MJ/m²/yr** (water-limited regime)
+- Warming trend: **+0.10 MJ/m²/yr** (R² = 0.54), +4.5 total over record
+- No significant ENSO effect (p > 0.5)
+- [Interactive Jupyter notebook](https://github.com/cyverse-gis/eemt/blob/master/notebooks/gordon_gulch_eemt_report.ipynb) with 8 publication figures
+- [Z-score animation (MP4)](https://data.cyverse.org/dav/iplant/home/tswetnam/eemt/gordon_gulch/eemt/eemt_16km/eemt_zscore_1980_2024.mp4)
+
+---
 
 ## Example 1: Arizona Sky Islands Analysis
 
