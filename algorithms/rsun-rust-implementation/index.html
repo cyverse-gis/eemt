@@ -6,42 +6,42 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Methods and results for estimating landscape energy content from individual tree segmentation, allometric biomass conversion, and higher heating value calculations">
+        <meta name="description" content="EEMT: An open source framework for quantifying energy and mass flux in Earth's Critical Zone">
       
       
         <meta name="author" content="Tyson L. Swetnam">
       
       
-        <link rel="canonical" href="https://cyverse-gis.github.io/eemt/energetics/">
+        <link rel="canonical" href="https://cyverse-gis.github.io/eemt/algorithms/rsun-rust-implementation/">
       
       
-        <link rel="prev" href="../algorithms/eemt-calculations/">
+        <link rel="prev" href="../solar-radiation/">
       
       
-        <link rel="next" href="../energetics-figures/">
+        <link rel="next" href="../climate-integration/">
       
       
         
       
       
-      <link rel="icon" href="../assets/favicon.svg">
+      <link rel="icon" href="../../assets/favicon.svg">
       <meta name="generator" content="zensical-0.0.31">
     
     
       
-        <title>Landscape Energetics from LiDAR-Derived Tree Census - Effective Energy and Mass Transfer (EEMT)</title>
+        <title>Rust Solar Toolkit (rsun) - Effective Energy and Mass Transfer (EEMT)</title>
       
     
     
       
         
       
-      <link rel="stylesheet" href="../assets/stylesheets/modern/main.53a7feaf.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/modern/main.53a7feaf.min.css">
       
         
           
         
-        <link rel="stylesheet" href="../assets/stylesheets/modern/palette.dfe2e883.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/modern/palette.dfe2e883.min.css">
       
       
 
@@ -60,9 +60,9 @@
       
     
     
-      <link rel="stylesheet" href="../stylesheets/extra.css">
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,a=__md_scope)=>JSON.parse(t.getItem(a.pathname+"."+e)),__md_set=(e,t,a=localStorage,_=__md_scope)=>{try{a.setItem(_.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,a=__md_scope)=>JSON.parse(t.getItem(a.pathname+"."+e)),__md_set=(e,t,a=localStorage,_=__md_scope)=>{try{a.setItem(_.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
     
       
   
@@ -97,7 +97,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#landscape-energetics-from-lidar-derived-tree-census" class="md-skip">
+        <a href="#rust-solar-toolkit-rsun" class="md-skip">
           Skip to content
         </a>
       
@@ -113,9 +113,9 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="./.." title="Effective Energy and Mass Transfer (EEMT)" class="md-header__button md-logo" aria-label="Effective Energy and Mass Transfer (EEMT)" data-md-component="logo">
+    <a href="../.." title="Effective Energy and Mass Transfer (EEMT)" class="md-header__button md-logo" aria-label="Effective Energy and Mass Transfer (EEMT)" data-md-component="logo">
       
-  <img src="../assets/eemt-logo.svg" alt="Effective Energy and Mass Transfer (EEMT)">
+  <img src="../../assets/eemt-logo.svg" alt="Effective Energy and Mass Transfer (EEMT)">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer" aria-label="Navigation">
@@ -132,7 +132,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Landscape Energetics from LiDAR-Derived Tree Census
+              Rust Solar Toolkit (rsun)
             
           </span>
         </div>
@@ -211,9 +211,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="./.." title="Effective Energy and Mass Transfer (EEMT)" class="md-nav__button md-logo" aria-label="Effective Energy and Mass Transfer (EEMT)" data-md-component="logo">
+    <a href="../.." title="Effective Energy and Mass Transfer (EEMT)" class="md-nav__button md-logo" aria-label="Effective Energy and Mass Transfer (EEMT)" data-md-component="logo">
       
-  <img src="../assets/eemt-logo.svg" alt="Effective Energy and Mass Transfer (EEMT)">
+  <img src="../../assets/eemt-logo.svg" alt="Effective Energy and Mass Transfer (EEMT)">
 
     </a>
     Effective Energy and Mass Transfer (EEMT)
@@ -275,7 +275,7 @@
   
   
     <li class="md-nav__item">
-      <a href="./.." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -303,7 +303,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../license/" class="md-nav__link">
+      <a href="../../license/" class="md-nav__link">
         
   
   
@@ -331,7 +331,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../code_of_conduct/" class="md-nav__link">
+      <a href="../../code_of_conduct/" class="md-nav__link">
         
   
   
@@ -413,7 +413,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../installation/" class="md-nav__link">
+      <a href="../../installation/" class="md-nav__link">
         
   
   
@@ -441,7 +441,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../installation/docker/" class="md-nav__link">
+      <a href="../../installation/docker/" class="md-nav__link">
         
   
   
@@ -469,7 +469,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../installation/manual/" class="md-nav__link">
+      <a href="../../installation/manual/" class="md-nav__link">
         
   
   
@@ -497,7 +497,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../installation/requirements/" class="md-nav__link">
+      <a href="../../installation/requirements/" class="md-nav__link">
         
   
   
@@ -525,7 +525,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../installation/troubleshooting/" class="md-nav__link">
+      <a href="../../installation/troubleshooting/" class="md-nav__link">
         
   
   
@@ -607,7 +607,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../getting-started/" class="md-nav__link">
+      <a href="../../getting-started/" class="md-nav__link">
         
   
   
@@ -635,7 +635,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../getting-started/docker-deployment/" class="md-nav__link">
+      <a href="../../getting-started/docker-deployment/" class="md-nav__link">
         
   
   
@@ -663,7 +663,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../getting-started/cleanup-scripts/" class="md-nav__link">
+      <a href="../../getting-started/cleanup-scripts/" class="md-nav__link">
         
   
   
@@ -745,7 +745,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../background/" class="md-nav__link">
+      <a href="../../background/" class="md-nav__link">
         
   
   
@@ -829,7 +829,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../algorithms/solar-radiation/" class="md-nav__link">
+      <a href="../solar-radiation/" class="md-nav__link">
         
   
   
@@ -837,118 +837,6 @@
     
   
     Solar Radiation
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../algorithms/rsun-rust-implementation/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Rust Solar Toolkit (rsun)
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../algorithms/climate-integration/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Climate Integration
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../algorithms/topographic-analysis/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Topographic Analysis
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../algorithms/eemt-calculations/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    EEMT Calculations
   
 
     
@@ -985,7 +873,7 @@
   <span class="md-ellipsis">
     
   
-    Landscape Energetics
+    Rust Solar Toolkit (rsun)
   
 
     
@@ -1003,7 +891,7 @@
   <span class="md-ellipsis">
     
   
-    Landscape Energetics
+    Rust Solar Toolkit (rsun)
   
 
     
@@ -1032,10 +920,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#why-rust" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview
+        Why Rust?
       
     </span>
   </a>
@@ -1043,33 +931,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#study-area" class="md-nav__link">
+  <a href="#architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Study Area
+        Architecture
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#analytical-approach" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Analytical Approach
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Analytical Approach">
+    <nav class="md-nav" aria-label="Architecture">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#step-1-lidar-data-acquisition-and-processing" class="md-nav__link">
+  <a href="#crate-workspace" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 1: LiDAR Data Acquisition and Processing
+        Crate Workspace
       
     </span>
   </a>
@@ -1077,54 +954,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-2-individual-tree-segmentation" class="md-nav__link">
+  <a href="#core-module-map" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 2: Individual Tree Segmentation
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#step-3-calculation-of-tree-dimensions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Step 3: Calculation of Tree Dimensions
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#step-4-calculating-biomass-from-tree-scale-lidar-data" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Step 4: Calculating Biomass from Tree-Scale LiDAR Data
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#step-5-estimating-tree-scale-energy-content" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Step 5: Estimating Tree-Scale Energy Content
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#step-6-landscape-energy-census" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Step 6: Landscape Energy Census
+        Core Module Map
       
     </span>
   </a>
@@ -1137,22 +970,44 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#data-sources" class="md-nav__link">
+  <a href="#algorithm-correspondence" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Data Sources
+        Algorithm Correspondence
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Data Sources">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lean-4-proven-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lean 4 Proven Properties
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#dem" class="md-nav__link">
+  <a href="#cpu-rsun-core" class="md-nav__link">
     <span class="md-ellipsis">
       
-        DEM
+        CPU (rsun-core)
       
     </span>
   </a>
@@ -1160,21 +1015,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#lidar-point-cloud" class="md-nav__link">
+  <a href="#gpu-rsun-gpu" class="md-nav__link">
     <span class="md-ellipsis">
       
-        LiDAR Point Cloud
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#canopy-height-model" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Canopy Height Model
+        GPU (rsun-gpu)
       
     </span>
   </a>
@@ -1187,44 +1031,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#results" class="md-nav__link">
+  <a href="#cli-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Results
+        CLI Reference
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Results">
+    <nav class="md-nav" aria-label="CLI Reference">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#tree-segmentation" class="md-nav__link">
+  <a href="#compute-options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Tree Segmentation
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#allometric-conversions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Allometric Conversions
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#landscape-energy-content" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Landscape Energy Content
+        compute Options
       
     </span>
   </a>
@@ -1237,10 +1059,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#data-availability" class="md-nav__link">
+  <a href="#python-api" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Data Availability
+        Python API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#webassembly-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebAssembly API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validation-against-grass-rsun" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validation Against GRASS r.sun
       
     </span>
   </a>
@@ -1274,7 +1118,119 @@
   
   
     <li class="md-nav__item">
-      <a href="../energetics-figures/" class="md-nav__link">
+      <a href="../climate-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Climate Integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../topographic-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Topographic Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../eemt-calculations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EEMT Calculations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../energetics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Landscape Energetics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../energetics-figures/" class="md-nav__link">
         
   
   
@@ -1302,7 +1258,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../energetics-interactive/" class="md-nav__link">
+      <a href="../../energetics-interactive/" class="md-nav__link">
         
   
   
@@ -1384,7 +1340,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../data-sources/" class="md-nav__link">
+      <a href="../../data-sources/" class="md-nav__link">
         
   
   
@@ -1466,7 +1422,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workflows/" class="md-nav__link">
+      <a href="../../workflows/" class="md-nav__link">
         
   
   
@@ -1494,7 +1450,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workflows/quick-start/" class="md-nav__link">
+      <a href="../../workflows/quick-start/" class="md-nav__link">
         
   
   
@@ -1522,7 +1478,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../workflows/data-preparation/" class="md-nav__link">
+      <a href="../../workflows/data-preparation/" class="md-nav__link">
         
   
   
@@ -1604,7 +1560,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../grass-gis/" class="md-nav__link">
+      <a href="../../grass-gis/" class="md-nav__link">
         
   
   
@@ -1686,7 +1642,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/" class="md-nav__link">
+      <a href="../../api/" class="md-nav__link">
         
   
   
@@ -1714,7 +1670,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/endpoints/" class="md-nav__link">
+      <a href="../../api/endpoints/" class="md-nav__link">
         
   
   
@@ -1742,7 +1698,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/cli/" class="md-nav__link">
+      <a href="../../api/cli/" class="md-nav__link">
         
   
   
@@ -1770,7 +1726,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/parameters/" class="md-nav__link">
+      <a href="../../api/parameters/" class="md-nav__link">
         
   
   
@@ -1798,7 +1754,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api-reference/workflow-parameters/" class="md-nav__link">
+      <a href="../../api-reference/workflow-parameters/" class="md-nav__link">
         
   
   
@@ -1826,7 +1782,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/python-modules/" class="md-nav__link">
+      <a href="../../api/python-modules/" class="md-nav__link">
         
   
   
@@ -1854,7 +1810,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/web-interface/" class="md-nav__link">
+      <a href="../../api/web-interface/" class="md-nav__link">
         
   
   
@@ -1882,7 +1838,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api-reference/" class="md-nav__link">
+      <a href="../../api-reference/" class="md-nav__link">
         
   
   
@@ -1964,7 +1920,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../web-interface/" class="md-nav__link">
+      <a href="../../web-interface/" class="md-nav__link">
         
   
   
@@ -1992,7 +1948,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../web-interface/architecture/" class="md-nav__link">
+      <a href="../../web-interface/architecture/" class="md-nav__link">
         
   
   
@@ -2020,7 +1976,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../web-interface/api-reference/" class="md-nav__link">
+      <a href="../../web-interface/api-reference/" class="md-nav__link">
         
   
   
@@ -2048,7 +2004,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../web-interface/job-cleanup/" class="md-nav__link">
+      <a href="../../web-interface/job-cleanup/" class="md-nav__link">
         
   
   
@@ -2130,7 +2086,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../infrastructure/" class="md-nav__link">
+      <a href="../../infrastructure/" class="md-nav__link">
         
   
   
@@ -2158,7 +2114,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../infrastructure/container-architecture/" class="md-nav__link">
+      <a href="../../infrastructure/container-architecture/" class="md-nav__link">
         
   
   
@@ -2186,7 +2142,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../infrastructure/job-cleanup/" class="md-nav__link">
+      <a href="../../infrastructure/job-cleanup/" class="md-nav__link">
         
   
   
@@ -2268,7 +2224,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../distributed-deployment/" class="md-nav__link">
+      <a href="../../distributed-deployment/" class="md-nav__link">
         
   
   
@@ -2350,7 +2306,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../docker/cleanup-integration/" class="md-nav__link">
+      <a href="../../docker/cleanup-integration/" class="md-nav__link">
         
   
   
@@ -2432,7 +2388,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/" class="md-nav__link">
+      <a href="../../examples/" class="md-nav__link">
         
   
   
@@ -2514,7 +2470,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../development/" class="md-nav__link">
+      <a href="../../development/" class="md-nav__link">
         
   
   
@@ -2542,7 +2498,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../development/setup/" class="md-nav__link">
+      <a href="../../development/setup/" class="md-nav__link">
         
   
   
@@ -2624,7 +2580,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../about/" class="md-nav__link">
+      <a href="../../about/" class="md-nav__link">
         
   
   
@@ -2652,7 +2608,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../about/publications/" class="md-nav__link">
+      <a href="../../about/publications/" class="md-nav__link">
         
   
   
@@ -2723,10 +2679,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#why-rust" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview
+        Why Rust?
       
     </span>
   </a>
@@ -2734,33 +2690,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#study-area" class="md-nav__link">
+  <a href="#architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Study Area
+        Architecture
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#analytical-approach" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Analytical Approach
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Analytical Approach">
+    <nav class="md-nav" aria-label="Architecture">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#step-1-lidar-data-acquisition-and-processing" class="md-nav__link">
+  <a href="#crate-workspace" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 1: LiDAR Data Acquisition and Processing
+        Crate Workspace
       
     </span>
   </a>
@@ -2768,54 +2713,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-2-individual-tree-segmentation" class="md-nav__link">
+  <a href="#core-module-map" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 2: Individual Tree Segmentation
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#step-3-calculation-of-tree-dimensions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Step 3: Calculation of Tree Dimensions
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#step-4-calculating-biomass-from-tree-scale-lidar-data" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Step 4: Calculating Biomass from Tree-Scale LiDAR Data
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#step-5-estimating-tree-scale-energy-content" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Step 5: Estimating Tree-Scale Energy Content
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#step-6-landscape-energy-census" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Step 6: Landscape Energy Census
+        Core Module Map
       
     </span>
   </a>
@@ -2828,22 +2729,44 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#data-sources" class="md-nav__link">
+  <a href="#algorithm-correspondence" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Data Sources
+        Algorithm Correspondence
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Data Sources">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lean-4-proven-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lean 4 Proven Properties
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#dem" class="md-nav__link">
+  <a href="#cpu-rsun-core" class="md-nav__link">
     <span class="md-ellipsis">
       
-        DEM
+        CPU (rsun-core)
       
     </span>
   </a>
@@ -2851,21 +2774,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#lidar-point-cloud" class="md-nav__link">
+  <a href="#gpu-rsun-gpu" class="md-nav__link">
     <span class="md-ellipsis">
       
-        LiDAR Point Cloud
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#canopy-height-model" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Canopy Height Model
+        GPU (rsun-gpu)
       
     </span>
   </a>
@@ -2878,44 +2790,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#results" class="md-nav__link">
+  <a href="#cli-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Results
+        CLI Reference
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Results">
+    <nav class="md-nav" aria-label="CLI Reference">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#tree-segmentation" class="md-nav__link">
+  <a href="#compute-options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Tree Segmentation
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#allometric-conversions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Allometric Conversions
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#landscape-energy-content" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Landscape Energy Content
+        compute Options
       
     </span>
   </a>
@@ -2928,10 +2818,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#data-availability" class="md-nav__link">
+  <a href="#python-api" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Data Availability
+        Python API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#webassembly-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebAssembly API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validation-against-grass-rsun" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validation Against GRASS r.sun
       
     </span>
   </a>
@@ -2964,313 +2876,434 @@
                 
                   
 
-<h1 id="landscape-energetics-from-lidar-derived-tree-census">Landscape Energetics from LiDAR-Derived Tree Census<a class="headerlink" href="#landscape-energetics-from-lidar-derived-tree-census" title="Permanent link">&para;</a></h1>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>This chapter describes a workflow for estimating landscape-scale energy content from airborne LiDAR data. The approach applies sequential scalar mass-energy transformations at the individual tree scale: from point cloud to segmented trees, from tree dimensions to biomass, and from biomass to energy content.</p>
-<p>The complete analytical workflow is implemented in the companion notebook: <a href="https://github.com/cyverse-gis/eemt/blob/master/notebooks/energetics.ipynb"><code>notebooks/energetics.ipynb</code></a>.</p>
-<h2 id="study-area">Study Area<a class="headerlink" href="#study-area" title="Permanent link">&para;</a></h2>
-<p>Gordon Gulch (GG) watershed is located northwest of Denver, CO in the Arapahoe and Roosevelt National Forest. Gordon Gulch is part of the <a href="https://criticalzone.org/">Critical Zone Collaborative Network</a> (CZNet), formerly the Critical Zone Observatories (CZO; Lin et al. 2011).</p>
-<p><strong>Site characteristics:</strong></p>
+<h1 id="rust-solar-toolkit-rsun">Rust Solar Toolkit (rsun)<a class="headerlink" href="#rust-solar-toolkit-rsun" title="Permanent link">&para;</a></h1>
+<p><code>rsun</code> is a Rust port of <a href="https://grass.osgeo.org/grass-stable/manuals/r.sun.html">GRASS GIS r.sun</a> — a complete implementation of the ESRA clear-sky solar radiation model (Hofierka &amp; Suri, 2002). It computes global solar radiation and sunshine duration on arbitrary terrain, with CPU parallelism, GPU acceleration, and multi-platform deployment.</p>
+<h2 id="why-rust">Why Rust?<a class="headerlink" href="#why-rust" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Parameter</th>
-<th>Value</th>
+<th>Goal</th>
+<th>How rsun achieves it</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Area</td>
-<td>2.6 km²</td>
+<td><strong>Performance</strong></td>
+<td>Rayon auto-parallelism over all pixels; wgpu GPU compute shaders</td>
 </tr>
 <tr>
-<td>Elevation range</td>
-<td>2,446 -- 2,737 m</td>
+<td><strong>Portability</strong></td>
+<td>Single CLI binary, Python wheel (PyO3), WebAssembly for browsers</td>
 </tr>
 <tr>
-<td>Climate</td>
-<td>Dry continental</td>
+<td><strong>Safety</strong></td>
+<td>Rust's type system prevents memory bugs; formal Lean 4 proofs verify math</td>
 </tr>
 <tr>
-<td>Mean annual temperature</td>
-<td>5.1 °C</td>
-</tr>
-<tr>
-<td>Mean annual precipitation</td>
-<td>52 cm</td>
-</tr>
-<tr>
-<td>Dominant vegetation</td>
-<td><em>Pinus ponderosa</em></td>
+<td><strong>Independence</strong></td>
+<td>No GRASS GIS installation required; reads/writes GeoTIFF directly via GDAL</td>
 </tr>
 </tbody>
 </table>
-<p>The relatively uniform coniferous forest cover, dominated by <em>Pinus ponderosa</em>, facilitated allometric analysis by reducing the need for multi-species identification in the LiDAR point cloud.</p>
-<h2 id="analytical-approach">Analytical Approach<a class="headerlink" href="#analytical-approach" title="Permanent link">&para;</a></h2>
-<p>We employed a sequence of data acquisitions and analytics to obtain landscape energy content, applying a series of scalar mass-energy transformations and sequential dimensional equivalents at the individual tree scale:</p>
-<pre class="mermaid"><code>flowchart TD
-    A[1. LiDAR Data Acquisition] --&gt; B[2. Individual Tree Segmentation]
-    B --&gt; C[3. Tree Dimension Calculation]
-    C --&gt; D[4. Allometric Biomass Estimation]
-    D --&gt; E[5. Tree-Scale Energy Content]
-    E --&gt; F[6. Landscape Energy Census]</code></pre>
-<h3 id="step-1-lidar-data-acquisition-and-processing">Step 1: LiDAR Data Acquisition and Processing<a class="headerlink" href="#step-1-lidar-data-acquisition-and-processing" title="Permanent link">&para;</a></h3>
-<p>LiDAR coverage of the study area was obtained from the <a href="https://usgs.entwine.io/">USGS 3DEP LiDAR portal</a>.</p>
-<h3 id="step-2-individual-tree-segmentation">Step 2: Individual Tree Segmentation<a class="headerlink" href="#step-2-individual-tree-segmentation" title="Permanent link">&para;</a></h3>
-<p>The landscape LiDAR point cloud was processed into individual tree segments following the methods of Swetnam and Falk (2014). Each tree was assigned a unique numerical identifier and geolocated with UTM easting and northing coordinates.</p>
-<h3 id="step-3-calculation-of-tree-dimensions">Step 3: Calculation of Tree Dimensions<a class="headerlink" href="#step-3-calculation-of-tree-dimensions" title="Permanent link">&para;</a></h3>
-<p>For each segmented tree, the following structural variables were calculated:</p>
-<ul>
-<li><strong>Tree height</strong> (m) -- estimated from the LiDAR point cloud as the maximum point return elevation minus the ground surface elevation</li>
-<li><strong>Crown depth</strong> (m) -- estimated as the difference between the maximum and minimum point return elevations for each segmented tree</li>
-<li><strong>Crown diameter</strong> (m) -- estimated from the horizontal extent of the segmented point cloud</li>
-<li><strong>Diameter at breast height (DBH)</strong> (cm) -- derived from allometric relationships with tree height</li>
-</ul>
-<h3 id="step-4-calculating-biomass-from-tree-scale-lidar-data">Step 4: Calculating Biomass from Tree-Scale LiDAR Data<a class="headerlink" href="#step-4-calculating-biomass-from-tree-scale-lidar-data" title="Permanent link">&para;</a></h3>
-<p>Aboveground biomass (AGB) was derived from tree height and canopy diameter following Jucker et al. (2017). This method calculates AGB directly from LiDAR measurements of maximum tree height and crown diameter, both of which are outputs of the segmentation algorithm.</p>
-<p>The model is specified as:</p>
-<div class="arithmatex">\[\log(\text{AGB}) = \alpha + \beta \cdot \log(H \times CD) + \varepsilon\]</div>
-<p>where:</p>
-<ul>
-<li><span class="arithmatex">\(\text{AGB}\)</span> = aboveground biomass (kg)</li>
-<li><span class="arithmatex">\(H\)</span> = canopy height (m)</li>
-<li><span class="arithmatex">\(CD\)</span> = canopy diameter (m)</li>
-<li><span class="arithmatex">\(\alpha\)</span>, <span class="arithmatex">\(\beta\)</span> = regression coefficients</li>
-</ul>
-<p>With coefficient values derived for gymnosperms (the dominant lifeform at our site), the prediction equation back-transformed exponentially with bias correction (Snowdon 1991) is:</p>
-<div class="arithmatex">\[\text{AGB} = 0.109 \times (H \times CD)^{1.79} \times 1.02\]</div>
-<p>where:</p>
-<ul>
-<li><span class="arithmatex">\(\alpha = 0.109\)</span> (intercept)</li>
-<li><span class="arithmatex">\(\beta = 1.79\)</span> (scaling exponent)</li>
-<li><span class="arithmatex">\(1.02\)</span> = bias correction factor for back-transformation</li>
-</ul>
-<h3 id="step-5-estimating-tree-scale-energy-content">Step 5: Estimating Tree-Scale Energy Content<a class="headerlink" href="#step-5-estimating-tree-scale-energy-content" title="Permanent link">&para;</a></h3>
-<p>The energy content of biomass was estimated using the <strong>higher heating value (HHV)</strong> metric, defined as the heat released when burning a gram of fuel in a calorimeter (closed container) at high temperature (~950 °C) to obtain complete combustion. Units are standardized to MJ/kg.</p>
-<p>Literature values for whole-tree energy content were compiled from multiple <em>Pinus</em> species:</p>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>graph TD
+    DEM[DEM GeoTIFF] --&gt; IO[rsun-core::io]
+    IO --&gt; GRID[Grid + SolarParams]
+    GRID --&gt; CPU[rsun-core::compute_day]
+    GRID --&gt; GPU[rsun-gpu::RadiationPipeline]
+    CPU --&gt; RESULT[DayResult]
+    GPU --&gt; RESULT
+    RESULT --&gt; TIFF[Output GeoTIFF]
+    RESULT --&gt; NUMPY[NumPy Array]
+    RESULT --&gt; JSON[WASM JSON]
+
+    CLI[rsun-cli] --&gt; IO
+    CLI --&gt; CPU
+    CLI --&gt; GPU
+    PY[rsun-py] --&gt; CPU
+    PY --&gt; GPU
+    WASM[rsun-wasm] --&gt; CPU
+
+    style CPU fill:#2d6a4f,color:#fff
+    style GPU fill:#1d3557,color:#fff
+    style CLI fill:#457b9d,color:#fff
+    style PY fill:#e9c46a,color:#000
+    style WASM fill:#f4a261,color:#000</code></pre>
+<h3 id="crate-workspace">Crate Workspace<a class="headerlink" href="#crate-workspace" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
-<th>Species</th>
-<th>HHV (MJ/kg)</th>
-<th>Source</th>
+<th>Crate</th>
+<th>Purpose</th>
+<th>Key Dependencies</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><em>P. ponderosa</em></td>
-<td>20.02</td>
-<td>Ragland et al. (1991)</td>
+<td><code>rsun-core</code></td>
+<td>CPU reference implementation</td>
+<td><code>rayon</code>, <code>gdal</code> (optional)</td>
 </tr>
 <tr>
-<td><em>P. ponderosa</em></td>
-<td>20.42</td>
-<td>Jenkins et al. (1998)</td>
+<td><code>rsun-cli</code></td>
+<td>Command-line binary</td>
+<td><code>clap</code>, <code>rsun-core</code>, <code>rsun-gpu</code></td>
 </tr>
 <tr>
-<td><em>P. contorta</em></td>
-<td>20.89</td>
-<td>Ragland et al. (1991)</td>
+<td><code>rsun-gpu</code></td>
+<td>GPU acceleration</td>
+<td><code>wgpu</code>, <code>bytemuck</code></td>
 </tr>
 <tr>
-<td><em>P. contorta</em></td>
-<td>21.05</td>
-<td>Howard (1973)</td>
+<td><code>rsun-py</code></td>
+<td>Python bindings</td>
+<td><code>pyo3</code>, <code>numpy</code></td>
 </tr>
 <tr>
-<td><em>P. monticola</em></td>
-<td>19.95</td>
-<td>Ragland et al. (1991)</td>
-</tr>
-<tr>
-<td><em>P. sylvestris</em></td>
-<td>20.08</td>
-<td>Telmo &amp; Lousada (2011)</td>
-</tr>
-<tr>
-<td><em>P. sylvestris</em></td>
-<td>20.17</td>
-<td>Shafizadeh (1981)</td>
-</tr>
-<tr>
-<td><em>P. taeda</em></td>
-<td>20.30</td>
-<td>Howard (1973)</td>
-</tr>
-<tr>
-<td><em>P. taeda</em></td>
-<td>19.38</td>
-<td>Jenkins et al. (1998)</td>
+<td><code>rsun-wasm</code></td>
+<td>WebAssembly module</td>
+<td><code>wasm-bindgen</code>, <code>serde</code></td>
 </tr>
 </tbody>
 </table>
-<p>We used nine estimates from five species in the genus <em>Pinus</em>, returning an average energy content:</p>
-<div class="arithmatex">\[\Delta H_R = 20.25 \pm 0.67 \text{ MJ/kg}\]</div>
-<p>This value is consistent with the global mean for temperate conifers (<span class="arithmatex">\(20.34 \pm 0.86\)</span> MJ/kg from 23 estimates across 15 species), suggesting that energy content per unit biomass is a conserved trait in this group.</p>
-<p>For each tree <span class="arithmatex">\(i\)</span>, energy content was calculated as:</p>
-<div class="arithmatex">\[E_i \text{ (MJ)} = \text{AGB}_i \text{ (kg)} \times \Delta H_R \text{ (MJ kg}^{-1}\text{)}\]</div>
-<h3 id="step-6-landscape-energy-census">Step 6: Landscape Energy Census<a class="headerlink" href="#step-6-landscape-energy-census" title="Permanent link">&para;</a></h3>
-<p>Total landscape aboveground energy content was estimated as the sum across all segmented trees:</p>
-<div class="arithmatex">\[E_{\text{total}} = \sum_{i=1}^{n} E_i\]</div>
-<p>Energy density was then calculated per unit area for spatial comparison.</p>
-<h2 id="data-sources">Data Sources<a class="headerlink" href="#data-sources" title="Permanent link">&para;</a></h2>
-<h3 id="dem">DEM<a class="headerlink" href="#dem" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Source</strong>: Derived from USGS 3DEP DRCOG 2020 ground-classified LiDAR returns, resampled from 0.5 m DTM to 10 m via block averaging with 3x3 pit filling</li>
-<li><strong>Resolution</strong>: 10 m, UTM Zone 13N (NAD83(2011) / EPSG:6342)</li>
-<li><strong>Elevation range</strong>: 2,377 -- 2,792 m</li>
-</ul>
-<h3 id="lidar-point-cloud">LiDAR Point Cloud<a class="headerlink" href="#lidar-point-cloud" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Source</strong>: USGS 3DEP, CO DRCOG 2020 collection (<code>CO_DRCOG_2020_B20</code>)</li>
-<li><strong>Tiles</strong>: 6 tiles covering the study area (818 MB LAZ)</li>
-<li><strong>Total points</strong>: 99 million (clipped to DEM extent)</li>
-<li><strong>Ground-classified points</strong>: 29.5 million</li>
-</ul>
-<h3 id="canopy-height-model">Canopy Height Model<a class="headerlink" href="#canopy-height-model" title="Permanent link">&para;</a></h3>
-<p>A 0.5 m resolution CHM was derived by differencing the Digital Surface Model (maximum LiDAR return) and Digital Terrain Model (mean ground-classified returns). NaN gaps were filled using nearest-neighbor interpolation, followed by a 3x3 mean filter applied to both DSM and DTM for pit filling (only cells lower than the filtered value are replaced).</p>
-<ul>
-<li><strong>Resolution</strong>: 0.5 m (8,680 x 5,920 = 51.4M cells)</li>
-<li><strong>CHM range</strong>: 0 -- 32.5 m</li>
-<li><strong>Canopy coverage</strong> (&gt;2 m): 53.0%</li>
-<li><strong>Mean canopy height</strong> (&gt;2 m): 7.3 m</li>
-</ul>
-<h2 id="results">Results<a class="headerlink" href="#results" title="Permanent link">&para;</a></h2>
-<h3 id="tree-segmentation">Tree Segmentation<a class="headerlink" href="#tree-segmentation" title="Permanent link">&para;</a></h3>
-<p>The variable-window local maxima segmentation procedure identified <strong>253,476 individual trees</strong> across the 2.6 km² study area. Window sizes are specified in pixels (doubled relative to metric sizes to account for 0.5 m resolution). Each tree was assigned a unique identifier with UTM coordinates.</p>
+<h3 id="core-module-map">Core Module Map<a class="headerlink" href="#core-module-map" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
-<th>Metric</th>
-<th>Value</th>
+<th>Module</th>
+<th>Algorithms</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Trees detected</td>
-<td>253,476</td>
+<td><code>solar.rs</code></td>
+<td>Solar declination (Spencer 1971), corrected solar constant, sunrise/sunset times, solar altitude &amp; azimuth, hour angle conversion</td>
 </tr>
 <tr>
-<td>Height range</td>
-<td>2.0 -- 32.0 m</td>
+<td><code>radiation.rs</code></td>
+<td>Beam radiation with atmospheric refraction and Kasten-Young air mass, diffuse radiation (Suri/ESRA model), reflected radiation, cosine of incidence angle (Jenco transform)</td>
 </tr>
 <tr>
-<td>Mean height</td>
-<td>8.6 ± 3.7 m</td>
+<td><code>horizon.rs</code></td>
+<td>Ray-marching horizon angles in N azimuthal directions, bilinear interpolation</td>
 </tr>
 <tr>
-<td>Mean crown diameter</td>
-<td>4.3 ± 1.1 m</td>
+<td><code>terrain.rs</code></td>
+<td>Slope and aspect from DEM via Horn's 3x3 weighted finite difference method</td>
+</tr>
+<tr>
+<td><code>io.rs</code></td>
+<td>GeoTIFF I/O via GDAL, automatic CRS detection and lat/lon reprojection</td>
 </tr>
 </tbody>
 </table>
-<h3 id="allometric-conversions">Allometric Conversions<a class="headerlink" href="#allometric-conversions" title="Permanent link">&para;</a></h3>
+<h2 id="algorithm-correspondence">Algorithm Correspondence<a class="headerlink" href="#algorithm-correspondence" title="Permanent link">&para;</a></h2>
+<p>Every rsun function maps directly to a GRASS r.sun routine and a Lean 4 formal definition:</p>
 <table>
 <thead>
 <tr>
-<th>Metric</th>
-<th>Value</th>
+<th>Algorithm</th>
+<th>GRASS r.sun</th>
+<th>Rust (<code>rsun-core</code>)</th>
+<th>Lean 4 (<code>EEMTVerify.Solar</code>)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Mean AGB per tree</td>
-<td>113.4 ± 138.9 kg</td>
+<td>Solar declination</td>
+<td><code>com_declin()</code></td>
+<td><code>solar::declination()</code></td>
+<td><code>Declination.declination</code></td>
 </tr>
 <tr>
-<td>Total AGB</td>
-<td>28,754 Mg (28.75 Gg)</td>
+<td>Corrected solar constant</td>
+<td><code>com_sol_const()</code></td>
+<td><code>solar::corrected_solar_constant()</code></td>
+<td><code>SolarConstant.correctedSolarConstant</code></td>
+</tr>
+<tr>
+<td>Sunrise &amp; sunset</td>
+<td><code>com_par_const()</code></td>
+<td><code>solar::sunrise_sunset()</code></td>
+<td><code>SunriseSunset.sunriseHour</code> / <code>sunsetHour</code></td>
+</tr>
+<tr>
+<td>Solar position</td>
+<td><code>com_par()</code></td>
+<td><code>solar::solar_position()</code></td>
+<td><code>SolarPosition.solarAltitude</code></td>
+</tr>
+<tr>
+<td>Hour angle</td>
+<td>—</td>
+<td><code>solar::hour_to_time_angle()</code></td>
+<td><code>SunriseSunset.hourToTimeAngle</code></td>
+</tr>
+<tr>
+<td>Beam radiation</td>
+<td><code>brad()</code></td>
+<td><code>radiation::brad()</code></td>
+<td><code>BeamRadiation.beamTilted</code> + <code>AirMass.*</code></td>
+</tr>
+<tr>
+<td>Diffuse + reflected</td>
+<td><code>drad()</code></td>
+<td><code>radiation::drad()</code></td>
+<td><code>DiffuseRadiation.*</code></td>
+</tr>
+<tr>
+<td>Cos incidence</td>
+<td><code>lumcline2()</code></td>
+<td><code>radiation::cos_incidence()</code></td>
+<td><code>CosIncidence.cosIncidence</code></td>
+</tr>
+<tr>
+<td>Daily integration</td>
+<td><code>joules2()</code></td>
+<td><code>compute_day()</code></td>
+<td><code>TotalRadiation.dailyRadiation</code></td>
+</tr>
+<tr>
+<td>Slope &amp; aspect</td>
+<td><code>r.slope.aspect</code></td>
+<td><code>terrain::slope_aspect()</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>Horizon angles</td>
+<td><code>r.horizon</code></td>
+<td><code>horizon::compute_horizons()</code></td>
+<td>—</td>
 </tr>
 </tbody>
 </table>
-<h3 id="landscape-energy-content">Landscape Energy Content<a class="headerlink" href="#landscape-energy-content" title="Permanent link">&para;</a></h3>
+<h2 id="lean-4-proven-properties">Lean 4 Proven Properties<a class="headerlink" href="#lean-4-proven-properties" title="Permanent link">&para;</a></h2>
+<p>The Lean 4 theorem prover has formally verified mathematical bounds on every core equation. These bounds are also validated at runtime by unit tests in <code>rsun-core/tests/lean4_validation_tests.rs</code>.</p>
 <table>
 <thead>
 <tr>
-<th>Metric</th>
-<th>Value</th>
+<th>Lean 4 Theorem</th>
+<th>Proven Bound</th>
+<th>Rust Validated</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Total landscape energy</td>
-<td><span class="arithmatex">\(5.82 \times 10^{14}\)</span> J (<span class="arithmatex">\(5.82 \times 10^{8}\)</span> MJ)</td>
+<td><code>declination_bounded</code></td>
+<td><span class="arithmatex">\(\delta \in [-\arcsin(0.3978),\; \arcsin(0.3978)]\)</span> (~±23.44°)</td>
+<td>All 365 days</td>
 </tr>
 <tr>
-<td>Energy per km²</td>
-<td><span class="arithmatex">\(2.24 \times 10^{14}\)</span> J km⁻²</td>
+<td><code>eccentricityFactor_lower</code> / <code>_upper</code></td>
+<td>Factor <span class="arithmatex">\(\in [0.96656,\; 1.03344]\)</span></td>
+<td>All 365 days</td>
 </tr>
 <tr>
-<td>Energy per hectare</td>
-<td><span class="arithmatex">\(2.24 \times 10^{12}\)</span> J ha⁻¹</td>
+<td><code>correctedSolarConstant_default_range</code></td>
+<td><span class="arithmatex">\(G \in [1321,\; 1413]\)</span> W/m² at <span class="arithmatex">\(G_0 = 1367\)</span></td>
+<td>All 365 days</td>
 </tr>
 <tr>
-<td>Mean energy per tree</td>
-<td>2,297 MJ</td>
+<td><code>hourToTimeAngle_noon</code></td>
+<td><span class="arithmatex">\(\omega(12) = 0\)</span></td>
+<td>Exact</td>
 </tr>
 <tr>
-<td>Number of trees</td>
-<td>253,476</td>
+<td><code>sunrise_sunset_sum</code></td>
+<td>sunrise + sunset <span class="arithmatex">\(= 24\)</span></td>
+<td>Multiple latitudes</td>
 </tr>
 <tr>
-<td>Study area</td>
-<td>2.6 km²</td>
+<td><code>dayLength_nonneg</code> / <code>_le_24</code></td>
+<td>Day length <span class="arithmatex">\(\in [0,\; 24]\)</span> hours</td>
+<td>All lat/day combos</td>
+</tr>
+<tr>
+<td><code>equinox_twelve_hours</code></td>
+<td>Day length <span class="arithmatex">\(= 12\)</span> h when <span class="arithmatex">\(\delta = 0\)</span></td>
+<td>Multiple latitudes</td>
+</tr>
+<tr>
+<td><code>solarAltitude_bounded</code></td>
+<td>Altitude <span class="arithmatex">\(\in [-\pi/2,\; \pi/2]\)</span></td>
+<td>Sampled positions</td>
+</tr>
+<tr>
+<td><code>noon_altitude_max</code></td>
+<td>Noon altitude is daily maximum</td>
+<td>Multiple latitudes</td>
+</tr>
+<tr>
+<td><code>beamTransmittance_pos</code> / <code>_le_one</code></td>
+<td>Transmittance <span class="arithmatex">\(\in (0,\; 1]\)</span></td>
+<td>Sampled conditions</td>
+</tr>
+<tr>
+<td><code>elevationCorrection_antitone</code></td>
+<td>Correction decreasing with altitude</td>
+<td>0–8848 m</td>
+</tr>
+<tr>
+<td><code>beamTilted_zero_facing_away</code></td>
+<td>Beam <span class="arithmatex">\(= 0\)</span> when <span class="arithmatex">\(s_0 \le 0\)</span></td>
+<td>Direct test</td>
+</tr>
+<tr>
+<td><code>beamTilted_zero_night</code></td>
+<td>Beam <span class="arithmatex">\(= 0\)</span> when altitude <span class="arithmatex">\(\le 0\)</span></td>
+<td>Direct test</td>
+</tr>
+<tr>
+<td><code>beamTiltedSimplified_le_gExt</code></td>
+<td>Beam <span class="arithmatex">\(\le G_\text{ext}\)</span></td>
+<td>Sampled conditions</td>
+</tr>
+<tr>
+<td><code>view_factors_sum_one</code></td>
+<td><span class="arithmatex">\(F_\text{sky} + F_\text{terrain} = 1\)</span></td>
+<td>Multiple slopes</td>
+</tr>
+<tr>
+<td><code>reflectedRadiation_flat</code></td>
+<td>Reflected <span class="arithmatex">\(= 0\)</span> when slope <span class="arithmatex">\(= 0\)</span></td>
+<td>Direct test</td>
+</tr>
+<tr>
+<td><code>reflectedRadiation_nonneg</code></td>
+<td>Reflected <span class="arithmatex">\(\ge 0\)</span></td>
+<td>Sampled conditions</td>
+</tr>
+<tr>
+<td><code>dailyRadiation_nonneg</code></td>
+<td>Daily total <span class="arithmatex">\(\ge 0\)</span></td>
+<td>Synthetic DEM</td>
+</tr>
+<tr>
+<td><code>insolation_le_dayLength</code></td>
+<td>Insolation <span class="arithmatex">\(\le\)</span> day length</td>
+<td>Synthetic DEM</td>
 </tr>
 </tbody>
 </table>
-<h2 id="data-availability">Data Availability<a class="headerlink" href="#data-availability" title="Permanent link">&para;</a></h2>
-<p>All data products are archived on the <a href="https://de.cyverse.org">CyVerse Data Store</a> at <code>/iplant/home/tswetnam/eemt/</code>:</p>
+<h2 id="performance">Performance<a class="headerlink" href="#performance" title="Permanent link">&para;</a></h2>
+<h3 id="cpu-rsun-core">CPU (rsun-core)<a class="headerlink" href="#cpu-rsun-core" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Parallelism</strong>: Rayon distributes pixel computation across all available cores</li>
+<li><strong>Time complexity</strong>: <span class="arithmatex">\(O(\text{pixels} \times \text{time\_steps})\)</span> per day, where time steps <span class="arithmatex">\(= \lceil\text{day\_length} / \text{step}\rceil\)</span></li>
+<li><strong>Step impact</strong>: <code>step=0.5</code> (default) gives ~24 steps/day; <code>step=0.25</code> doubles compute time for ~1% accuracy gain</li>
+</ul>
+<h3 id="gpu-rsun-gpu">GPU (rsun-gpu)<a class="headerlink" href="#gpu-rsun-gpu" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Backend</strong>: wgpu compute shaders (WGSL) — works on Vulkan, Metal, DX12</li>
+<li><strong>Pipeline</strong>: Two-pass: (1) horizon pre-computation, (2) per-pixel daily radiation loop</li>
+<li><strong>Workgroup size</strong>: 64 threads per workgroup, 2D dispatch for large DEMs</li>
+<li><strong>Fallback</strong>: Auto-detects GPU; falls back to CPU if unavailable</li>
+</ul>
+<h2 id="cli-reference">CLI Reference<a class="headerlink" href="#cli-reference" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>rsun compute --dem &lt;PATH&gt; --day &lt;SPEC&gt; [OPTIONS]
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>rsun terrain --dem &lt;PATH&gt; --slope-out &lt;PATH&gt; --aspect-out &lt;PATH&gt;
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>rsun info
+</span></code></pre></div>
+<h3 id="compute-options"><code>compute</code> Options<a class="headerlink" href="#compute-options" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
-<th>File</th>
+<th>Flag</th>
+<th>Default</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>gordongulch_dem_10m_3dep_cog.tif</code></td>
-<td>10 m DEM from 3DEP ground returns (COG)</td>
+<td><code>--dem</code></td>
+<td>—</td>
+<td>Input DEM GeoTIFF (required)</td>
 </tr>
 <tr>
-<td><code>gordongulch_chm_05m.tif</code></td>
-<td>0.5 m Canopy Height Model</td>
+<td><code>--day</code></td>
+<td>—</td>
+<td>Day spec: <code>"172"</code>, <code>"1-365"</code>, or <code>"all"</code></td>
 </tr>
 <tr>
-<td><code>gordongulch_dsm_05m.tif</code></td>
-<td>0.5 m Digital Surface Model</td>
+<td><code>--step</code></td>
+<td>0.5</td>
+<td>Time step in decimal hours</td>
 </tr>
 <tr>
-<td><code>gordongulch_dtm_05m.tif</code></td>
-<td>0.5 m Digital Terrain Model</td>
+<td><code>--linke</code></td>
+<td>3.0</td>
+<td>Linke turbidity factor</td>
 </tr>
 <tr>
-<td><code>gordongulch_tree_census_05m.csv</code></td>
-<td>Tree census (253,476 records)</td>
+<td><code>--albedo</code></td>
+<td>0.2</td>
+<td>Surface albedo</td>
 </tr>
 <tr>
-<td><code>gordongulch_tree_tops_05m.tif</code></td>
-<td>Tree top locations raster</td>
+<td><code>--gpu</code></td>
+<td>auto</td>
+<td>GPU mode: <code>"auto"</code>, <code>"cpu"</code>, or device index</td>
 </tr>
 <tr>
-<td><code>gordongulch_energy_mj_05m.tif</code></td>
-<td>Per-tree energy raster</td>
+<td><code>--glob-rad</code></td>
+<td>—</td>
+<td>Output global radiation GeoTIFF (single-day)</td>
+</tr>
+<tr>
+<td><code>--insol-time</code></td>
+<td>—</td>
+<td>Output insolation time GeoTIFF (single-day)</td>
+</tr>
+<tr>
+<td><code>--output-dir</code></td>
+<td>—</td>
+<td>Output directory (multi-day)</td>
 </tr>
 </tbody>
 </table>
-<p>See <a href="../energetics-figures/">Energetics Figures</a> for publication-quality visualizations.</p>
-<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<h2 id="python-api">Python API<a class="headerlink" href="#python-api" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">rsun</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1"># From file (requires GDAL at build time)</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">result</span> <span class="o">=</span> <span class="n">rsun</span><span class="o">.</span><span class="n">compute_day_from_file</span><span class="p">(</span><span class="s2">&quot;dem.tif&quot;</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">172</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">linke</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">albedo</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">result</span><span class="o">.</span><span class="n">glob_rad</span>    <span class="c1"># numpy array [Wh/m²]</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">result</span><span class="o">.</span><span class="n">insol_time</span>  <span class="c1"># numpy array [hours]</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="c1"># From numpy arrays</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="n">result</span> <span class="o">=</span> <span class="n">rsun</span><span class="o">.</span><span class="n">compute_day</span><span class="p">(</span><span class="n">dem</span><span class="p">,</span> <span class="n">slope</span><span class="p">,</span> <span class="n">aspect</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">172</span><span class="p">)</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="c1"># Terrain analysis</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="n">slope</span><span class="p">,</span> <span class="n">aspect</span> <span class="o">=</span> <span class="n">rsun</span><span class="o">.</span><span class="n">compute_terrain</span><span class="p">(</span><span class="n">dem</span><span class="p">,</span> <span class="n">ew_res</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">ns_res</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="c1"># GPU info</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="n">gpus</span> <span class="o">=</span> <span class="n">rsun</span><span class="o">.</span><span class="n">gpu_info</span><span class="p">()</span>  <span class="c1"># list of available GPU adapters</span>
+</span></code></pre></div>
+<h2 id="webassembly-api">WebAssembly API<a class="headerlink" href="#webassembly-api" title="Permanent link">&para;</a></h2>
+<div class="language-javascript highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">import</span><span class="w"> </span><span class="nx">init</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">compute_day</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;./rsun_wasm.js&#39;</span><span class="p">;</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">await</span><span class="w"> </span><span class="nx">init</span><span class="p">();</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">compute_day</span><span class="p">(</span><span class="nx">dem_array</span><span class="p">,</span><span class="w"> </span><span class="nx">rows</span><span class="p">,</span><span class="w"> </span><span class="nx">cols</span><span class="p">,</span><span class="w"> </span><span class="nx">lat_rad</span><span class="p">,</span><span class="w"> </span><span class="nx">lon_rad</span><span class="p">,</span><span class="w"> </span><span class="nx">day</span><span class="p">,</span><span class="w"> </span><span class="nx">step</span><span class="p">);</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1">// result.glob_rad  — Float32Array</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="c1">// result.insol_time — Float32Array</span>
+</span></code></pre></div>
+<p>CPU-only; limited to DEMs under 1 million pixels.</p>
+<h2 id="validation-against-grass-rsun">Validation Against GRASS r.sun<a class="headerlink" href="#validation-against-grass-rsun" title="Permanent link">&para;</a></h2>
+<p>The <code>validation/compare.sh</code> script runs rsun and GRASS r.sun on the same DEM (<code>mcn_10m.tif</code>) for 4 representative days (winter solstice, spring equinox, summer solstice, fall equinox) and computes:</p>
 <ul>
-<li>Howard, E.T. (1973). Heat of combustion of various southern pine materials. <em>Wood Science</em>, 5(3), 194--197.</li>
-<li>Jenkins, B.M., Baxter, L.L., Miles, T.R. Jr. and Miles, T.R. (1998). Combustion properties of biomass. <em>Fuel Processing Technology</em>, 54(1--3), 17--46.</li>
-<li>Jucker, T., et al. (2017). Allometric equations for integrating remote sensing imagery into forest monitoring programmes. <em>Global Change Biology</em>, 23(1), 177--190.</li>
-<li>Lin, H., et al. (2011). Earth's Critical Zone and hydropedology: concepts, characteristics, and advances. <em>Hydrology and Earth System Sciences</em>, 15(12), 3895--3910.</li>
-<li>Ragland, K.W., Aerts, D.J. and Baker, A.J. (1991). Properties of wood for combustion analysis. <em>Bioresource Technology</em>, 37(2), 161--168.</li>
-<li>Shafizadeh, F. (1981). Basic principles of direct combustion. In <em>Biomass Conversion Processes for Energy and Fuels</em>, S.S. Sofer and O.R. Zaborsky (eds), Plenum Press, New York, pp. 103--150.</li>
-<li>Snowdon, P. (1991). A ratio estimator for bias correction in logarithmic regressions. <em>Canadian Journal of Forest Research</em>, 21(5), 720--724.</li>
-<li>Swetnam, T.L. and Falk, D.A. (2014). Application of metabolic scaling theory to reduce error in local maxima tree segmentation from aerial LiDAR. <em>Forest Ecology and Management</em>, 323, 158--167.</li>
-<li>Telmo, C. and Lousada, J. (2011). The explained variation by lignin and extractive contents on higher heating value of wood. <em>Biomass and Bioenergy</em>, 35(5), 1663--1667.</li>
+<li><strong>RMSE</strong> — Root mean square error across all valid pixels</li>
+<li><strong>MaxRelErr%</strong> — Maximum relative error at any pixel</li>
 </ul>
+<p><strong>Acceptance criteria</strong>: MaxRelErr &lt; 5% for all days.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">cd</span><span class="w"> </span>rsun<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>bash<span class="w"> </span>validation/compare.sh
+</span></code></pre></div>
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Hofierka, J. &amp; Suri, M. (2002). The solar radiation model for Open Source GIS: implementation and applications. <em>Proceedings of the Open Source GIS - GRASS Users Conference</em>.</li>
+<li>Spencer, J.W. (1971). Fourier series representation of the position of the Sun. <em>Search</em>, 2(5), 172.</li>
+<li>Kasten, F. &amp; Young, A.T. (1989). Revised optical air mass tables and approximation formula. <em>Applied Optics</em>, 28(22), 4735–4738.</li>
+<li>Jenco, M. (1992). Distribution of direct solar radiation on georelief. <em>Geograficky Casopis</em>, 44, 342–355.</li>
+<li>Suri, M. &amp; Hofierka, J. (2004). A new GIS-based solar radiation model and its application to photovoltaic assessments. <em>Transactions in GIS</em>, 8(2), 175–190.</li>
+</ol>
 
 
 
@@ -3279,9 +3312,6 @@
 
 
 
-
-  
-  
 
 
 
@@ -3368,12 +3398,12 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate":null,"base":"..","features":["navigation_instant","navigation_tabs","navigation_tabs_sticky","navigation_sections","navigation_expand","navigation_indexes","navigation_top","navigation_footer","search_suggest","search_highlight","content_code_copy","content_code_annotate","content_tabs_link"],"search":"../assets/javascripts/workers/search.e2d2d235.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
+      <script id="__config" type="application/json">{"annotate":null,"base":"../..","features":["navigation_instant","navigation_tabs","navigation_tabs_sticky","navigation_sections","navigation_expand","navigation_indexes","navigation_top","navigation_footer","search_suggest","search_highlight","content_code_copy","content_code_annotate","content_tabs_link"],"search":"../../assets/javascripts/workers/search.e2d2d235.min.js","tags":null,"translations":{"clipboard.copied":"Copied to clipboard","clipboard.copy":"Copy to clipboard","search.result.more.one":"1 more on this page","search.result.more.other":"# more on this page","search.result.none":"No matching documents","search.result.one":"1 matching document","search.result.other":"# matching documents","search.result.placeholder":"Type to start searching","search.result.term.missing":"Missing","select.version":"Select version"},"version":null}</script>
     
     
-      <script src="../assets/javascripts/bundle.91a19a9e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.91a19a9e.min.js"></script>
       
-        <script src="../javascripts/mathjax.js"></script>
+        <script src="../../javascripts/mathjax.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
