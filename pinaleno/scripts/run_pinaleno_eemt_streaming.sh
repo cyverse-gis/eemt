@@ -4,10 +4,10 @@
 
 set -e
 
-DEM="/home/tswetnam/data/pinaleno/dem/pinaleno_dem_10m.tif"
-SOLAR="/home/tswetnam/data/pinaleno/solar/10m/dem"
-DAYMET="/home/tswetnam/data/pinaleno/daymet/daily"
-OUTPUT="/home/tswetnam/data/pinaleno/eemt"
+DEM="/opt/tswetnam/pinaleno/dem/pinaleno_dem_10m.tif"
+SOLAR="/opt/tswetnam/pinaleno/solar/10m/dem"
+DAYMET="/opt/tswetnam/pinaleno/daymet/daily"
+OUTPUT="/opt/tswetnam/pinaleno/eemt"
 MAX_PARALLEL=${1:-12}
 
 # Streaming runner
@@ -15,10 +15,10 @@ cat > /tmp/eemt_pinaleno_streaming.py << 'PYEOF'
 import sys
 sys.path.insert(0, "/home/tswetnam/github/eemt/scripts")
 import seaz_eemt_streaming as st
-st.DEM_PATH = "/home/tswetnam/data/pinaleno/dem/pinaleno_dem_10m.tif"
-st.SOLAR_DIR = "/home/tswetnam/data/pinaleno/solar/10m/dem"
-st.DAYMET_DIR = "/home/tswetnam/data/pinaleno/daymet/daily"
-st.OUTPUT_DIR = "/home/tswetnam/data/pinaleno/eemt"
+st.DEM_PATH = "/opt/tswetnam/pinaleno/dem/pinaleno_dem_10m.tif"
+st.SOLAR_DIR = "/opt/tswetnam/pinaleno/solar/10m/dem"
+st.DAYMET_DIR = "/opt/tswetnam/pinaleno/daymet/daily"
+st.OUTPUT_DIR = "/opt/tswetnam/pinaleno/eemt"
 st.main()
 PYEOF
 

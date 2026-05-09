@@ -7,11 +7,11 @@
 # Combined bbox (with buffer): 32.50-33.15 N, -110.40 to -109.75 W
 # Required 1x1° tiles: n33w110, n34w110, n33w111, n34w111
 #
-# Output: /home/tswetnam/data/pinaleno/dem/pinaleno_dem_10m.tif (UTM 12N COG)
+# Output: /opt/tswetnam/pinaleno/dem/pinaleno_dem_10m.tif (UTM 12N COG)
 
 set -e
 
-DATA_DIR="/home/tswetnam/data/pinaleno/dem"
+DATA_DIR="/opt/tswetnam/pinaleno/dem"
 TILES_DIR="${DATA_DIR}/tiles"
 mkdir -p "$TILES_DIR"
 

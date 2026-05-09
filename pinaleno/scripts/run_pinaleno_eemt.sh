@@ -7,10 +7,10 @@
 #   ./run_pinaleno_eemt.sh 31
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-DEM="/home/tswetnam/data/pinaleno/dem/pinaleno_dem_10m.tif"
-SOLAR="/home/tswetnam/data/pinaleno/solar/10m/dem"
-DAYMET="/home/tswetnam/data/pinaleno/daymet/daily"
-OUTPUT="/home/tswetnam/data/pinaleno/eemt"
+DEM="/opt/tswetnam/pinaleno/dem/pinaleno_dem_10m.tif"
+SOLAR="/opt/tswetnam/pinaleno/solar/10m/dem"
+DAYMET="/opt/tswetnam/pinaleno/daymet/daily"
+OUTPUT="/opt/tswetnam/pinaleno/eemt"
 MAX_PARALLEL=${1:-16}
 
 export PROJ_DATA=/home/tswetnam/miniforge3/share/proj
@@ -29,10 +29,10 @@ import sys
 sys.path.insert(0, "/home/tswetnam/github/eemt/scripts")
 
 import eemt_smoke_test as est
-est.DEM_PATH = "/home/tswetnam/data/pinaleno/dem/pinaleno_dem_10m.tif"
-est.SOLAR_DIR = "/home/tswetnam/data/pinaleno/solar/10m/dem"
-est.DAYMET_DIR = "/home/tswetnam/data/pinaleno/daymet/daily"
-est.OUTPUT_DIR = "/home/tswetnam/data/pinaleno/eemt"
+est.DEM_PATH = "/opt/tswetnam/pinaleno/dem/pinaleno_dem_10m.tif"
+est.SOLAR_DIR = "/opt/tswetnam/pinaleno/solar/10m/dem"
+est.DAYMET_DIR = "/opt/tswetnam/pinaleno/daymet/daily"
+est.OUTPUT_DIR = "/opt/tswetnam/pinaleno/eemt"
 
 est.main()
 PYEOF

@@ -16,11 +16,11 @@ Effective Energy & Mass Transfer modeling for the Pinaleño + Santa Teresa Mount
 
 | Asset | Path |
 |---|---|
-| 10m DEM (active) | `/home/tswetnam/data/pinaleno/dem/pinaleno_dem_10m.tif` |
-| 1m lidar DEM (staged, not yet downloaded) | `/home/tswetnam/data/pinaleno/lidar_1m/` |
-| DAYMET v4 R1 (1980–2024) | `/home/tswetnam/data/pinaleno/daymet/daily/` |
-| Solar (r.sun outputs) | `/home/tswetnam/data/pinaleno/solar/10m/dem/` |
-| EEMT outputs | `/home/tswetnam/data/pinaleno/eemt/` |
+| 10m DEM (active) | `/opt/tswetnam/pinaleno/dem/pinaleno_dem_10m.tif` |
+| 1m lidar DEM (staged, not yet downloaded) | `/opt/tswetnam/pinaleno/lidar_1m/` |
+| DAYMET v4 R1 (1980–2024) | `/opt/tswetnam/pinaleno/daymet/daily/` |
+| Solar (r.sun outputs) | `/opt/tswetnam/pinaleno/solar/10m/dem/` |
+| EEMT outputs | `/opt/tswetnam/pinaleno/eemt/` |
 
 ## Why 10m and not 1m
 

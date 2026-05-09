@@ -5,8 +5,8 @@
 
 set -e
 
-DEM="/home/tswetnam/data/pinaleno/dem/pinaleno_dem_10m.tif"
-EEMT_DIR="/home/tswetnam/data/pinaleno/eemt"
+DEM="/opt/tswetnam/pinaleno/dem/pinaleno_dem_10m.tif"
+EEMT_DIR="/opt/tswetnam/pinaleno/eemt"
 INPUTS_DIR="${EEMT_DIR}/inputs"
 TWI_OUT="${INPUTS_DIR}/twi.tif"
 SLOPE_RAD="${INPUTS_DIR}/slope_rad.tif"

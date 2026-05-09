@@ -3,15 +3,15 @@
 # Uses GRASS GIS 8.4 in --tmp-project session mode (UTM 12N)
 #
 # Output:
-#   /home/tswetnam/data/pinaleno/solar/10m/dem/global/daily/total_sun_day_*.tif
-#   /home/tswetnam/data/pinaleno/solar/10m/dem/insol/daily/hours_sun_day_*.tif
-#   /home/tswetnam/data/pinaleno/solar/10m/dem/global/monthly/total_sun_*_sum.tif
-#   /home/tswetnam/data/pinaleno/solar/10m/dem/insol/monthly/hours_sun_*_sum.tif
+#   /opt/tswetnam/pinaleno/solar/10m/dem/global/daily/total_sun_day_*.tif
+#   /opt/tswetnam/pinaleno/solar/10m/dem/insol/daily/hours_sun_day_*.tif
+#   /opt/tswetnam/pinaleno/solar/10m/dem/global/monthly/total_sun_*_sum.tif
+#   /opt/tswetnam/pinaleno/solar/10m/dem/insol/monthly/hours_sun_*_sum.tif
 
 set -e
 
-DEM="/home/tswetnam/data/pinaleno/dem/pinaleno_dem_10m.tif"
-OUTDIR="/home/tswetnam/data/pinaleno/solar/10m/dem"
+DEM="/opt/tswetnam/pinaleno/dem/pinaleno_dem_10m.tif"
+OUTDIR="/opt/tswetnam/pinaleno/solar/10m/dem"
 STEP=15
 LINKE=3.0
 ALBEDO=0.2

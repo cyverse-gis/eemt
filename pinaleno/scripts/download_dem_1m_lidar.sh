@@ -19,7 +19,7 @@
 
 set -e
 
-DATA_DIR="${PINALENO_LIDAR_DIR:-/home/tswetnam/data/pinaleno/lidar_1m}"
+DATA_DIR="${PINALENO_LIDAR_DIR:-/opt/tswetnam/pinaleno/lidar_1m}"
 TILES_DIR="${DATA_DIR}/tiles"
 INDEX_JSON="${DATA_DIR}/tnm_index.json"
 mkdir -p "$TILES_DIR"

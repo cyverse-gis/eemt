@@ -45,7 +45,7 @@ DAYMET_GRID = {
     "step": 1000.0,
 }
 
-OUTPUT_BASE = "/home/tswetnam/data/pinaleno/daymet/daily"
+OUTPUT_BASE = "/opt/tswetnam/pinaleno/daymet/daily"
 
 
 def bbox_to_lcc(bbox):
