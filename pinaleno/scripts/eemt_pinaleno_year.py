@@ -64,8 +64,17 @@ def multiband_prewarp(year, dem_path, output_dir, quiet=False):
             raise FileNotFoundError(f"DAYMET missing: {var} {year}")
 
         sd = f"NETCDF:{nc_path}:{var}"
+        # DAYMET v4 uses Lambert Conformal Conic (lambert_conformal_conic
+        # grid_mapping in the NetCDF). gdal does not auto-propagate the SRS
+        # from the NETCDF subdataset, so without -s_srs gdalwarp treats the
+        # source coords as undefined and the entire UTM output is nodata.
+        DAYMET_LCC = (
+            "+proj=lcc +lat_1=25 +lat_2=60 +lat_0=42.5 +lon_0=-100 "
+            "+x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs"
+        )
         cmd = [
             "gdalwarp", "-q", "-overwrite",
+            "-s_srs", DAYMET_LCC,
             "-t_srs", dem_crs,
             "-te", str(xmin), str(ymin), str(xmax), str(ymax),
             "-ts", str(dem_info["cols"]), str(dem_info["rows"]),
@@ -194,12 +203,18 @@ def compute_eemt_multiband(year, dem, dem_1km, valid, slope_rad, aspect_rad,
                               F * st.C_WATER * tmean_topo, 0)
         EEMT_Topo = (E_ppt_topo + E_bio_topo_const / 365.0) / 1e6
 
-        EEMT_Trad[~valid] = 0
-        EEMT_Topo[~valid] = 0
-        NPP_trad[~valid] = 0
-        E_ppt_trad[~valid] = 0
-        E_bio_trad[~valid] = 0
-        tmean_loc[~valid] = 0
+        # DAYMET edge cells (where the LCC->UTM warp couldn't fill) hold -9999.
+        # The np.where(tmean>0, ...) guards above already zero EEMT/NPP/E_ppt/E_bio
+        # in those cells, but raw tmean_loc still equals -9999 there and would
+        # poison the monthly tmean accumulator. Zero it out alongside ~valid.
+        daymet_nd = (tmin <= -100) | (tmax <= -100) | (prcp <= -100)
+        bad = ~valid | daymet_nd
+        EEMT_Trad[bad] = 0
+        EEMT_Topo[bad] = 0
+        NPP_trad[bad] = 0
+        E_ppt_trad[bad] = 0
+        E_bio_trad[bad] = 0
+        tmean_loc[bad] = 0
 
         acc = monthly_accum[mi]
         acc["EEMT_Trad"] += EEMT_Trad
