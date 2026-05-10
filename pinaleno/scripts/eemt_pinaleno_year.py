@@ -203,12 +203,22 @@ def compute_eemt_multiband(year, dem, dem_1km, valid, slope_rad, aspect_rad,
                               F * st.C_WATER * tmean_topo, 0)
         EEMT_Topo = (E_ppt_topo + E_bio_topo_const / 365.0) / 1e6
 
-        # DAYMET edge cells (where the LCC->UTM warp couldn't fill) hold -9999.
-        # The np.where(tmean>0, ...) guards above already zero EEMT/NPP/E_ppt/E_bio
-        # in those cells, but raw tmean_loc still equals -9999 there and would
-        # poison the monthly tmean accumulator. Zero it out alongside ~valid.
+        # Bad-cell mask. Sources of contamination handled here:
+        #   1. ~valid: outside DEM (dem <= 0).
+        #   2. daymet_nd: DAYMET edge nodata (-9999) from the LCC->UTM warp.
+        #      Scalar np.where guards already zero derived quantities, but the
+        #      raw tmean_loc accumulator would otherwise pull -9999.
+        #   3. NaN from upstream rasters. compute_slope_aspect maps gdaldem's
+        #      -9999 deg sentinel to ~-174.5 rad at edge rows/cols, and r.sun
+        #      propagates NaN at those same cells. Once a single NaN enters an
+        #      accumulator it poisons the whole month — catch it here.
         daymet_nd = (tmin <= -100) | (tmax <= -100) | (prcp <= -100)
-        bad = ~valid | daymet_nd
+        bad = (
+            ~valid | daymet_nd
+            | np.isnan(EEMT_Trad) | np.isnan(EEMT_Topo)
+            | np.isnan(NPP_trad)  | np.isnan(E_ppt_trad) | np.isnan(E_bio_trad)
+            | np.isnan(tmean_loc)
+        )
         EEMT_Trad[bad] = 0
         EEMT_Topo[bad] = 0
         NPP_trad[bad] = 0
