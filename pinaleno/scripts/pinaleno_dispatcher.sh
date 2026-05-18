@@ -51,7 +51,10 @@ log "=== dispatcher start: years ${START_YEAR}-${END_YEAR}, max_own=${MAX_OWN}, 
 is_done() {
     local y=$1
     local csv="${STATS_DIR}/stats_${y}.csv"
-    [ -f "$csv" ] && [ "$(wc -l < "$csv")" -ge 13 ]
+    local src="${OUT}/${y}/monthly_stats.csv"
+    [ -f "$csv" ] && [ "$(wc -l < "$csv" 2>/dev/null)" -ge 13 ] && return 0
+    [ -f "$src" ] && [ "$(wc -l < "$src" 2>/dev/null)" -ge 13 ] && return 0
+    return 1
 }
 
 is_running() {
@@ -71,13 +74,16 @@ next_year() {
 }
 
 # Promote a finished year's monthly_stats.csv into the canonical stats slot.
-# Idempotent. Lets us count "done" via a single file pattern.
+# Only copies when the source is fully written (>=13 lines) and the target
+# is missing or empty. Idempotent and race-free against the writer.
 promote_finished() {
     local y
     for y in $(seq "$START_YEAR" "$END_YEAR"); do
         local csv="${STATS_DIR}/stats_${y}.csv"
         local year_csv="${OUT}/${y}/monthly_stats.csv"
-        if [ ! -f "$csv" ] && [ -f "$year_csv" ]; then
+        [ -f "$year_csv" ] || continue
+        [ "$(wc -l < "$year_csv" 2>/dev/null)" -ge 13 ] || continue
+        if [ ! -s "$csv" ]; then
             cp "$year_csv" "$csv" && log "promoted ${y} monthly_stats.csv"
         fi
     done
@@ -105,7 +111,9 @@ while true; do
         break
     fi
 
-    own=$(pgrep -cf "eemt_pinaleno_year.py" || echo 0)
+    # pgrep -c prints "0" on no match but exits 1; keep the count, drop the exit.
+    own=$(pgrep -cf "eemt_pinaleno_year.py" 2>/dev/null)
+    own=${own:-0}
     load1=$(awk '{print $1}' /proc/loadavg)
     free_cores=$(awk -v c="$NCORES" -v l="$load1" 'BEGIN{printf "%d", c-l}')
     free_gb=$(awk '/MemAvailable/{printf "%d", $2/1024/1024}' /proc/meminfo)
