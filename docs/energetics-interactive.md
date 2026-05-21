@@ -9,14 +9,14 @@ Explore the Gordon Gulch landscape energetics dataset interactively. The map dis
 
 <div style="position: relative; width: 100%; height: 0; padding-bottom: 75%; margin: 1em 0;">
   <iframe
-    src="../energetics-map.html"
+    src="energetics-map.html"
     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 1px solid #ddd;"
     loading="lazy"
     allowfullscreen>
   </iframe>
 </div>
 
-<a href="../energetics-map.html" target="_blank" style="font-size: 0.9em;">Open full-screen map</a>
+<a href="energetics-map.html" target="_blank" style="font-size: 0.9em;">Open full-screen map</a>
 
 ## Map Layers
 
