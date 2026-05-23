@@ -144,6 +144,33 @@ def compute_eemt_multiband(year, dem, dem_1km, valid, slope_rad, aspect_rad,
     prcp_path = os.path.join(cache_dir, f"prcp_{year}_multiband.tif")
 
     ndays = 365
+
+    # Pre-compute annual precipitation per pixel for the Miami P-limited
+    # NPP term. The original Lieth/Miami formula has BOTH a T-limited and
+    # a P-limited branch and uses the minimum; the prior code applied only
+    # the T branch, which over-estimates NPP in semi-arid landscapes where
+    # water is the actual limiting factor. Sum daily prcp (masking the
+    # -9999 edge nodata to 0) once up front; the resulting raster is static
+    # for the year and feeds the per-day NPP_P calculation below.
+    if not quiet:
+        print(f"    Pre-computing annual precipitation for Miami P-NPP...", flush=True)
+    prcp_annual = np.zeros(dem.shape, dtype=np.float32)
+    for d in range(ndays):
+        p = st.read_raster(prcp_path, band=d + 1)
+        p = np.where(p <= -100, 0, p)
+        prcp_annual += p
+    NPP_P_annual = st.NPP_MAX * (1.0 - np.exp(-0.000664 * prcp_annual))
+    if not quiet:
+        valid_p = prcp_annual[valid]
+        valid_npp_p = NPP_P_annual[valid]
+        print(
+            f"      annual P: {np.mean(valid_p):.0f} mm "
+            f"(min {np.min(valid_p):.0f}, max {np.max(valid_p):.0f})  ->  "
+            f"NPP_P: {np.mean(valid_npp_p):.0f} g/m2/yr "
+            f"(min {np.min(valid_npp_p):.0f}, max {np.max(valid_npp_p):.0f})",
+            flush=True,
+        )
+
     if not quiet:
         print(f"    Processing {ndays} days (streaming, multi-band)...", flush=True)
 
@@ -194,8 +221,11 @@ def compute_eemt_multiband(year, dem, dem_1km, valid, slope_rad, aspect_rad,
 
         E_ppt_trad = np.where((prcp > 0) & (tmean_loc > 0),
                               np.maximum(0, prcp - PET_Trad * 10.0) * st.C_WATER * tmean_loc, 0)
-        NPP_trad = np.where(tmean_loc > 0,
-                            st.NPP_MAX / (1.0 + np.exp(1.315 - 0.119 * tmean_loc)), 0)
+        # Miami/Lieth NPP: minimum of the temperature- and precipitation-
+        # limited branches. NPP_P_annual was pre-computed outside the loop.
+        NPP_T = np.where(tmean_loc > 0,
+                         st.NPP_MAX / (1.0 + np.exp(1.315 - 0.119 * tmean_loc)), 0)
+        NPP_trad = np.where(tmean_loc > 0, np.minimum(NPP_T, NPP_P_annual), 0)
         E_bio_trad = np.where(tmean_loc > 0, NPP_trad * st.H_BIO / 1000.0 / 365.0, 0)
         EEMT_Trad = (E_ppt_trad + E_bio_trad) / 1e6
 
