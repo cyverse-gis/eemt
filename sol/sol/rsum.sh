@@ -121,8 +121,8 @@ r.series -n input="`g.list type=raster pattern='hours_sun_day_*' separator=,`" o
 
 echo "Printing out Sum maps: global/monthly/total_sun_${MONTH}_sum.tif"
 #Sum Maps
-r.out.gdal -c input=total_sun_${MONTH}_sum output=${DIRECTORY}/global/monthly/total_sun_${MONTH}_sum.tif
-r.out.gdal -c input=hours_sun_${MONTH}_sum output=${DIRECTORY}/insol/monthly/hours_sun_${MONTH}_sum.tif
+r.out.gdal createopt="COMPRESS=LZW" -c input=total_sun_${MONTH}_sum output=${DIRECTORY}/global/monthly/total_sun_${MONTH}_sum.tif
+r.out.gdal createopt="COMPRESS=LZW" -c input=hours_sun_${MONTH}_sum output=${DIRECTORY}/insol/monthly/hours_sun_${MONTH}_sum.tif
 
 
 ###############################################################################

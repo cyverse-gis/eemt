@@ -1,0 +1,17 @@
+[package]
+name = "rsun-core"
+version = "0.1.0"
+edition = "2021"
+description = "CPU reference implementation of GRASS r.sun solar radiation model"
+license = "GPL-2.0-or-later"
+
+[features]
+default = []
+io = ["dep:gdal"]
+
+[dependencies]
+rayon = "1"
+gdal = { version = "0.19", optional = true, features = ["bindgen"] }
+
+[dev-dependencies]
+approx = "0.5"

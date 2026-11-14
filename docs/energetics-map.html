@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gordon Gulch — Interactive Energy Map</title>
+
+<!-- MapLibre GL JS -->
+<script src="https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.js"></script>
+<link href="https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.css" rel="stylesheet">
+
+<style>
+  :root {
+    --ink: #333333;
+    --light: #888888;
+    --warm: #c45b28;
+    --bg: #faf8f5;
+    --panel-bg: rgba(250, 248, 245, 0.95);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    color: var(--ink);
+    background: var(--bg);
+  }
+
+  #map { width: 100%; height: 100vh; }
+
+  .header {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    z-index: 10;
+    padding: 12px 20px;
+    background: linear-gradient(to bottom, var(--panel-bg), transparent);
+    pointer-events: none;
+  }
+
+  .header h1 {
+    font-size: 18px;
+    font-weight: normal;
+    letter-spacing: 0.5px;
+  }
+
+  .header .subtitle {
+    font-size: 11px;
+    color: var(--light);
+    margin-top: 2px;
+  }
+
+  .legend {
+    position: absolute;
+    bottom: 30px;
+    right: 10px;
+    z-index: 10;
+    background: var(--panel-bg);
+    border: 1px solid #ddd;
+    padding: 12px 16px;
+    font-size: 11px;
+    line-height: 1.6;
+    max-width: 220px;
+  }
+
+  .legend h3 {
+    font-size: 12px;
+    font-weight: normal;
+    margin-bottom: 6px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 4px;
+  }
+
+  .legend-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .legend-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .layer-toggle {
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    z-index: 10;
+    background: var(--panel-bg);
+    border: 1px solid #ddd;
+    padding: 10px 14px;
+    font-size: 11px;
+    font-family: 'Georgia', serif;
+  }
+
+  .layer-toggle h3 {
+    font-size: 12px;
+    font-weight: normal;
+    margin-bottom: 6px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 4px;
+  }
+
+  .layer-toggle label {
+    display: block;
+    cursor: pointer;
+    padding: 2px 0;
+    color: var(--ink);
+  }
+
+  .layer-toggle input[type="checkbox"] {
+    margin-right: 6px;
+  }
+
+  .maplibregl-popup-content {
+    font-family: 'Georgia', serif;
+    font-size: 12px;
+    padding: 10px 14px;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
+  .popup-title {
+    font-weight: bold;
+    margin-bottom: 4px;
+    color: var(--warm);
+  }
+
+  .popup-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .popup-label { color: var(--light); }
+  .popup-value { font-weight: bold; }
+
+  .stats-bar {
+    position: absolute;
+    bottom: 30px;
+    left: 10px;
+    z-index: 10;
+    background: var(--panel-bg);
+    border: 1px solid #ddd;
+    padding: 10px 14px;
+    font-size: 11px;
+    line-height: 1.6;
+  }
+
+  .stats-bar .stat-value {
+    font-weight: bold;
+    color: var(--warm);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Gordon Gulch Watershed — Landscape Energetics</h1>
+  <div class="subtitle">253,476 trees &middot; 5.82 &times; 10<sup>14</sup> J total energy &middot; 2.6 km&sup2; &middot; CZNet Boulder Creek</div>
+</div>
+
+<div id="map"></div>
+
+<div class="layer-toggle" id="layer-panel">
+  <h3>Layers</h3>
+  <label><input type="checkbox" id="toggle-chm" checked> Canopy Height</label>
+  <label><input type="checkbox" id="toggle-dem"> Elevation (DEM)</label>
+  <label><input type="checkbox" id="toggle-energy-raster"> Energy Density</label>
+  <label><input type="checkbox" id="toggle-biomass" checked> Biomass Density</label>
+  <label><input type="checkbox" id="toggle-catchment" checked> Watershed Boundary</label>
+</div>
+
+<div class="legend">
+  <h3>Biomass Density</h3>
+  <div class="legend-row"><div class="legend-swatch" style="background:#f7fcf5"></div> &lt; 10 Mg/ha</div>
+  <div class="legend-row"><div class="legend-swatch" style="background:#c7e9c0"></div> 10 &ndash; 50 Mg/ha</div>
+  <div class="legend-row"><div class="legend-swatch" style="background:#74c476"></div> 50 &ndash; 100 Mg/ha</div>
+  <div class="legend-row"><div class="legend-swatch" style="background:#238b45"></div> 100 &ndash; 200 Mg/ha</div>
+  <div class="legend-row"><div class="legend-swatch" style="background:#00441b"></div> &gt; 200 Mg/ha</div>
+  <div style="margin-top:8px; color: var(--light); font-size: 10px;">
+    10 m grid &middot; Jucker et al. (2017)<br>
+    HHV = 20.25 MJ/kg (<em>Pinus</em> spp.)
+  </div>
+</div>
+
+<div class="stats-bar">
+  <div>Trees: <span class="stat-value">253,476</span></div>
+  <div>Total AGB: <span class="stat-value">28.75 Gg</span></div>
+  <div>Total Energy: <span class="stat-value">5.82 &times; 10<sup>14</sup> J</span></div>
+  <div>Resolution: <span class="stat-value">0.5 m</span></div>
+</div>
+
+<script>
+const TITILER_BASE = 'https://titiler.cyverse.org';
+const DATA_BASE = 'https://data.cyverse.org/dav-anon/iplant/home/tswetnam/eemt';
+
+// TiTiler COG tile URL builder
+function cogTileUrl(filename) {
+  const encoded = encodeURIComponent(`${DATA_BASE}/${filename}`);
+  return `${TITILER_BASE}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=${encoded}`;
+}
+
+// Center of Gordon Gulch
+const CENTER = [-105.474, 40.016];
+
+const map = new maplibregl.Map({
+  container: 'map',
+  style: {
+    version: 8,
+    sources: {
+      'osm': {
+        type: 'raster',
+        tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+        tileSize: 256,
+        attribution: '&copy; OpenStreetMap contributors'
+      }
+    },
+    layers: [{
+      id: 'osm-base',
+      type: 'raster',
+      source: 'osm',
+      paint: { 'raster-opacity': 0.3, 'raster-saturation': -0.5 }
+    }]
+  },
+  center: CENTER,
+  zoom: 14,
+  maxZoom: 20,
+  minZoom: 10,
+});
+
+map.addControl(new maplibregl.NavigationControl(), 'top-left');
+map.addControl(new maplibregl.ScaleControl({ maxWidth: 200 }), 'bottom-left');
+
+map.on('load', () => {
+
+  // CHM raster layer via TiTiler
+  map.addSource('chm', {
+    type: 'raster',
+    tiles: [
+      `${TITILER_BASE}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=${encodeURIComponent(DATA_BASE + '/gordongulch_chm_05m_cog.tif')}&colormap_name=ylgn&rescale=0,30`
+    ],
+    tileSize: 256,
+  });
+  map.addLayer({
+    id: 'chm-layer',
+    type: 'raster',
+    source: 'chm',
+    paint: { 'raster-opacity': 0.7 },
+  });
+
+  // Hillshade underlay (0.5m, grayscale)
+  map.addSource('hillshade', {
+    type: 'raster',
+    tiles: [
+      `${TITILER_BASE}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=${encodeURIComponent(DATA_BASE + '/gordongulch_hillshade_05m_cog.tif')}&colormap_name=gray&rescale=0,255&nodata=0`
+    ],
+    tileSize: 256,
+  });
+  map.addLayer({
+    id: 'hillshade-layer',
+    type: 'raster',
+    source: 'hillshade',
+    paint: { 'raster-opacity': 0.6 },
+    layout: { visibility: 'none' },
+  });
+
+  // DEM elevation gradient (0.5m, layered over hillshade)
+  map.addSource('dem', {
+    type: 'raster',
+    tiles: [
+      `${TITILER_BASE}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=${encodeURIComponent(DATA_BASE + '/gordongulch_dem_05m_cog.tif')}&colormap_name=terrain&rescale=2375,2800&nodata=-9999`
+    ],
+    tileSize: 256,
+  });
+  map.addLayer({
+    id: 'dem-layer',
+    type: 'raster',
+    source: 'dem',
+    paint: { 'raster-opacity': 0.55 },
+    layout: { visibility: 'none' },
+  });
+
+  // Energy density raster (10m aggregated, MJ/ha)
+  map.addSource('energy-raster', {
+    type: 'raster',
+    tiles: [
+      `${TITILER_BASE}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=${encodeURIComponent(DATA_BASE + '/gordongulch_energy_density_10m_cog.tif')}&colormap_name=hot_r&rescale=0,2000000&nodata=-9999`
+    ],
+    tileSize: 256,
+  });
+  map.addLayer({
+    id: 'energy-raster-layer',
+    type: 'raster',
+    source: 'energy-raster',
+    paint: { 'raster-opacity': 0.7 },
+    layout: { visibility: 'none' },
+  });
+
+  // Biomass density raster (10m aggregated, Mg/ha)
+  map.addSource('biomass', {
+    type: 'raster',
+    tiles: [
+      `${TITILER_BASE}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=${encodeURIComponent(DATA_BASE + '/gordongulch_biomass_density_10m_cog.tif')}&colormap_name=ylgn&rescale=0,300&nodata=-9999`
+    ],
+    tileSize: 256,
+  });
+  map.addLayer({
+    id: 'biomass-layer',
+    type: 'raster',
+    source: 'biomass',
+    paint: { 'raster-opacity': 0.7 },
+  });
+
+  // NHDPlus V2.1 watershed catchments
+  map.addSource('catchments', {
+    type: 'geojson',
+    data: `${DATA_BASE}/gordongulch_catchments_nhdplus.geojson`,
+  });
+
+  // All catchments — subtle fill
+  map.addLayer({
+    id: 'catchments-fill',
+    type: 'fill',
+    source: 'catchments',
+    paint: {
+      'fill-color': [
+        'case',
+        ['==', ['get', 'FEATUREID'], 2889360],
+        'rgba(70, 130, 180, 0.12)',
+        'rgba(70, 130, 180, 0.04)'
+      ],
+      'fill-outline-color': 'rgba(70, 130, 180, 0.3)',
+    },
+  });
+
+  // Catchment outlines
+  map.addLayer({
+    id: 'catchments-line',
+    type: 'line',
+    source: 'catchments',
+    paint: {
+      'line-color': [
+        'case',
+        ['==', ['get', 'FEATUREID'], 2889360],
+        '#2a6496',
+        'rgba(70, 130, 180, 0.4)'
+      ],
+      'line-width': [
+        'case',
+        ['==', ['get', 'FEATUREID'], 2889360],
+        2.5,
+        1
+      ],
+    },
+  });
+
+  // Local catchment label
+  map.addSource('catchment-local', {
+    type: 'geojson',
+    data: `${DATA_BASE}/gordongulch_catchment_nhdplus.geojson`,
+  });
+  map.addLayer({
+    id: 'catchment-label',
+    type: 'symbol',
+    source: 'catchment-local',
+    layout: {
+      'text-field': 'Gordon Gulch\nCOMID 2889360\n1.79 km²',
+      'text-size': 11,
+      'text-anchor': 'center',
+      'text-allow-overlap': true,
+    },
+    paint: {
+      'text-color': '#2a6496',
+      'text-halo-color': 'rgba(255,255,255,0.9)',
+      'text-halo-width': 1.5,
+    },
+  });
+
+  // Popup on catchment click
+  map.on('click', 'catchments-fill', (e) => {
+    const p = e.features[0].properties;
+    const isLocal = p.FEATUREID === 2889360;
+    new maplibregl.Popup({ offset: 10, maxWidth: '240px' })
+      .setLngLat(e.lngLat)
+      .setHTML(`
+        <div class="popup-title">NHDPlus Catchment</div>
+        <div class="popup-row"><span class="popup-label">COMID</span><span class="popup-value">${p.FEATUREID}</span></div>
+        <div class="popup-row"><span class="popup-label">Area</span><span class="popup-value">${p.AREASQKM?.toFixed(2)} km²</span></div>
+        ${isLocal ? '<div style="margin-top:4px; font-size:10px; color:#2a6496;">Gordon Gulch local catchment</div>' : ''}
+      `)
+      .addTo(map);
+  });
+  map.on('mouseenter', 'catchments-fill', () => map.getCanvas().style.cursor = 'pointer');
+  map.on('mouseleave', 'catchments-fill', () => map.getCanvas().style.cursor = '');
+});
+
+// Layer toggles
+function bindToggle(checkboxId, layerIds) {
+  document.getElementById(checkboxId).addEventListener('change', (e) => {
+    const vis = e.target.checked ? 'visible' : 'none';
+    layerIds.forEach(id => {
+      if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', vis);
+    });
+  });
+}
+
+bindToggle('toggle-chm', ['chm-layer']);
+bindToggle('toggle-dem', ['hillshade-layer', 'dem-layer']);
+bindToggle('toggle-energy-raster', ['energy-raster-layer']);
+bindToggle('toggle-biomass', ['biomass-layer']);
+bindToggle('toggle-catchment', ['catchments-fill', 'catchments-line', 'catchment-label']);
+</script>
+</body>
+</html>

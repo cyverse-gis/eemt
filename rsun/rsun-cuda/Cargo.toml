@@ -1,0 +1,15 @@
+[package]
+name = "rsun-cuda"
+version = "0.1.0"
+edition = "2021"
+description = "CUDA-accelerated horizon computation for rsun (NVIDIA GPUs)"
+license = "GPL-2.0-or-later"
+build = "build.rs"
+
+[dependencies]
+rsun-core = { path = "../rsun-core" }
+cudarc = { version = "0.16", features = ["driver", "nvrtc", "cuda-12000"] }
+log = "0.4"
+
+[dev-dependencies]
+approx = "0.5"
