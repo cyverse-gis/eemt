@@ -174,11 +174,11 @@ Coniferous forests, energy-limited systems
 
 ### Research Applications
 - **Soil formation modeling**: Predict pedogenesis rates across landscapes
-- **Critical Zone evolution**: Understand long-term landscape development  
+- **Critical Zone evolution**: Understand long-term landscape development
 - **Biogeochemical cycling**: Quantify carbon and nutrient fluxes
 - **Climate change impacts**: Assess ecosystem sensitivity to warming
 
-### Operational Applications  
+### Operational Applications
 - **Land management**: Optimize restoration and conservation strategies
 - **Agricultural planning**: Site-specific productivity assessments
 - **Urban planning**: Heat island mitigation and green infrastructure
@@ -247,7 +247,7 @@ Coniferous forests, energy-limited systems
 ### Contributing
 We welcome contributions to improve EEMT methods, add new examples, and extend functionality. See our [Development Guide](development/index.md).
 
-### Support  
+### Support
 - **GitHub Issues**: Report bugs and request features
 - **Discussions**: Ask scientific methodology questions
 - **Examples**: Share use cases and workflows

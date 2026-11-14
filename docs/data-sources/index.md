@@ -207,7 +207,7 @@ task.start()
 
 #### Variables Available
 - **tmin**: Daily minimum temperature (°C)
-- **tmax**: Daily maximum temperature (°C)  
+- **tmax**: Daily maximum temperature (°C)
 - **prcp**: Daily precipitation (mm/day)
 - **srad**: Shortwave radiation (W/m²)
 - **vp**: Water vapor pressure (Pa)

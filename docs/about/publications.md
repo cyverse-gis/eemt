@@ -50,7 +50,7 @@
 
 **Holleran, M.E.** (2013). Quantifying catchment scale soil variability in Marshall Gulch, Santa Catalina Mountains Critical Zone Observatory. University of Arizona.
 
-### Master's Theses  
+### Master's Theses
 
 **Lybrand, R.A.** (2011). Climate and landscape controls on soil development across semiarid-subhumid environmental gradients. University of Arizona.
 
@@ -78,7 +78,7 @@
 The EEMT framework has been applied across multiple Critical Zone Observatory sites:
 
 - **Santa Catalina Mountains-Jemez River Basin CZO** (Arizona/New Mexico)
-- **Boulder Creek CZO** (Colorado)  
+- **Boulder Creek CZO** (Colorado)
 - **Luquillo CZO** (Puerto Rico)
 - **Southern Sierra CZO** (California)
 - **Christina River Basin CZO** (Delaware/Pennsylvania)
@@ -142,7 +142,7 @@ EEMT builds upon these key software packages:
 ### Institutional Support
 
 - **University of Arizona**: Department of Soil, Water and Environmental Science
-- **University of Arizona**: Department of Geosciences  
+- **University of Arizona**: Department of Geosciences
 - **University of Arizona**: Department of Hydrology and Water Resources
 - **CyVerse**: Cyberinfrastructure for biological research
 - **XSEDE**: Extreme Science and Engineering Discovery Environment

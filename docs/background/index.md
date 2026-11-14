@@ -5,7 +5,7 @@
 The **Critical Zone** is Earth's near-surface environment extending from the top of the vegetation canopy down to the groundwater. This zone supports all terrestrial life and controls:
 
 - Fresh water availability and quality
-- Soil formation and agricultural productivity  
+- Soil formation and agricultural productivity
 - Carbon storage and climate regulation
 - Biodiversity and ecosystem services
 - Natural hazard mitigation
@@ -31,11 +31,8 @@ $$\frac{d\mathcal{U}_{CZ}}{dt} = \mathcal{K} - T\sigma$$
 Where:
 
 - **𝒰<sub>CZ</sub>** = Critical Zone energy storage [J m⁻²]
-
-- **𝒦** = Energy flux through the system [W m⁻²]  
-
+- **𝒦** = Energy flux through the system [W m⁻²]
 - **T** = System temperature [K]
-
 - **σ** = Entropy production rate [W m⁻² K⁻¹]
 
 ### Energy Balance Components
@@ -61,7 +58,7 @@ $$\text{EEMT} = E_{BIO} + E_{PPT}$$
 This represents the energy **effectively transferred** to drive:
 
 - Soil formation processes
-- Chemical weathering reactions  
+- Chemical weathering reactions
 - Biological productivity
 - Carbon sequestration
 - Nutrient cycling
@@ -75,7 +72,7 @@ Solar radiation provides the primary energy input to the Critical Zone. Topograp
 #### Slope and Aspect Effects
 
 - **Pole-facing (N,S) slopes**: Reduced direct radiation, higher soil moisture
-- **Equator-facing slopes**: Maximum radiation, increased evapotranspiration  
+- **Equator-facing slopes**: Maximum radiation, increased evapotranspiration
 - **Slope angle**: Controls radiation intensity and duration
 
 #### Shading and Obstruction
@@ -89,6 +86,7 @@ Solar radiation provides the primary energy input to the Critical Zone. Topograp
 Water acts as both a mass flux and energy carrier:
 
 #### Precipitation Energy (E<sub>PPT</sub>)
+
 $$E_{PPT} = F \times c_w \times \Delta T \quad \text{[W m}^{-2}\text{]}$$
 
 Where:
@@ -108,6 +106,7 @@ Where:
 Primary production stores solar energy in chemical bonds:
 
 #### Photosynthesis Energy Storage
+
 $$E_{BIO} = NPP \times h_{BIO} \quad \text{[W m}^{-2}\text{]}$$
 
 Where:
@@ -240,7 +239,7 @@ $$\text{Biomass} = \alpha \times \text{EEMT}^{\beta}$$
 
 Where α = 0.032 kg m² yr ha⁻¹ MJ⁻¹, β = 3.22
 
-#### Exponential Relationships  
+#### Exponential Relationships
 
 $$\text{Soil\_Depth} = \gamma \times \exp(\delta \times \text{EEMT})$$
 
@@ -266,7 +265,7 @@ EEMT has been validated against multiple field datasets:
 - **Organic matter**: Strong relationship in temperate systems
 - **Chemical weathering**: Linear correlation in humid environments
 
-#### Vegetation Properties  
+#### Vegetation Properties
 
 - **Aboveground biomass**: Power law relationship (r² = 0.98)
 - **Leaf area index**: Moderate correlation in forest systems

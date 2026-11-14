@@ -69,7 +69,7 @@ EEMT = E_BIO + E_PPT [MJ m⁻² yr⁻¹]
 - Calculated from Net Primary Production (NPP)
 - **Formula**: `E_BIO = NPP × 22 MJ/kg`
 
-#### Precipitation Energy (E_PPT)  
+#### Precipitation Energy (E_PPT)
 - Thermal energy from effective precipitation
 - Water available for subsurface processes
 - **Formula**: `E_PPT = F × c_w × ΔT`
@@ -84,7 +84,7 @@ EEMT = E_BIO + E_PPT [MJ m⁻² yr⁻¹]
 - No topographic or vegetation effects
 - Good for regional comparisons
 
-#### 2. Topographic EEMT (EEMT_TOPO)  
+#### 2. Topographic EEMT (EEMT_TOPO)
 - Incorporates slope, aspect, and solar radiation
 - Mass-conservative water redistribution
 - Accounts for local microclimates
@@ -227,7 +227,7 @@ import dask.array as da
 dem_chunked = da.from_array(dem, chunks=(1000, 1000))
 ```
 
-### Projection Problems  
+### Projection Problems
 ```bash
 # Reproject DEM to match climate data
 gdalwarp -t_srs EPSG:4326 input_dem.tif output_dem.tif
@@ -256,7 +256,7 @@ Once you have basic EEMT calculations working:
 
 ### Parallel Processing
 - Use `--num_threads` parameter for CPU cores
-- Enable GPU acceleration for r.sun when available  
+- Enable GPU acceleration for r.sun when available
 - Process multiple years simultaneously
 
 ### Memory Management
@@ -264,7 +264,7 @@ Once you have basic EEMT calculations working:
 - Use compressed GeoTIFF outputs (`-co COMPRESS=LZW`)
 - Monitor memory usage with `htop` or Task Manager
 
-### Storage Optimization  
+### Storage Optimization
 - Use Cloud-Optimized GeoTIFF (COG) format
 - Compress intermediate files
 - Clean up temporary GRASS locations

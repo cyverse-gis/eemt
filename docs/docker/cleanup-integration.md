@@ -7,7 +7,7 @@ This guide explains how to integrate the EEMT job data cleanup system with Docke
 The EEMT cleanup system is designed to work seamlessly in containerized environments, providing multiple integration options:
 
 - **Built-in container cleanup**: Cleanup runs within the web interface container
-- **Dedicated cleanup container**: Separate container for cleanup operations  
+- **Dedicated cleanup container**: Separate container for cleanup operations
 - **Orchestration integration**: Works with Docker Compose, Kubernetes, and Swarm
 - **Volume management**: Handles Docker volumes and bind mounts correctly
 - **Multi-container coordination**: Supports distributed deployments

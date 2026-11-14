@@ -57,11 +57,10 @@ From local processes to continental patterns:
 
 ### Temporal Integration
 
-
 From daily variations to millennial trends:
 
 - **Daily**: Solar radiation and weather processes
-- **Monthly**: Vegetation growth and seasonal patterns  
+- **Monthly**: Vegetation growth and seasonal patterns
 - **Annual**: Climate averages and interannual variability
 - **Decadal**: Long-term trends and climate change
 - **Centennial**: Landscape evolution and soil formation

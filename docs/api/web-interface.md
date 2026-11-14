@@ -301,7 +301,7 @@ Parameters:
 - dem_file: GeoTIFF file upload
 - step: float (time step in minutes)
 - linke_value: float (atmospheric turbidity)
-- albedo_value: float (surface reflectance)  
+- albedo_value: float (surface reflectance)
 - num_threads: int (CPU threads)
 - start_year: int (EEMT only)
 - end_year: int (EEMT only)

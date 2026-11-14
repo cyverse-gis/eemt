@@ -14,7 +14,7 @@ This guide provides instructions for manually installing EEMT and its dependenci
 
 **Minimum Hardware**:
 - CPU: 4 cores (8+ recommended for parallel processing)
-- RAM: 8 GB (16+ GB recommended for large datasets)  
+- RAM: 8 GB (16+ GB recommended for large datasets)
 - Storage: 50 GB free space
 - GPU: Optional but recommended for r.sun calculations
 

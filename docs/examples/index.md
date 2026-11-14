@@ -878,7 +878,7 @@ python climate_scenarios.py --scenarios all
 - **Aspect Effect**: ~5 MJ/m²/yr higher on north-facing slopes
 - **Elevation Effect**: 300m elevation ≈ north-facing aspect
 
-#### Large Watershed  
+#### Large Watershed
 - **Processing Time**: ~2-6 hours for Colorado River Basin
 - **Tile Success Rate**: >95% with robust error handling
 - **Spatial Patterns**: Clear elevation and latitude gradients

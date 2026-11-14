@@ -9,7 +9,7 @@ title: Calculation Methods
 This guide provides complete workflows for calculating EEMT using the three methodological approaches identified in Rasmussen et al. (2014):
 
 1. **EEMT_TRAD**: Traditional approach using climate averages
-2. **EEMT_TOPO**: Topographic controls on energy and water balance  
+2. **EEMT_TOPO**: Topographic controls on energy and water balance
 3. **EEMT_TOPO-VEG**: Full vegetation and topographic integration
 
 ## Complete EEMT Calculation Framework
@@ -30,7 +30,7 @@ Where:
 - NPP = Net Primary Production [kg m⁻² s⁻¹]
 - h_BIO = Specific biomass enthalpy (22 × 10⁶ J kg⁻¹)
 
-#### Precipitation Energy Component (E_PPT)  
+#### Precipitation Energy Component (E_PPT)
 ```
 E_PPT = F × c_w × ΔT [W m⁻²]
 ```
@@ -46,7 +46,7 @@ Simple climate-based approach suitable for regional comparisons.
 
 ### Required Data
 - Monthly temperature (min/max)
-- Monthly precipitation  
+- Monthly precipitation
 - Digital elevation model (for area calculation)
 
 ### Implementation

@@ -391,7 +391,7 @@ done
 Interactive API documentation is automatically generated and available at:
 
 - **Swagger UI**: http://127.0.0.1:5000/docs
-- **ReDoc**: http://127.0.0.1:5000/redoc  
+- **ReDoc**: http://127.0.0.1:5000/redoc
 - **OpenAPI JSON**: http://127.0.0.1:5000/openapi.json
 
 The interactive documentation allows you to:

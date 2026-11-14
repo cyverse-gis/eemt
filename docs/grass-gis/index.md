@@ -840,7 +840,7 @@ g.region -s res=30  # Decrease resolution temporarily
 r.tile input=large_dem output=dem_tile prefix=chunk_ width=2048 height=2048
 ```
 
-#### Projection Issues  
+#### Projection Issues
 ```bash
 # Check DEM projection
 gdalinfo dem.tif | grep -i "coordinate system"
